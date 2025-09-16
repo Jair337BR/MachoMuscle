@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MachoMuscle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app" role="application">
+      <header class="topbar">
+        <div class="branding">
+          <div class="branding__icon" aria-hidden="true">MM</div>
+          <div class="branding__text">
+            <span class="branding__label">MachoMuscle</span>
+            <span class="branding__tagline">Treinos inteligentes, vibe minimalista</span>
+          </div>
+        </div>
+        <div class="topbar__actions">
+          <button class="icon-button" type="button" aria-label="Pesquisar exercícios">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.71.71l.27.28v.79l5 5 1.5-1.5-5-5zm-6 0a4.5 4.5 0 110-9 4.5 4.5 0 010 9z"
+              />
+            </svg>
+          </button>
+          <button class="icon-button icon-button--primary" type="button" aria-label="Notificações">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 22a2 2 0 002-2h-4a2 2 0 002 2zm6-6V11a6 6 0 10-12 0v5l-2 2v1h16v-1l-2-2zm-2 .17V11a4 4 0 10-8 0v5.17l-.59.58h9.18l-.59-.58z"
+              />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="screens">
+        <section class="screen screen--active" data-screen="home" aria-label="Início">
+          <article class="hero-card">
+            <div class="hero-card__content">
+              <span class="badge badge--soft">Desafio do dia</span>
+              <h1>Encontre sua melhor versão</h1>
+              <p>
+                Treinos curtos, metas claras e suporte da comunidade para manter seu foco
+                em alta.
+              </p>
+              <div class="hero-card__actions">
+                <button class="button button--primary" type="button">Começar agora</button>
+                <button class="button button--ghost" type="button">Ver rotina</button>
+              </div>
+            </div>
+            <div class="hero-card__visual" aria-hidden="true">
+              <div class="hero-illustration">
+                <div class="hero-illustration__shine"></div>
+                <div class="hero-illustration__silhouette"></div>
+              </div>
+              <span class="hero-card__caption">Missão foco total</span>
+            </div>
+          </article>
+
+          <header class="section-header">
+            <div>
+              <h2>Sua semana em destaque</h2>
+              <p>Monitoramento rápido para você manter a consistência.</p>
+            </div>
+            <button class="text-button" type="button">Ver detalhes</button>
+          </header>
+
+          <div class="insights-grid">
+            <div class="card insight-card">
+              <div class="card__header">
+                <span class="badge badge--accent">Level 12</span>
+                <span class="card__meta">Faltam 320 XP</span>
+              </div>
+              <p class="card__title">Guardião da Resistência</p>
+              <p class="card__subtitle">Complete 2 missões lendárias para subir de nível.</p>
+              <div class="progress-bar" role="img" aria-label="68% de XP para o próximo nível">
+                <div class="progress-bar__fill" style="--progress: 0.68"></div>
+              </div>
+            </div>
+
+            <div class="card insight-card">
+              <div class="card__header">
+                <span class="badge">Streak ativa</span>
+                <span class="card__meta">6 dias</span>
+              </div>
+              <p class="card__title">Constância desbloqueada</p>
+              <p class="card__subtitle">Mantenha a rotina e alcance o troféu Aurora.</p>
+              <div class="streak-indicator">
+                <span class="streak-indicator__dot is-active"></span>
+                <span class="streak-indicator__dot is-active"></span>
+                <span class="streak-indicator__dot is-active"></span>
+                <span class="streak-indicator__dot is-active"></span>
+                <span class="streak-indicator__dot is-active"></span>
+                <span class="streak-indicator__dot is-active"></span>
+                <span class="streak-indicator__dot"></span>
+              </div>
+            </div>
+
+            <div class="card insight-card insight-card--wide">
+              <div class="card__header">
+                <span class="badge badge--soft">Próximo treino</span>
+                <button class="text-button" type="button">Personalizar</button>
+              </div>
+              <div class="next-workout">
+                <div>
+                  <h3>Inferiores explosivos</h3>
+                  <p>Agachamento búlgaro, levantamento terra romeno e sprint intervalado.</p>
+                  <ul class="chip-list">
+                    <li class="chip">Força</li>
+                    <li class="chip">HIIT</li>
+                    <li class="chip">Mobilidade</li>
+                  </ul>
+                </div>
+                <div class="next-workout__meta">
+                  <span>40 min</span>
+                  <span>480 kcal</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card daily-focus">
+            <header class="card__header">
+              <div>
+                <h3>Rituais do dia</h3>
+                <p class="card__subtitle">Pequenos hábitos, grandes conquistas.</p>
+              </div>
+              <button class="text-button" type="button">Ver histórico</button>
+            </header>
+            <ul class="task-list">
+              <li>
+                <label>
+                  <input type="checkbox" />
+                  Respiração box antes do treino
+                  <span class="task-list__meta">+15 foco</span>
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input type="checkbox" />
+                  Finalizar treino com alongamento em fluxo
+                  <span class="task-list__meta">+20 mobilidade</span>
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input type="checkbox" />
+                  Registrar sensação pós-treino
+                  <span class="task-list__meta">+10 XP</span>
+                </label>
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="progress" aria-label="Gamificação">
+          <header class="section-header">
+            <div>
+              <h2>Gamificação que inspira</h2>
+              <p>Complete missões, desbloqueie emblemas e evolua com a tribo.</p>
+            </div>
+            <button class="text-button" type="button">Ver loja de recompensas</button>
+          </header>
+
+          <div class="card progress-overview">
+            <div class="progress-ring" style="--progress: 0.78" role="img" aria-label="78% do nível atual">
+              <span class="progress-ring__value">78%</span>
+              <span class="progress-ring__caption">Nível 12</span>
+            </div>
+            <div class="progress-overview__details">
+              <h3>Guardião Aurora</h3>
+              <p>Faltam 320 XP para o título <strong>Tempestade Azul</strong>.</p>
+              <dl class="progress-stats">
+                <div>
+                  <dt>XP acumulado</dt>
+                  <dd>12.680</dd>
+                </div>
+                <div>
+                  <dt>Treinos épicos</dt>
+                  <dd>34</dd>
+                </div>
+                <div>
+                  <dt>Multiplicador de streak</dt>
+                  <dd>x1,6</dd>
+                </div>
+              </dl>
+              <div class="progress-bar progress-bar--accent" role="img" aria-label="Progresso geral 78%">
+                <div class="progress-bar__fill" style="--progress: 0.78"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card quest-board">
+            <header class="card__header">
+              <h3>Missões do dia</h3>
+              <span class="badge badge--soft">Atualiza às 05h</span>
+            </header>
+            <ul class="mission-list">
+              <li>
+                <div>
+                  <h4>Explosão matinal</h4>
+                  <p>Finalize o aquecimento dinâmico em menos de 8 minutos.</p>
+                </div>
+                <span class="mission-list__reward">+120 XP</span>
+              </li>
+              <li>
+                <div>
+                  <h4>Flow híbrido</h4>
+                  <p>Combine força e mobilidade em um treino customizado.</p>
+                </div>
+                <span class="mission-list__reward">+150 XP</span>
+              </li>
+              <li>
+                <div>
+                  <h4>Mentor da tribo</h4>
+                  <p>Compartilhe uma dica na comunidade e receba 3 reações.</p>
+                </div>
+                <span class="mission-list__reward">Badge raro</span>
+              </li>
+            </ul>
+            <button class="button button--primary button--block" type="button">Ver quadro completo</button>
+          </div>
+
+          <div class="card badge-gallery">
+            <header class="card__header">
+              <h3>Emblemas conquistados</h3>
+              <button class="text-button" type="button">Organizar vitrine</button>
+            </header>
+            <div class="badge-grid">
+              <div class="badge-token is-highlighted">
+                <span class="badge-token__icon">🔥</span>
+                <h4>Fogo infinito</h4>
+                <p>15 dias consecutivos</p>
+              </div>
+              <div class="badge-token">
+                <span class="badge-token__icon">🌀</span>
+                <h4>Fluxo perfeito</h4>
+                <p>Mobilidade avançada</p>
+              </div>
+              <div class="badge-token">
+                <span class="badge-token__icon">⚡</span>
+                <h4>Ritmo supremo</h4>
+                <p>HIIT em alta</p>
+              </div>
+              <div class="badge-token is-locked">
+                <span class="badge-token__icon">🌈</span>
+                <h4>Troféu Prisma</h4>
+                <p>Complete 5 desafios lendários</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card squad-card">
+            <header class="card__header">
+              <h3>Tribo MachoMuscle</h3>
+              <span class="badge badge--accent">Ranking semanal</span>
+            </header>
+            <ol class="squad-ranking">
+              <li>
+                <span class="squad-ranking__position">1</span>
+                <div>
+                  <strong>Você</strong>
+                  <p>7.820 pontos</p>
+                </div>
+                <span class="chip chip--tiny">x1,6</span>
+              </li>
+              <li>
+                <span class="squad-ranking__position">2</span>
+                <div>
+                  <strong>Ana H.</strong>
+                  <p>7.120 pontos</p>
+                </div>
+                <span class="chip chip--tiny">x1,4</span>
+              </li>
+              <li>
+                <span class="squad-ranking__position">3</span>
+                <div>
+                  <strong>Rafa B.</strong>
+                  <p>6.880 pontos</p>
+                </div>
+                <span class="chip chip--tiny">x1,3</span>
+              </li>
+            </ol>
+            <button class="text-button" type="button">Abrir chat da tribo</button>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="community" aria-label="Comunidade">
+          <header class="section-header">
+            <div>
+              <h2>Vibe social</h2>
+              <p>Compartilhe momentos, celebre conquistas e receba apoio instantâneo.</p>
+            </div>
+            <button class="text-button" type="button">Filtrar trends</button>
+          </header>
+
+          <form class="composer card" id="communityComposer" autocomplete="off">
+            <div class="composer__avatar" aria-hidden="true">JD</div>
+            <div class="composer__body">
+              <label class="sr-only" for="composerMessage">Mensagem</label>
+              <textarea
+                id="composerMessage"
+                name="composerMessage"
+                rows="3"
+                placeholder="Como foi seu treino hoje?"
+                required
+              ></textarea>
+              <div class="composer__toolbar">
+                <div class="chip-toggle-group" role="group" aria-label="Categorias do post">
+                  <button type="button" class="chip-toggle" data-tag="Força">Força</button>
+                  <button type="button" class="chip-toggle" data-tag="Cardio">Cardio</button>
+                  <button type="button" class="chip-toggle" data-tag="Mobilidade">Mobilidade</button>
+                  <button type="button" class="chip-toggle" data-tag="Mindset">Mindset</button>
+                </div>
+                <button class="button button--primary" type="submit">Postar</button>
+              </div>
+            </div>
+          </form>
+
+          <div class="feed" id="communityFeed">
+            <article class="post card">
+              <div class="post__avatar" aria-hidden="true">AH</div>
+              <div class="post__content">
+                <header class="post__header">
+                  <div>
+                    <h3>Ana H.</h3>
+                    <span class="post__meta">há 2h · Treino HIIT</span>
+                  </div>
+                  <button class="icon-button" type="button" aria-label="Mais ações">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <circle cx="5" cy="12" r="2"></circle>
+                      <circle cx="12" cy="12" r="2"></circle>
+                      <circle cx="19" cy="12" r="2"></circle>
+                    </svg>
+                  </button>
+                </header>
+                <p>
+                  Misturei agachamentos com saltos pliométricos e finalizei com corrida curta.
+                  Energia lá em cima! Quem topa um duplo desafio amanhã?
+                </p>
+                <div class="post__tags">
+                  <span class="chip">Força</span>
+                  <span class="chip">HIIT</span>
+                </div>
+                <footer class="post__footer">
+                  <button class="post-action" type="button">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41 1.01 4.13 2.44h.74C13.09 5.01 14.76 4 16.5 4 19 4 21 6 21 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                      />
+                    </svg>
+                    <span>128</span>
+                  </button>
+                  <button class="post-action" type="button">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H8l-4 4V6a2 2 0 012-2zm2 4v9.17L7.17 16H20V8H6z"
+                      />
+                    </svg>
+                    <span>34</span>
+                  </button>
+                  <button class="post-action" type="button">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.07 3.07 0 000-1.41l7-3.35a3 3 0 10-.91-1.81l-7 3.35a3 3 0 10.02 4.6l7.11 3.55a3 3 0 102.87-1.55z"
+                      />
+                    </svg>
+                    <span>12</span>
+                  </button>
+                </footer>
+              </div>
+            </article>
+
+            <article class="post card">
+              <div class="post__avatar" aria-hidden="true">RB</div>
+              <div class="post__content">
+                <header class="post__header">
+                  <div>
+                    <h3>Rafa B.</h3>
+                    <span class="post__meta">há 4h · Mobilidade</span>
+                  </div>
+                </header>
+                <p>
+                  Fiz a sequência Flow para quadril e ombro. A sensação de leveza é absurda!
+                  Deixei salvo nos destaques do perfil para quem quiser testar.
+                </p>
+                <div class="post__media">
+                  <span>Sequência Flow · 18 min</span>
+                </div>
+                <div class="post__tags">
+                  <span class="chip">Mobilidade</span>
+                  <span class="chip">Mindset</span>
+                </div>
+                <footer class="post__footer">
+                  <button class="post-action" type="button">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 4 4 6.5 4c1.74 0 3.41 1.01 4.13 2.44h.74C13.09 5.01 14.76 4 16.5 4 19 4 21 6 21 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                      />
+                    </svg>
+                    <span>98</span>
+                  </button>
+                  <button class="post-action" type="button">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H8l-4 4V6a2 2 0 012-2zm2 4v9.17L7.17 16H20V8H6z"
+                      />
+                    </svg>
+                    <span>20</span>
+                  </button>
+                  <button class="post-action" type="button">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                      <path
+                        d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7a3.07 3.07 0 000-1.41l7-3.35a3 3 0 10-.91-1.81l-7 3.35a3 3 0 10.02 4.6l7.11 3.55a3 3 0 102.87-1.55z"
+                      />
+                    </svg>
+                    <span>9</span>
+                  </button>
+                </footer>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="profile" aria-label="Perfil">
+          <div class="profile card">
+            <div class="profile__header">
+              <div class="profile__cover" aria-hidden="true">
+                <span class="profile__spark"></span>
+              </div>
+              <div class="profile__identity">
+                <div class="profile__avatar" id="profileAvatar" aria-hidden="true">JD</div>
+                <div>
+                  <h2 class="profile__name" id="profileName">Jane Doe</h2>
+                  <p class="profile__username" id="profileUsername">@janedoe</p>
+                  <div class="profile__tags">
+                    <span class="chip chip--accent">Nível 12</span>
+                    <span class="chip chip--soft">Streak 6 dias</span>
+                  </div>
+                </div>
+              </div>
+              <p class="profile__bio" id="profileBio">
+                Treinos híbridos com foco em mobilidade e força. Em busca do equilíbrio
+                entre intensidade e autocuidado.
+              </p>
+            </div>
+
+            <form class="profile-form" id="profileForm">
+              <div class="profile-form__group">
+                <label for="displayName">Nome exibido</label>
+                <input
+                  id="displayName"
+                  name="displayName"
+                  type="text"
+                  value="Jane Doe"
+                  maxlength="30"
+                  autocomplete="name"
+                />
+              </div>
+              <div class="profile-form__group">
+                <label for="username">Nome de usuário</label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  value="janedoe"
+                  maxlength="18"
+                  autocomplete="nickname"
+                />
+              </div>
+              <div class="profile-form__group profile-form__group--full">
+                <label for="bio">Bio</label>
+                <textarea id="bio" name="bio" rows="3" maxlength="160">Treinos híbridos com foco em mobilidade e força. Em busca do equilíbrio entre intensidade e autocuidado.</textarea>
+              </div>
+              <div class="profile-form__group profile-form__group--full">
+                <span>Escolha a vibe de cor</span>
+                <div class="accent-picker" role="radiogroup" aria-label="Escolher cor de destaque">
+                  <button
+                    type="button"
+                    class="accent-picker__option is-active"
+                    data-accent="roxo"
+                    style="--swatch: linear-gradient(135deg, #6c63ff, #4b5dff)"
+                    aria-pressed="true"
+                  ></button>
+                  <button
+                    type="button"
+                    class="accent-picker__option"
+                    data-accent="amarelo"
+                    style="--swatch: linear-gradient(135deg, #f7c948, #ffdb6e)"
+                    aria-pressed="false"
+                  ></button>
+                  <button
+                    type="button"
+                    class="accent-picker__option"
+                    data-accent="laranja"
+                    style="--swatch: linear-gradient(135deg, #ff8852, #ffb347)"
+                    aria-pressed="false"
+                  ></button>
+                  <button
+                    type="button"
+                    class="accent-picker__option"
+                    data-accent="azul"
+                    style="--swatch: linear-gradient(135deg, #1fb6ff, #58b7ff)"
+                    aria-pressed="false"
+                  ></button>
+                </div>
+              </div>
+            </form>
+
+            <div class="profile-stats">
+              <div>
+                <strong>248</strong>
+                <span>Treinos concluídos</span>
+              </div>
+              <div>
+                <strong>12.680</strong>
+                <span>Total de XP</span>
+              </div>
+              <div>
+                <strong>32</strong>
+                <span>Badges ativas</span>
+              </div>
+            </div>
+
+            <section class="profile-feed">
+              <header class="profile-feed__header">
+                <div>
+                  <h3>Destaques públicos</h3>
+                  <p>Seu mural aberto para a comunidade acompanhar sua evolução.</p>
+                </div>
+              </header>
+              <ul class="profile-feed__list" id="profileHighlights">
+                <li class="profile-feed__item card">
+                  <span class="profile-feed__date">Ontem · Treino híbrido</span>
+                  <p>Completei o combo força + mobilidade com tempo recorde. Sensação de flow total!</p>
+                </li>
+                <li class="profile-feed__item card">
+                  <span class="profile-feed__date">3 dias atrás · Mindset</span>
+                  <p>Nova playlist para manter a energia elevada durante os sprints finais.</p>
+                </li>
+              </ul>
+              <form class="highlight-form" id="highlightForm">
+                <label class="sr-only" for="highlightInput">Novo destaque</label>
+                <input
+                  id="highlightInput"
+                  type="text"
+                  name="highlight"
+                  maxlength="100"
+                  placeholder="Adicionar novo momento ao mural..."
+                />
+                <button class="button button--primary" type="submit">Publicar</button>
+              </form>
+            </section>
+          </div>
+        </section>
+      </main>
+
+      <nav class="tabbar" aria-label="Navegação principal">
+        <button class="tabbar__item tabbar__item--active" type="button" data-target="home">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5a1 1 0 01-1-1v-4H9v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-9z"
+            />
+          </svg>
+          <span>Início</span>
+        </button>
+        <button class="tabbar__item" type="button" data-target="progress">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M4 4h16v2a4 4 0 01-3 3.87V12a6 6 0 01-5 5.92V21h3v2H9v-2h3v-3.08A6 6 0 017 12V9.87A4 4 0 014 6V4zm2 2a2 2 0 002 2h8a2 2 0 002-2H6z"
+            />
+          </svg>
+          <span>Gamify</span>
+        </button>
+        <button class="tabbar__item" type="button" data-target="community">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H8l-4 4V6a2 2 0 012-2zm2 4v9.17L7.17 16H20V8H6z"
+            />
+          </svg>
+          <span>Comunidade</span>
+        </button>
+        <button class="tabbar__item" type="button" data-target="profile">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 12a5 5 0 110-10 5 5 0 010 10zm0 2c-4.418 0-8 2.239-8 5v3h16v-3c0-2.761-3.582-5-8-5z"
+            />
+          </svg>
+          <span>Perfil</span>
+        </button>
+      </nav>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

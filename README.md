@@ -1,2 +1,38 @@
 # MachoMuscle
-App de musculação com treinos pré-definidos
+
+Interface mobile-first para um app de treinos com foco em UX minimalista, gamificação e comunidade.
+
+## Visão geral
+
+A aplicação apresenta quatro áreas principais que simulam a experiência completa do produto:
+
+- **Início:** resumo da semana, rituais diários e cards de progresso rápidos.
+- **Gamificação:** painel com nível, missões diárias, vitrine de badges e ranking da tribo.
+- **Comunidade:** feed no estilo Twitter/Threads com composer e tags de categoria.
+- **Perfil:** personalização de nome, @, bio, highlights e escolha dinâmica das cores de destaque.
+
+## Cores base
+
+A paleta foi construída para que amarelo, laranja, roxo e azul se complementem sem gerar ruído visual. É possível alternar o destaque principal diretamente na tela de perfil.
+
+| Cor     | Hex      | Uso principal                        |
+|---------|----------|--------------------------------------|
+| Amarelo | `#F7C948` | Energia e destaques luminosos        |
+| Laranja | `#FF8852` | Chamadas de ação quentes             |
+| Roxo    | `#6C63FF` | Acento padrão, hero e botões primários|
+| Azul    | `#1FB6FF` | Detalhes dinâmicos e gradientes      |
+
+## Como executar
+
+1. Clone o repositório e navegue até a pasta `MachoMuscle`.
+2. Abra o arquivo `index.html` no navegador (ou utilize uma extensão como Live Server no VS Code).
+3. Explore os botões da barra inferior para navegar entre as seções.
+
+## Interações implementadas
+
+- Mudança de cor do tema através do seletor na tela de perfil.
+- Atualização automática de nome, usuário, bio e avatar conforme o usuário digita.
+- Criação de novos posts na comunidade com tags opcionais.
+- Adição de destaques públicos no mural do perfil.
+
+Sinta-se à vontade para adaptar os textos e dados mockados para refletir a experiência desejada.
