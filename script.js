@@ -2,6 +2,8 @@ const appRoot = document.querySelector('.app');
 const screens = document.querySelectorAll('.screen');
 const navButtons = document.querySelectorAll('.tabbar__item');
 const subpages = document.querySelectorAll('[data-subpage]');
+const subpagesContainer = document.querySelector('.subpages');
+const subpageBackdrop = document.querySelector('[data-subpage-backdrop]');
 const subpageOpeners = document.querySelectorAll('[data-open-subpage]');
 const subpageClosers = document.querySelectorAll('[data-close-subpage]');
 
@@ -22,6 +24,13 @@ function closeSubpage({ restoreFocus = true } = {}) {
   if (appRoot) {
     appRoot.classList.remove('has-subpage');
   }
+  if (subpagesContainer) {
+    subpagesContainer.classList.remove('is-active');
+  }
+  if (subpageBackdrop) {
+    subpageBackdrop.classList.remove('is-visible');
+    subpageBackdrop.setAttribute('aria-hidden', 'true');
+  }
   if (restoreFocus && lastSubpageTrigger instanceof HTMLElement) {
     lastSubpageTrigger.focus();
   }
@@ -40,9 +49,21 @@ function openSubpage(id, trigger) {
   if (appRoot) {
     appRoot.classList.add('has-subpage');
   }
+  if (subpagesContainer) {
+    subpagesContainer.classList.add('is-active');
+  }
+  if (subpageBackdrop) {
+    subpageBackdrop.classList.add('is-visible');
+    subpageBackdrop.setAttribute('aria-hidden', 'false');
+  }
   page.classList.add('subpage--active');
   page.setAttribute('aria-hidden', 'false');
-  page.scrollTop = 0;
+  const scrollTarget = page.querySelector('.subpage__container');
+  if (scrollTarget) {
+    scrollTarget.scrollTop = 0;
+  } else {
+    page.scrollTop = 0;
+  }
   const callback = subpageOpenCallbacks.get(id);
   if (typeof callback === 'function') {
     callback();
@@ -73,6 +94,12 @@ subpageClosers.forEach((button) => {
     closeSubpage();
   });
 });
+
+if (subpageBackdrop) {
+  subpageBackdrop.addEventListener('click', () => {
+    closeSubpage({ restoreFocus: false });
+  });
+}
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
@@ -198,6 +225,29 @@ const customWorkoutSteps = document.getElementById('customWorkoutSteps');
 const squadChatForm = document.getElementById('squadChatForm');
 const squadChatInput = document.getElementById('squadChatMessage');
 const squadChatLog = document.getElementById('squadChatLog');
+const dailyTrainingTitle = document.getElementById('dailyTrainingTitle');
+const dailyTrainingDay = document.getElementById('dailyTrainingDay');
+const dailyTrainingIntro = document.getElementById('dailyTrainingIntro');
+const dailyTrainingChecklist = document.getElementById('dailyTrainingChecklist');
+const dailyTrainingDuration = document.getElementById('dailyTrainingDuration');
+const dailyTrainingCalories = document.getElementById('dailyTrainingCalories');
+const dailyTrainingProgress = document.getElementById('dailyTrainingProgress');
+const dailyTrainingVideo = document.getElementById('dailyTrainingVideo');
+const adminLoginSection = document.getElementById('adminLoginSection');
+const adminPanel = document.getElementById('adminPanel');
+const adminLoginForm = document.getElementById('adminLoginForm');
+const adminLoginFeedback = document.getElementById('adminLoginFeedback');
+const adminUpdateForm = document.getElementById('adminUpdateForm');
+const adminUserSelect = document.getElementById('adminUserSelect');
+const adminDaySelect = document.getElementById('adminDaySelect');
+const adminFocusInput = document.getElementById('adminFocusInput');
+const adminInstructionInput = document.getElementById('adminInstructionInput');
+const adminExercisesInput = document.getElementById('adminExercisesInput');
+const adminDurationInput = document.getElementById('adminDurationInput');
+const adminCaloriesInput = document.getElementById('adminCaloriesInput');
+const adminVideoInput = document.getElementById('adminVideoInput');
+const adminUpdateFeedback = document.getElementById('adminUpdateFeedback');
+const adminPlanPreview = document.getElementById('adminPlanPreview');
 
 function getInitials(name) {
   const parts = name
@@ -214,6 +264,541 @@ function escapeHTML(value) {
   const wrapper = document.createElement('div');
   wrapper.textContent = value;
   return wrapper.innerHTML;
+}
+
+const weekDayKeys = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
+const adminDayOrder = ['segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado', 'domingo'];
+const weekDayLabels = {
+  domingo: 'Domingo',
+  segunda: 'Segunda-feira',
+  terca: 'Terça-feira',
+  quarta: 'Quarta-feira',
+  quinta: 'Quinta-feira',
+  sexta: 'Sexta-feira',
+  sabado: 'Sábado'
+};
+
+const defaultAthleteKey = 'voce';
+
+const defaultPlanTemplate = {
+  focus: 'Treino personalizado',
+  summary: 'Descreva o objetivo do dia com orientações simples e linguagem acessível.',
+  duration: '30 min',
+  calories: '300 kcal',
+  video: '',
+  exercises: []
+};
+
+const trainingPlans = {
+  voce: {
+    name: 'Você',
+    routine: {
+      segunda: {
+        focus: 'Base estável de pernas',
+        summary: 'Primeiro contato com agachamentos usando apoio para garantir segurança do movimento.',
+        duration: '35 min',
+        calories: '320 kcal',
+        video: 'https://www.youtube.com/embed/VHyGqsPOUHs',
+        exercises: [
+          { name: 'Agachamento assistido', detail: '3 séries de 12 repetições com apoio em cadeira' },
+          { name: 'Elevação de calcanhar encostado na parede', detail: '2 séries de 15 repetições' },
+          { name: 'Passada estacionária lenta', detail: '2 séries de 10 passos por perna' }
+        ]
+      },
+      terca: {
+        focus: 'Mobilidade tranquila',
+        summary: 'Sequência suave para soltar quadris, ombros e coluna, ideal para dias de descanso ativo.',
+        duration: '25 min',
+        calories: '180 kcal',
+        video: 'https://www.youtube.com/embed/UoC_O3HzsH0',
+        exercises: [
+          { name: 'Gato e vaca no solo', detail: '2 minutos com respiração controlada' },
+          { name: 'Alongamento de flexor de quadril', detail: '2 séries de 30 segundos por lado' },
+          { name: 'Rotação de ombros com toalha', detail: '2 séries de 12 repetições' }
+        ]
+      },
+      quarta: {
+        focus: 'Circuito leve de corpo inteiro',
+        summary: 'Movimentos simples para elevar a frequência cardíaca de forma controlada.',
+        duration: '28 min',
+        calories: '260 kcal',
+        video: 'https://www.youtube.com/embed/ml6cT4AZdqI',
+        exercises: [
+          { name: 'Polichinelo moderado', detail: '3 blocos de 40 segundos' },
+          { name: 'Remada com elástico ou mochila', detail: '3 séries de 12 repetições' },
+          { name: 'Prancha de joelhos', detail: '3 séries de 30 segundos' }
+        ]
+      },
+      quinta: {
+        focus: 'Postura e core consciente',
+        summary: 'Exercícios lentos para fortalecer a região central e alinhar a postura.',
+        duration: '22 min',
+        calories: '190 kcal',
+        video: 'https://www.youtube.com/embed/50kH47ZztHs',
+        exercises: [
+          { name: 'Respiração diafragmática deitada', detail: '3 ciclos de 1 minuto' },
+          { name: 'Dead bug com apoio de almofada', detail: '3 séries de 10 repetições' },
+          { name: 'Prancha lateral com joelho apoiado', detail: '2 séries de 20 segundos por lado' }
+        ]
+      },
+      sexta: {
+        focus: 'Força com peso corporal',
+        summary: 'Sequência progressiva utilizando apenas o peso do corpo para ganhar confiança.',
+        duration: '32 min',
+        calories: '310 kcal',
+        video: 'https://www.youtube.com/embed/VHyGqsPOUHs',
+        exercises: [
+          { name: 'Flexão inclinada em mesa', detail: '3 séries de 10 repetições' },
+          { name: 'Ponte de glúteo', detail: '3 séries de 15 repetições' },
+          { name: 'Agachamento sumô lento', detail: '3 séries de 12 repetições' }
+        ]
+      },
+      sabado: {
+        focus: 'Recuperação ativa completa',
+        summary: 'Rotina relaxante para regenerar músculos e mente após a semana.',
+        duration: '20 min',
+        calories: '160 kcal',
+        video: 'https://www.youtube.com/embed/UoC_O3HzsH0',
+        exercises: [
+          { name: 'Mobilidade de tornozelo na parede', detail: '2 séries de 10 repetições por lado' },
+          { name: 'Alongamento de cadeia posterior com faixa', detail: '2 séries de 45 segundos' },
+          { name: 'Respiração box sentada', detail: '4 ciclos de 4 segundos' }
+        ]
+      },
+      domingo: {
+        focus: 'Mindset e respiração guiada',
+        summary: 'Finalize a semana com foco mental, visualização e respiração consciente.',
+        duration: '18 min',
+        calories: '120 kcal',
+        video: 'https://www.youtube.com/embed/4pKly2JojMw',
+        exercises: [
+          { name: 'Respiração box guiada', detail: '5 ciclos completos' },
+          { name: 'Visualização de metas', detail: '5 minutos anotando sensações' },
+          { name: 'Alongamento cervical suave', detail: '2 séries de 30 segundos por lado' }
+        ]
+      }
+    }
+  },
+  ana: {
+    name: 'Ana Torres',
+    routine: {
+      segunda: {
+        focus: 'Funcional com apoio leve',
+        summary: 'Circuito introdutório com garrafas de água para ganhar resistência de forma segura.',
+        duration: '30 min',
+        calories: '280 kcal',
+        video: 'https://www.youtube.com/embed/50kH47ZztHs',
+        exercises: [
+          { name: 'Agachamento com garrafa', detail: '3 séries de 12 repetições' },
+          { name: 'Remada curvada com mochila', detail: '3 séries de 10 repetições' },
+          { name: 'Prancha alta com joelho apoiado', detail: '3 séries de 20 segundos' }
+        ]
+      },
+      terca: {
+        focus: 'Cardio dançante leve',
+        summary: 'Movimentos ritmados para elevar energia sem exigir coordenação avançada.',
+        duration: '25 min',
+        calories: '240 kcal',
+        video: 'https://www.youtube.com/embed/ml6cT4AZdqI',
+        exercises: [
+          { name: 'Passos laterais com braço', detail: '3 blocos de 45 segundos' },
+          { name: 'Giro de tronco controlado', detail: '3 séries de 12 repetições' },
+          { name: 'Deslocamento frontal e voltar', detail: '3 séries de 30 segundos' }
+        ]
+      },
+      quarta: {
+        focus: 'Força superior consciente',
+        summary: 'Exercícios simples para ombros e costas usando resistência moderada.',
+        duration: '28 min',
+        calories: '260 kcal',
+        video: 'https://www.youtube.com/embed/VHyGqsPOUHs',
+        exercises: [
+          { name: 'Elevação lateral com garrafas', detail: '3 séries de 12 repetições' },
+          { name: 'Tríceps testa com elástico', detail: '3 séries de 10 repetições' },
+          { name: 'Prancha de antebraço', detail: '3 séries de 25 segundos' }
+        ]
+      },
+      quinta: {
+        focus: 'Yoga restaurativa guiada',
+        summary: 'Sessão calma para relaxar lombar e ombros com foco na respiração.',
+        duration: '24 min',
+        calories: '170 kcal',
+        video: 'https://www.youtube.com/embed/UoC_O3HzsH0',
+        exercises: [
+          { name: 'Cachorro olhando para baixo adaptado', detail: '3 séries de 30 segundos' },
+          { name: 'Postura da criança com alongamento lateral', detail: '3 ciclos de 40 segundos' },
+          { name: 'Torção suave deitado', detail: '2 séries de 45 segundos por lado' }
+        ]
+      },
+      sexta: {
+        focus: 'HIIT moderado guiado',
+        summary: 'Intervalos curtos com intensidade controlada para quem já tem alguma experiência.',
+        duration: '30 min',
+        calories: '320 kcal',
+        video: 'https://www.youtube.com/embed/ml6cT4AZdqI',
+        exercises: [
+          { name: 'Corrida estacionária', detail: '4 blocos de 30 segundos' },
+          { name: 'Agachamento com salto leve', detail: '3 séries de 12 repetições' },
+          { name: 'Prancha escalador controlada', detail: '3 séries de 30 segundos' }
+        ]
+      },
+      sabado: {
+        focus: 'Core e estabilidade',
+        summary: 'Trabalhe o centro do corpo com movimentos conscientes e apoio de colchonete.',
+        duration: '26 min',
+        calories: '240 kcal',
+        video: 'https://www.youtube.com/embed/50kH47ZztHs',
+        exercises: [
+          { name: 'Prancha com toque de ombro', detail: '3 séries de 10 repetições por lado' },
+          { name: 'Abdominal bicicleta controlado', detail: '3 séries de 16 repetições' },
+          { name: 'Elevação de quadril unilateral', detail: '3 séries de 12 repetições por lado' }
+        ]
+      },
+      domingo: {
+        focus: 'Caminhada guiada e alongamento',
+        summary: 'Planejamento de caminhada leve com fechamento em alongamentos simples.',
+        duration: '35 min',
+        calories: '250 kcal',
+        video: 'https://www.youtube.com/embed/UoC_O3HzsH0',
+        exercises: [
+          { name: 'Caminhada consciente', detail: '20 minutos em ritmo confortável' },
+          { name: 'Alongamento de panturrilha na parede', detail: '2 séries de 30 segundos por lado' },
+          { name: 'Respiração profunda sentada', detail: '5 ciclos completos' }
+        ]
+      }
+    }
+  },
+  carlos: {
+    name: 'Carlos Lima',
+    routine: {
+      segunda: {
+        focus: 'Força funcional básica',
+        summary: 'Comece a semana reforçando membros inferiores e postura com apoio de cadeira.',
+        duration: '32 min',
+        calories: '300 kcal',
+        video: 'https://www.youtube.com/embed/VHyGqsPOUHs',
+        exercises: [
+          { name: 'Agachamento na cadeira', detail: '3 séries de 15 repetições' },
+          { name: 'Avanço estático com apoio', detail: '3 séries de 10 repetições por perna' },
+          { name: 'Prancha no sofá', detail: '3 séries de 25 segundos' }
+        ]
+      },
+      terca: {
+        focus: 'Mobilidade de ombro e coluna',
+        summary: 'Solte tensões com movimentos circulares e respiração guiada.',
+        duration: '20 min',
+        calories: '150 kcal',
+        video: 'https://www.youtube.com/embed/UoC_O3HzsH0',
+        exercises: [
+          { name: 'Círculo de ombros com bastão', detail: '3 séries de 12 repetições' },
+          { name: 'Torção torácica sentado', detail: '3 séries de 8 repetições por lado' },
+          { name: 'Respiração 4-4-4-4', detail: '5 ciclos completos' }
+        ]
+      },
+      quarta: {
+        focus: 'Cardio acessível',
+        summary: 'Intervalos de intensidade baixa a moderada que cabem na pausa do almoço.',
+        duration: '27 min',
+        calories: '240 kcal',
+        video: 'https://www.youtube.com/embed/ml6cT4AZdqI',
+        exercises: [
+          { name: 'Marcha com joelhos altos', detail: '4 blocos de 40 segundos' },
+          { name: 'Shadow boxing leve', detail: '3 séries de 45 segundos' },
+          { name: 'Burpee sem salto', detail: '3 séries de 8 repetições' }
+        ]
+      },
+      quinta: {
+        focus: 'Estabilidade de core',
+        summary: 'Sequência para fortalecer abdômen e lombar com movimentos controlados.',
+        duration: '24 min',
+        calories: '210 kcal',
+        video: 'https://www.youtube.com/embed/50kH47ZztHs',
+        exercises: [
+          { name: 'Prancha com apoio nos antebraços', detail: '3 séries de 30 segundos' },
+          { name: 'Superman alternado', detail: '3 séries de 12 repetições' },
+          { name: 'Prancha lateral com apoio de joelho', detail: '2 séries de 20 segundos por lado' }
+        ]
+      },
+      sexta: {
+        focus: 'Treino combinado força + cardio',
+        summary: 'Blocos curtos que alternam resistência e ritmo para fechar a semana em alta.',
+        duration: '30 min',
+        calories: '320 kcal',
+        video: 'https://www.youtube.com/embed/VHyGqsPOUHs',
+        exercises: [
+          { name: 'Agachamento com joelho alto', detail: '3 séries de 12 repetições' },
+          { name: 'Flexão inclinada', detail: '3 séries de 10 repetições' },
+          { name: 'Polichinelo com braço cruzado', detail: '3 séries de 40 segundos' }
+        ]
+      },
+      sabado: {
+        focus: 'Alongamento completo',
+        summary: 'Tempo para relaxar musculatura posterior e quadris com apoio de tapete.',
+        duration: '22 min',
+        calories: '170 kcal',
+        video: 'https://www.youtube.com/embed/UoC_O3HzsH0',
+        exercises: [
+          { name: 'Alongamento borboleta', detail: '3 séries de 40 segundos' },
+          { name: 'Postura do pombo adaptada', detail: '2 séries de 40 segundos por lado' },
+          { name: 'Respiração profunda deitada', detail: '4 ciclos de 1 minuto' }
+        ]
+      },
+      domingo: {
+        focus: 'Planejamento da nova semana',
+        summary: 'Revise metas, caminhe leve e prepare o corpo para o próximo ciclo.',
+        duration: '30 min',
+        calories: '200 kcal',
+        video: 'https://www.youtube.com/embed/4pKly2JojMw',
+        exercises: [
+          { name: 'Caminhada consciente', detail: '15 minutos em ritmo relaxado' },
+          { name: 'Alongamento de peitoral na parede', detail: '2 séries de 30 segundos por lado' },
+          { name: 'Anotações de progresso', detail: '5 minutos refletindo sobre aprendizados' }
+        ]
+      }
+    }
+  }
+};
+
+const adminCredentials = { login: 'admin1', password: 'machomuscle' };
+let isAdminAuthenticated = false;
+let selectedAdminUser = trainingPlans[defaultAthleteKey] ? defaultAthleteKey : Object.keys(trainingPlans)[0] || '';
+let selectedAdminDay = adminDayOrder[0];
+
+function getCurrentDayKey() {
+  const todayIndex = new Date().getDay();
+  return weekDayKeys[todayIndex] || 'segunda';
+}
+
+selectedAdminDay = adminDayOrder.includes(getCurrentDayKey()) ? getCurrentDayKey() : adminDayOrder[0];
+
+function normaliseVideoUrl(url) {
+  if (!url) return '';
+  const trimmed = url.trim();
+  const embedMatch = trimmed.match(/embed\/([\w-]{6,})/);
+  if (embedMatch) {
+    return `https://www.youtube.com/embed/${embedMatch[1]}`;
+  }
+  const watchMatch = trimmed.match(/[?&]v=([\w-]{6,})/);
+  if (watchMatch) {
+    return `https://www.youtube.com/embed/${watchMatch[1]}`;
+  }
+  const shortMatch = trimmed.match(/youtu\.be\/([\w-]{6,})/);
+  if (shortMatch) {
+    return `https://www.youtube.com/embed/${shortMatch[1]}`;
+  }
+  return trimmed;
+}
+
+function displayVideoUrl(url) {
+  if (!url) return '';
+  const embedMatch = url.match(/embed\/([\w-]{6,})/);
+  if (embedMatch) {
+    return `https://www.youtube.com/watch?v=${embedMatch[1]}`;
+  }
+  return url;
+}
+
+function getOrCreatePlan(userKey, dayKey) {
+  const user = trainingPlans[userKey];
+  if (!user) return null;
+  if (!user.routine[dayKey]) {
+    user.routine[dayKey] = { ...defaultPlanTemplate };
+  }
+  return user.routine[dayKey];
+}
+
+function parseExerciseLines(value) {
+  if (!value) return [];
+  return value
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const parts = line.split(/[-–—|]/);
+      const name = parts.shift() || line;
+      const detail = parts.join(' - ').trim();
+      return {
+        name: name.trim(),
+        detail: detail || 'Repetições livres'
+      };
+    });
+}
+
+function renderAdminPreview() {
+  if (!adminPlanPreview) return;
+  if (!selectedAdminUser || !trainingPlans[selectedAdminUser]) {
+    adminPlanPreview.innerHTML = '<p class="admin-card__help">Selecione uma pessoa para visualizar o plano.</p>';
+    return;
+  }
+  const previewMarkup = adminDayOrder
+    .map((dayKey) => {
+      const plan = getOrCreatePlan(selectedAdminUser, dayKey);
+      const exerciseList = plan.exercises.length
+        ? `<ul class="admin-plan-preview__list">${plan.exercises
+            .map(
+              (exercise) =>
+                `<li><strong>${escapeHTML(exercise.name)}</strong> — ${escapeHTML(exercise.detail)}</li>`
+            )
+            .join('')}</ul>`
+        : '<p class="admin-card__help">Adicione exercícios para este dia.</p>';
+      const videoLink = plan.video
+        ? `<a class="admin-preview__link" href="${escapeHTML(displayVideoUrl(plan.video))}" target="_blank" rel="noopener noreferrer">Abrir vídeo de apoio</a>`
+        : '';
+      return `
+        <article class="admin-plan-preview__day">
+          <strong>${escapeHTML(weekDayLabels[dayKey] || dayKey)}</strong>
+          <span class="admin-plan-preview__title">${escapeHTML(plan.focus)}</span>
+          <span class="admin-plan-preview__meta">${escapeHTML(plan.duration)} · ${escapeHTML(plan.calories)}</span>
+          <p class="admin-card__help">${escapeHTML(plan.summary)}</p>
+          ${exerciseList}
+          ${videoLink}
+        </article>`;
+    })
+    .join('');
+  adminPlanPreview.innerHTML = previewMarkup;
+}
+
+function populateAdminUserOptions() {
+  if (!adminUserSelect) return;
+  const options = Object.entries(trainingPlans)
+    .map(([key, value]) => `<option value="${escapeHTML(key)}">${escapeHTML(value.name)}</option>`)
+    .join('');
+  adminUserSelect.innerHTML = options;
+  if (!trainingPlans[selectedAdminUser]) {
+    selectedAdminUser = Object.keys(trainingPlans)[0] || '';
+  }
+  if (selectedAdminUser) {
+    adminUserSelect.value = selectedAdminUser;
+  }
+}
+
+function populateAdminDayOptions() {
+  if (!adminDaySelect) return;
+  const options = adminDayOrder
+    .map((dayKey) => `<option value="${dayKey}">${escapeHTML(weekDayLabels[dayKey] || dayKey)}</option>`)
+    .join('');
+  adminDaySelect.innerHTML = options;
+  if (!adminDayOrder.includes(selectedAdminDay)) {
+    selectedAdminDay = adminDayOrder[0];
+  }
+  adminDaySelect.value = selectedAdminDay;
+}
+
+function fillAdminForm() {
+  if (!adminUpdateForm) return;
+  const plan = getOrCreatePlan(selectedAdminUser, selectedAdminDay);
+  if (!plan) return;
+  if (adminFocusInput) {
+    adminFocusInput.value = plan.focus;
+  }
+  if (adminInstructionInput) {
+    adminInstructionInput.value = plan.summary;
+  }
+  if (adminExercisesInput) {
+    adminExercisesInput.value = plan.exercises
+      .map((exercise) => `${exercise.name} - ${exercise.detail}`)
+      .join('\n');
+  }
+  if (adminDurationInput) {
+    adminDurationInput.value = plan.duration;
+  }
+  if (adminCaloriesInput) {
+    adminCaloriesInput.value = plan.calories;
+  }
+  if (adminVideoInput) {
+    adminVideoInput.value = displayVideoUrl(plan.video);
+  }
+  if (adminUpdateFeedback) {
+    adminUpdateFeedback.textContent = '';
+  }
+}
+
+function toggleAdminSections() {
+  if (adminLoginSection) {
+    adminLoginSection.hidden = isAdminAuthenticated;
+  }
+  if (adminPanel) {
+    adminPanel.hidden = !isAdminAuthenticated;
+  }
+  if (!isAdminAuthenticated && adminLoginFeedback) {
+    adminLoginFeedback.textContent = '';
+  }
+}
+
+function prepareAdminPanel() {
+  populateAdminUserOptions();
+  populateAdminDayOptions();
+  fillAdminForm();
+  renderAdminPreview();
+}
+
+function getPlanForDailyCard() {
+  const dayKey = getCurrentDayKey();
+  const userKey = trainingPlans[defaultAthleteKey] ? defaultAthleteKey : Object.keys(trainingPlans)[0];
+  if (!userKey) return { plan: { ...defaultPlanTemplate }, dayKey };
+  const plan = getOrCreatePlan(userKey, dayKey) || { ...defaultPlanTemplate };
+  return { plan, userKey, dayKey };
+}
+
+function updateDailyTrainingProgress() {
+  if (!dailyTrainingChecklist || !dailyTrainingProgress) return;
+  const checkboxes = dailyTrainingChecklist.querySelectorAll('input[type="checkbox"]');
+  if (!checkboxes.length) {
+    dailyTrainingProgress.textContent = '0 de 0 concluídos';
+    return;
+  }
+  const completed = Array.from(checkboxes).filter((input) => input.checked).length;
+  dailyTrainingProgress.textContent = `${completed} de ${checkboxes.length} concluídos`;
+}
+
+function renderDailyTrainingCard() {
+  if (!dailyTrainingTitle || !dailyTrainingDay || !dailyTrainingChecklist) return;
+  const { plan, dayKey } = getPlanForDailyCard();
+  dailyTrainingTitle.textContent = plan.focus;
+  if (dailyTrainingDay) {
+    dailyTrainingDay.textContent = `${weekDayLabels[dayKey] || dayKey} guiado`;
+  }
+  if (dailyTrainingIntro) {
+    dailyTrainingIntro.textContent = plan.summary;
+  }
+  if (dailyTrainingDuration) {
+    dailyTrainingDuration.textContent = plan.duration;
+  }
+  if (dailyTrainingCalories) {
+    dailyTrainingCalories.textContent = plan.calories;
+  }
+  if (dailyTrainingVideo) {
+    const nextSrc = plan.video || 'https://www.youtube.com/embed/ml6cT4AZdqI';
+    if (dailyTrainingVideo.getAttribute('src') !== nextSrc) {
+      dailyTrainingVideo.setAttribute('src', nextSrc);
+    }
+  }
+  dailyTrainingChecklist.innerHTML = '';
+  if (!plan.exercises.length) {
+    const emptyItem = document.createElement('li');
+    emptyItem.className = 'checklist__empty';
+    emptyItem.textContent = 'Adicione exercícios no painel administrativo para liberar o checklist.';
+    dailyTrainingChecklist.append(emptyItem);
+    updateDailyTrainingProgress();
+    return;
+  }
+  plan.exercises.forEach((exercise, index) => {
+    const item = document.createElement('li');
+    item.innerHTML = `
+      <label class="checklist__item">
+        <input type="checkbox" data-daily-exercise="${dayKey}-${index}" />
+        <span>
+          ${escapeHTML(exercise.name)}
+          <span class="checklist__detail">${escapeHTML(exercise.detail)}</span>
+        </span>
+      </label>`;
+    const checkbox = item.querySelector('input');
+    if (checkbox) {
+      checkbox.addEventListener('change', updateDailyTrainingProgress);
+    }
+    dailyTrainingChecklist.append(item);
+  });
+  updateDailyTrainingProgress();
 }
 
 if (displayNameInput) {
@@ -680,6 +1265,108 @@ if (squadChatForm && squadChatInput && squadChatLog) {
     }
   });
 }
+
+renderDailyTrainingCard();
+toggleAdminSections();
+
+if (adminLoginForm) {
+  adminLoginForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const loginValue = adminLoginForm.elements['login']?.value?.trim() || '';
+    const passwordValue = adminLoginForm.elements['password']?.value || '';
+    if (loginValue === adminCredentials.login && passwordValue === adminCredentials.password) {
+      isAdminAuthenticated = true;
+      adminLoginForm.reset();
+      toggleAdminSections();
+      prepareAdminPanel();
+      if (adminUserSelect instanceof HTMLElement) {
+        adminUserSelect.focus();
+      }
+    } else if (adminLoginFeedback) {
+      adminLoginFeedback.textContent = 'Credenciais inválidas. Verifique usuário e senha.';
+    }
+  });
+
+  adminLoginForm.addEventListener('input', () => {
+    if (adminLoginFeedback) {
+      adminLoginFeedback.textContent = '';
+    }
+  });
+}
+
+if (adminUserSelect) {
+  adminUserSelect.addEventListener('change', (event) => {
+    selectedAdminUser = event.target.value;
+    if (!trainingPlans[selectedAdminUser]) {
+      selectedAdminUser = Object.keys(trainingPlans)[0] || '';
+    }
+    fillAdminForm();
+    renderAdminPreview();
+  });
+}
+
+if (adminDaySelect) {
+  adminDaySelect.addEventListener('change', (event) => {
+    const value = event.target.value;
+    selectedAdminDay = adminDayOrder.includes(value) ? value : adminDayOrder[0];
+    fillAdminForm();
+    renderAdminPreview();
+  });
+}
+
+if (adminUpdateForm) {
+  adminUpdateForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!isAdminAuthenticated) {
+      if (adminUpdateFeedback) {
+        adminUpdateFeedback.textContent = 'Faça login para salvar alterações.';
+      }
+      return;
+    }
+    const plan = getOrCreatePlan(selectedAdminUser, selectedAdminDay);
+    if (!plan) return;
+    const focusValue = adminFocusInput?.value?.trim() || defaultPlanTemplate.focus;
+    const summaryValue = adminInstructionInput?.value?.trim() || defaultPlanTemplate.summary;
+    const durationValue = adminDurationInput?.value?.trim() || defaultPlanTemplate.duration;
+    const caloriesValue = adminCaloriesInput?.value?.trim() || defaultPlanTemplate.calories;
+    const videoValue = normaliseVideoUrl(adminVideoInput?.value || '');
+    const exercisesValue = parseExerciseLines(adminExercisesInput?.value || '');
+    plan.focus = focusValue;
+    plan.summary = summaryValue;
+    plan.duration = durationValue;
+    plan.calories = caloriesValue;
+    plan.video = videoValue;
+    plan.exercises = exercisesValue;
+    if (adminUpdateFeedback) {
+      adminUpdateFeedback.textContent = 'Plano atualizado com sucesso!';
+    }
+    renderAdminPreview();
+    if (selectedAdminUser === defaultAthleteKey && selectedAdminDay === getCurrentDayKey()) {
+      renderDailyTrainingCard();
+    }
+  });
+
+  adminUpdateForm.addEventListener('input', () => {
+    if (adminUpdateFeedback) {
+      adminUpdateFeedback.textContent = '';
+    }
+  });
+}
+
+registerSubpageCallback('admin', () => {
+  toggleAdminSections();
+  if (isAdminAuthenticated) {
+    prepareAdminPanel();
+    if (adminUserSelect instanceof HTMLElement) {
+      adminUserSelect.focus();
+    }
+  } else if (adminLoginForm) {
+    const loginField = adminLoginForm.elements['login'];
+    if (loginField instanceof HTMLElement) {
+      loginField.focus();
+    }
+  }
+});
 
 registerSubpageCallback('badge-curation', () => updateBadgeSelections());
 registerSubpageCallback('quest-board', updateQuestMessage);

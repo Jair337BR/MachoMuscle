@@ -37,6 +37,18 @@
               />
             </svg>
           </button>
+          <button
+            class="icon-button"
+            type="button"
+            data-open-subpage="admin"
+            aria-label="Abrir painel administrativo"
+          >
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 2a5 5 0 00-5 5v2H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 7V7a3 3 0 016 0v2H9zm9 2v9H6v-9h12z"
+              />
+            </svg>
+          </button>
         </div>
       </header>
 
@@ -130,38 +142,117 @@
             </div>
           </div>
 
-          <div class="card daily-focus">
+          <div class="card daily-training" id="dailyTrainingCard">
+            <header class="card__header daily-training__header">
+              <div>
+                <span class="badge badge--soft" id="dailyTrainingDay">Treino guiado</span>
+                <h3 id="dailyTrainingTitle">Treino do dia explicado passo a passo</h3>
+              </div>
+              <button class="text-button" type="button" data-open-subpage="ritual-history">Ver hábitos anteriores</button>
+            </header>
+            <p class="daily-training__intro" id="dailyTrainingIntro">
+              Comece com uma leitura rápida do resumo, veja o vídeo demonstrativo e marque cada exercício concluído
+              no seu ritmo.
+            </p>
+            <div class="daily-training__video">
+              <iframe
+                id="dailyTrainingVideo"
+                title="Vídeo de referência do treino"
+                src="https://www.youtube.com/embed/ml6cT4AZdqI"
+                loading="lazy"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <ul class="checklist" id="dailyTrainingChecklist" aria-live="polite"></ul>
+            <footer class="daily-training__footer">
+              <div class="daily-training__metrics">
+                <span id="dailyTrainingDuration">--</span>
+                <span id="dailyTrainingCalories">--</span>
+              </div>
+              <p class="daily-training__progress" id="dailyTrainingProgress">0 de 0 concluídos</p>
+            </footer>
+          </div>
+
+          <div class="card guide-card">
             <header class="card__header">
               <div>
-                <h3>Rituais do dia</h3>
-                <p class="card__subtitle">Pequenos hábitos, grandes conquistas.</p>
+                <h3>Guia rápido para iniciantes</h3>
+                <p class="card__subtitle">
+                  Siga estes passos simples para aproveitar cada sessão mesmo sem experiência prévia.
+                </p>
               </div>
-              <button class="text-button" type="button" data-open-subpage="ritual-history">Ver histórico</button>
             </header>
-            <ul class="task-list">
+            <ol class="guide-card__list">
               <li>
-                <label>
-                  <input type="checkbox" />
-                  Respiração box antes do treino
-                  <span class="task-list__meta">+15 foco</span>
-                </label>
+                <strong>1. Leia o objetivo do dia.</strong>
+                <p>Entenda onde focar atenção antes de começar e ajuste o tempo conforme sua agenda.</p>
               </li>
               <li>
-                <label>
-                  <input type="checkbox" />
-                  Finalizar treino com alongamento em fluxo
-                  <span class="task-list__meta">+20 mobilidade</span>
-                </label>
+                <strong>2. Assista ao vídeo de exemplo.</strong>
+                <p>Observe a postura com calma, pause sempre que necessário e repita os movimentos com segurança.</p>
               </li>
               <li>
-                <label>
-                  <input type="checkbox" />
-                  Registrar sensação pós-treino
-                  <span class="task-list__meta">+10 XP</span>
-                </label>
+                <strong>3. Execute e marque o checklist.</strong>
+                <p>Marque cada exercício concluído para visualizar seu progresso imediato e celebrar pequenas vitórias.</p>
               </li>
-            </ul>
+              <li>
+                <strong>4. Respire e registre sensações.</strong>
+                <p>
+                  Utilize o mural do perfil para anotar como se sentiu; isso ajuda a adaptar os próximos treinos com
+                  precisão.
+                </p>
+              </li>
+            </ol>
           </div>
+
+          <section class="card video-library">
+            <header class="card__header">
+              <div>
+                <h3>Vídeos que explicam cada etapa</h3>
+                <p class="card__subtitle">
+                  Selecionamos exemplos populares na web para você visualizar movimentos sem complicação.
+                </p>
+              </div>
+            </header>
+            <div class="video-library__grid">
+              <article class="video-card">
+                <div class="video-card__frame">
+                  <iframe
+                    src="https://www.youtube.com/embed/ml6cT4AZdqI"
+                    title="HIIT guiado para iniciantes"
+                    loading="lazy"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+                <h4>HIIT guiado para iniciantes</h4>
+                <p>Aula curta com explicações claras sobre ritmo, respiração e pausas seguras.</p>
+              </article>
+              <article class="video-card">
+                <div class="video-card__frame">
+                  <iframe
+                    src="https://www.youtube.com/embed/UoC_O3HzsH0"
+                    title="Alongamento completo em casa"
+                    loading="lazy"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+                <h4>Alongamento completo em casa</h4>
+                <p>Sequência didática para soltar o corpo e evitar desconfortos após o treino.</p>
+              </article>
+              <article class="video-card">
+                <div class="video-card__frame">
+                  <iframe
+                    src="https://www.youtube.com/embed/VHyGqsPOUHs"
+                    title="Força com peso corporal"
+                    loading="lazy"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+                <h4>Força com peso corporal</h4>
+                <p>Explicações passo a passo para quem está começando sem equipamentos.</p>
+              </article>
+            </div>
+          </section>
         </section>
 
         <section class="screen" data-screen="progress" aria-label="Gamificação">
@@ -610,6 +701,7 @@
         </button>
       </nav>
       <div class="subpages">
+        <div class="subpage__backdrop" data-subpage-backdrop aria-hidden="true"></div>
         <section
           class="subpage"
           data-subpage="journey"
@@ -1434,6 +1526,91 @@
         </div>
       </form>
       <p class="subpage__note" id="trendFilterSummary">Todos os posts visíveis.</p>
+    </div>
+  </div>
+</section>
+<section
+  class="subpage"
+  data-subpage="admin"
+  aria-hidden="true"
+  aria-labelledby="subpage-admin-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="subpage__container subpage__container--admin">
+    <header class="subpage__header">
+      <button class="subpage__back" type="button" data-close-subpage>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+        </svg>
+        Voltar
+      </button>
+      <div>
+        <span class="subpage__eyebrow">Somente para administradores</span>
+        <h2 id="subpage-admin-title">Painel de personalização</h2>
+      </div>
+    </header>
+    <p class="subpage__description">
+      Utilize este painel exclusivo para ajustar planos específicos de cada pessoa que acompanha a MachoMuscle.
+    </p>
+    <div class="admin admin--locked" id="adminLoginSection">
+      <form class="card admin-login" id="adminLoginForm" autocomplete="off">
+        <h3>Entrar no painel</h3>
+        <p class="admin-login__intro">
+          Informe as credenciais fornecidas para liberar as ferramentas de edição.
+        </p>
+        <label for="adminLogin">Usuário</label>
+        <input id="adminLogin" name="login" type="text" required placeholder="admin1" />
+        <label for="adminPassword">Senha</label>
+        <input id="adminPassword" name="password" type="password" required placeholder="••••••••" />
+        <button class="button button--primary" type="submit">Acessar painel</button>
+        <p class="admin-login__hint">
+          Dica rápida: usuário <strong>admin1</strong> e senha <strong>machomuscle</strong>.
+        </p>
+        <p class="admin-login__feedback" id="adminLoginFeedback" role="alert"></p>
+      </form>
+    </div>
+    <div class="admin admin--panel" id="adminPanel" hidden>
+      <p class="admin__intro">
+        Escolha a pessoa, ajuste o dia da semana e defina os detalhes do treino. Tudo é atualizado imediatamente na
+        visão do aluno.
+      </p>
+      <div class="admin-panel__grid">
+        <section class="card admin-card">
+          <h3>Editar rotina personalizada</h3>
+          <form class="admin-form" id="adminUpdateForm">
+            <label for="adminUserSelect">Pessoa</label>
+            <select id="adminUserSelect" name="user"></select>
+            <label for="adminDaySelect">Dia da semana</label>
+            <select id="adminDaySelect" name="day"></select>
+            <label for="adminFocusInput">Título do treino</label>
+            <input id="adminFocusInput" name="focus" type="text" required />
+            <label for="adminInstructionInput">Resumo motivacional</label>
+            <textarea id="adminInstructionInput" name="instructions" rows="3" required></textarea>
+            <label for="adminExercisesInput">Exercícios (um por linha com repetições)</label>
+            <textarea id="adminExercisesInput" name="exercises" rows="5" required></textarea>
+            <div class="admin-form__row">
+              <div>
+                <label for="adminDurationInput">Duração estimada</label>
+                <input id="adminDurationInput" name="duration" type="text" required />
+              </div>
+              <div>
+                <label for="adminCaloriesInput">Calorias estimadas</label>
+                <input id="adminCaloriesInput" name="calories" type="text" required />
+              </div>
+            </div>
+            <label for="adminVideoInput">Vídeo de referência (URL)</label>
+            <input id="adminVideoInput" name="video" type="url" placeholder="https://www.youtube.com/watch?v=..." />
+            <button class="button button--primary button--block" type="submit">Salvar atualização</button>
+            <p class="admin-form__feedback" id="adminUpdateFeedback" role="status"></p>
+          </form>
+        </section>
+        <section class="card admin-card admin-card--preview">
+          <h3>Plano visualizado</h3>
+          <p class="admin-card__help">Revise se tudo está claro e adaptado ao nível da pessoa escolhida.</p>
+          <div class="admin-plan-preview" id="adminPlanPreview"></div>
+        </section>
+      </div>
     </div>
   </div>
 </section>

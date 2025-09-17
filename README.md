@@ -6,10 +6,11 @@ Interface mobile-first para um app de treinos com foco em UX minimalista, gamifi
 
 A aplicação apresenta quatro áreas principais que simulam a experiência completa do produto:
 
-- **Início:** resumo da semana, rituais diários e cards de progresso rápidos.
+- **Início:** resumo da semana, checklist guiado do treino do dia com vídeo explicativo e biblioteca de exemplos para iniciantes.
 - **Gamificação:** painel com nível, missões diárias, vitrine de badges e ranking da tribo.
 - **Comunidade:** feed no estilo Twitter/Threads com composer e tags de categoria.
 - **Perfil:** personalização de nome, @, bio, highlights e escolha dinâmica das cores de destaque.
+- **Painel admin:** acesso autenticado com credenciais (`admin1` / `machomuscle`) para customizar rotinas individuais.
 - **Layout responsivo:** telas adaptam-se para diferentes larguras com grids de duas colunas em desktop e navegação fluida em mobile.
 
 ## Cores base
@@ -38,5 +39,8 @@ A paleta foi construída para que amarelo, laranja, roxo e azul se complementem 
 - Acesso a páginas internas para plano da semana, detalhes de desempenho, histórico de rituais e personalização do próximo treino.
 - Loja de recompensas com estados de resgate, vitrine de badges com seleção dinâmica e acompanhamento de missões favoritas.
 - Chat da tribo com envio de mensagens rápidas sincronizado com o nome configurado no perfil.
+- Checklists do treino diário com contagem de progresso em tempo real e atualização automática conforme os exercícios são concluídos.
+- Pop-ups centralizados com fundo desfocado para toda a navegação secundária (plano da semana, personalização, filtros etc.).
+- Painel administrativo com login protegido para editar cada dia da semana, atualizar vídeos de referência e sincronizar o plano visível no cartão "Treino do dia".
 
 Sinta-se à vontade para adaptar os textos e dados mockados para refletir a experiência desejada.
