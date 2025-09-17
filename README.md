@@ -10,6 +10,7 @@ A aplicação apresenta quatro áreas principais que simulam a experiência comp
 - **Gamificação:** painel com nível, missões diárias, vitrine de badges e ranking da tribo.
 - **Comunidade:** feed no estilo Twitter/Threads com composer e tags de categoria.
 - **Perfil:** personalização de nome, @, bio, highlights e escolha dinâmica das cores de destaque.
+- **Layout responsivo:** telas adaptam-se para diferentes larguras com grids de duas colunas em desktop e navegação fluida em mobile.
 
 ## Cores base
 
@@ -32,7 +33,10 @@ A paleta foi construída para que amarelo, laranja, roxo e azul se complementem 
 
 - Mudança de cor do tema através do seletor na tela de perfil.
 - Atualização automática de nome, usuário, bio e avatar conforme o usuário digita.
-- Criação de novos posts na comunidade com tags opcionais.
+- Criação de novos posts na comunidade com tags opcionais e filtros de trends que controlam a visibilidade do feed.
 - Adição de destaques públicos no mural do perfil.
+- Acesso a páginas internas para plano da semana, detalhes de desempenho, histórico de rituais e personalização do próximo treino.
+- Loja de recompensas com estados de resgate, vitrine de badges com seleção dinâmica e acompanhamento de missões favoritas.
+- Chat da tribo com envio de mensagens rápidas sincronizado com o nome configurado no perfil.
 
 Sinta-se à vontade para adaptar os textos e dados mockados para refletir a experiência desejada.

@@ -51,8 +51,12 @@
                 em alta.
               </p>
               <div class="hero-card__actions">
-                <button class="button button--primary" type="button">Começar agora</button>
-                <button class="button button--ghost" type="button">Ver rotina</button>
+                <button class="button button--primary" type="button" data-open-subpage="journey">
+                  Começar agora
+                </button>
+                <button class="button button--ghost" type="button" data-open-subpage="journey">
+                  Ver rotina
+                </button>
               </div>
             </div>
             <div class="hero-card__visual" aria-hidden="true">
@@ -69,7 +73,7 @@
               <h2>Sua semana em destaque</h2>
               <p>Monitoramento rápido para você manter a consistência.</p>
             </div>
-            <button class="text-button" type="button">Ver detalhes</button>
+            <button class="text-button" type="button" data-open-subpage="week-detail">Ver detalhes</button>
           </header>
 
           <div class="insights-grid">
@@ -106,7 +110,7 @@
             <div class="card insight-card insight-card--wide">
               <div class="card__header">
                 <span class="badge badge--soft">Próximo treino</span>
-                <button class="text-button" type="button">Personalizar</button>
+                <button class="text-button" type="button" data-open-subpage="customize-workout">Personalizar</button>
               </div>
               <div class="next-workout">
                 <div>
@@ -132,7 +136,7 @@
                 <h3>Rituais do dia</h3>
                 <p class="card__subtitle">Pequenos hábitos, grandes conquistas.</p>
               </div>
-              <button class="text-button" type="button">Ver histórico</button>
+              <button class="text-button" type="button" data-open-subpage="ritual-history">Ver histórico</button>
             </header>
             <ul class="task-list">
               <li>
@@ -166,7 +170,7 @@
               <h2>Gamificação que inspira</h2>
               <p>Complete missões, desbloqueie emblemas e evolua com a tribo.</p>
             </div>
-            <button class="text-button" type="button">Ver loja de recompensas</button>
+            <button class="text-button" type="button" data-open-subpage="reward-store">Ver loja de recompensas</button>
           </header>
 
           <div class="card progress-overview">
@@ -225,31 +229,33 @@
                 <span class="mission-list__reward">Badge raro</span>
               </li>
             </ul>
-            <button class="button button--primary button--block" type="button">Ver quadro completo</button>
+            <button class="button button--primary button--block" type="button" data-open-subpage="quest-board">
+              Ver quadro completo
+            </button>
           </div>
 
           <div class="card badge-gallery">
             <header class="card__header">
               <h3>Emblemas conquistados</h3>
-              <button class="text-button" type="button">Organizar vitrine</button>
+              <button class="text-button" type="button" data-open-subpage="badge-curation">Organizar vitrine</button>
             </header>
             <div class="badge-grid">
-              <div class="badge-token is-highlighted">
+              <div class="badge-token is-highlighted" data-badge-key="fogo">
                 <span class="badge-token__icon">🔥</span>
                 <h4>Fogo infinito</h4>
                 <p>15 dias consecutivos</p>
               </div>
-              <div class="badge-token">
+              <div class="badge-token" data-badge-key="flow">
                 <span class="badge-token__icon">🌀</span>
                 <h4>Fluxo perfeito</h4>
                 <p>Mobilidade avançada</p>
               </div>
-              <div class="badge-token">
+              <div class="badge-token" data-badge-key="ritmo">
                 <span class="badge-token__icon">⚡</span>
                 <h4>Ritmo supremo</h4>
                 <p>HIIT em alta</p>
               </div>
-              <div class="badge-token is-locked">
+              <div class="badge-token is-locked" data-badge-key="prisma" data-badge-locked="true">
                 <span class="badge-token__icon">🌈</span>
                 <h4>Troféu Prisma</h4>
                 <p>Complete 5 desafios lendários</p>
@@ -288,7 +294,7 @@
                 <span class="chip chip--tiny">x1,3</span>
               </li>
             </ol>
-            <button class="text-button" type="button">Abrir chat da tribo</button>
+            <button class="text-button" type="button" data-open-subpage="squad-chat">Abrir chat da tribo</button>
           </div>
         </section>
 
@@ -298,7 +304,14 @@
               <h2>Vibe social</h2>
               <p>Compartilhe momentos, celebre conquistas e receba apoio instantâneo.</p>
             </div>
-            <button class="text-button" type="button">Filtrar trends</button>
+            <button
+              class="text-button"
+              type="button"
+              data-open-subpage="trend-filter"
+              data-filter-trigger
+            >
+              <span data-filter-label>Filtrar trends</span>
+            </button>
           </header>
 
           <form class="composer card" id="communityComposer" autocomplete="off">
@@ -325,7 +338,7 @@
           </form>
 
           <div class="feed" id="communityFeed">
-            <article class="post card">
+            <article class="post card" data-tags="Força,HIIT">
               <div class="post__avatar" aria-hidden="true">AH</div>
               <div class="post__content">
                 <header class="post__header">
@@ -378,7 +391,7 @@
               </div>
             </article>
 
-            <article class="post card">
+            <article class="post card" data-tags="Mobilidade,Mindset">
               <div class="post__avatar" aria-hidden="true">RB</div>
               <div class="post__content">
                 <header class="post__header">
@@ -596,6 +609,835 @@
           <span>Perfil</span>
         </button>
       </nav>
+      <div class="subpages">
+        <section
+          class="subpage"
+          data-subpage="journey"
+          aria-hidden="true"
+          aria-labelledby="subpage-journey-title"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div class="subpage__container">
+            <header class="subpage__header">
+              <button class="subpage__back" type="button" data-close-subpage data-autofocus>
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+                </svg>
+                Voltar
+              </button>
+              <div>
+                <span class="subpage__eyebrow">Plano recomendado</span>
+                <h2 id="subpage-journey-title">Jornada MachoMuscle</h2>
+              </div>
+            </header>
+            <p class="subpage__description">
+              Uma combinação equilibrada de força, mobilidade e foco mental para atravessar a fase Aurora.
+            </p>
+            <div class="subpage__content">
+              <section class="card subpage-card">
+                <header class="card__header">
+                  <h3>Rotina da semana</h3>
+                  <span class="badge badge--accent">Fase 2 de 4</span>
+                </header>
+                <ul class="subpage-list subpage-list--timeline">
+                  <li>
+                    <span class="subpage-list__day">Seg</span>
+                    <div>
+                      <strong>Força híbrida</strong>
+                      <p>Agachamento frontal, push press e prancha com deslocamento.</p>
+                    </div>
+                    <span class="chip chip--soft">60 min</span>
+                  </li>
+                  <li>
+                    <span class="subpage-list__day">Ter</span>
+                    <div>
+                      <strong>Mobilidade ativa</strong>
+                      <p>Flow para quadris + estabilidade de ombro com mini bands.</p>
+                    </div>
+                    <span class="chip chip--soft">40 min</span>
+                  </li>
+                  <li>
+                    <span class="subpage-list__day">Qua</span>
+                    <div>
+                      <strong>HIIT Prisma</strong>
+                      <p>Blocos de sprint, burpee com salto e bike ergométrica.</p>
+                    </div>
+                    <span class="chip chip--soft">30 min</span>
+                  </li>
+                  <li>
+                    <span class="subpage-list__day">Qui</span>
+                    <div>
+                      <strong>Mindset + core</strong>
+                      <p>Respiração guiada, prancha 3D e alongamento restaurativo.</p>
+                    </div>
+                    <span class="chip chip--soft">25 min</span>
+                  </li>
+                  <li>
+                    <span class="subpage-list__day">Sex</span>
+                    <div>
+                      <strong>Força explosiva</strong>
+                      <p>Levantamento terra romeno, box jump e desenvolvimento militar.</p>
+                    </div>
+                    <span class="chip chip--soft">55 min</span>
+                  </li>
+                  <li>
+                    <span class="subpage-list__day">Sáb</span>
+                    <div>
+                      <strong>Combo regenerativo</strong>
+                      <p>Mobilidade em fluxo, liberação miofascial e banho frio consciente.</p>
+                    </div>
+                    <span class="chip chip--soft">35 min</span>
+                  </li>
+                </ul>
+              </section>
+              <div class="subpage__grid">
+                <section class="card subpage-card">
+                  <header class="card__header">
+                    <h3>Metas express</h3>
+                  </header>
+                  <dl class="subpage-stats">
+                    <div>
+                      <dt>XP alvo</dt>
+                      <dd>+900</dd>
+                    </div>
+                    <div>
+                      <dt>Badges</dt>
+                      <dd>2 novas</dd>
+                    </div>
+                    <div>
+                      <dt>Streak</dt>
+                      <dd>&ge; 8 dias</dd>
+                    </div>
+                    <div>
+                      <dt>Mindset</dt>
+                      <dd>4 sessões</dd>
+                    </div>
+                  </dl>
+                </section>
+                <section class="card subpage-card">
+                  <header class="card__header">
+                    <h3>Rituais essenciais</h3>
+                  </header>
+                  <ul class="subpage-list subpage-list--checklist">
+                    <li>
+                      <span class="subpage-list__status" aria-hidden="true">•</span>
+                      <div>
+                        <strong>Respiração box</strong>
+                        <p>3 ciclos antes do aquecimento.</p>
+                      </div>
+                      <span class="chip chip--soft">+15 foco</span>
+                    </li>
+                    <li>
+                      <span class="subpage-list__status" aria-hidden="true">•</span>
+                      <div>
+                        <strong>Registro pós-treino</strong>
+                        <p>Anote energia, humor e aprendizados no mural.</p>
+                      </div>
+                      <span class="chip chip--soft">+10 XP</span>
+                    </li>
+                    <li>
+                      <span class="subpage-list__status" aria-hidden="true">•</span>
+                      <div>
+                        <strong>Recuperação ativa</strong>
+                        <p>Caminhada consciente + hidratação com eletrólitos.</p>
+                      </div>
+                      <span class="chip chip--soft">+12 vitalidade</span>
+                    </li>
+                  </ul>
+                </section>
+              </div>
+            </div>
+          </div>
+        </section>
+
+<section
+  class="subpage"
+  data-subpage="week-detail"
+  aria-hidden="true"
+  aria-labelledby="subpage-week-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="subpage__container">
+    <header class="subpage__header">
+      <button class="subpage__back" type="button" data-close-subpage>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+        </svg>
+        Voltar
+      </button>
+      <div>
+        <span class="subpage__eyebrow">Insights detalhados</span>
+        <h2 id="subpage-week-title">Sua semana em números</h2>
+      </div>
+    </header>
+    <p class="subpage__description">
+      Compare o desempenho da semana atual com a anterior e descubra quais hábitos estão impulsionando sua evolução.
+    </p>
+    <div class="subpage__content">
+      <section class="card subpage-card">
+        <header class="card__header">
+          <h3>Snapshot geral</h3>
+          <span class="badge badge--soft">Atualizado agora</span>
+        </header>
+        <div class="subpage-stat-grid">
+          <div>
+            <span class="subpage-stat__label">Tempo ativo</span>
+            <strong>4h 35min</strong>
+            <span class="subpage-stat__trend is-up">+12% vs última semana</span>
+          </div>
+          <div>
+            <span class="subpage-stat__label">Calorias queimadas</span>
+            <strong>3.480 kcal</strong>
+            <span class="subpage-stat__trend is-up">+8%</span>
+          </div>
+          <div>
+            <span class="subpage-stat__label">Sessões concluídas</span>
+            <strong>7</strong>
+            <span class="subpage-stat__trend is-flat">Meta atingida</span>
+          </div>
+          <div>
+            <span class="subpage-stat__label">Horas de sono</span>
+            <strong>7h 12</strong>
+            <span class="subpage-stat__trend is-down">-18 min</span>
+          </div>
+        </div>
+        <div class="subpage-progress-group">
+          <div class="subpage-progress">
+            <span>Força</span>
+            <div class="progress-bar">
+              <div class="progress-bar__fill" style="--progress: 0.82"></div>
+            </div>
+            <span class="subpage-progress__meta">+5% XP</span>
+          </div>
+          <div class="subpage-progress">
+            <span>Mobilidade</span>
+            <div class="progress-bar">
+              <div class="progress-bar__fill" style="--progress: 0.74"></div>
+            </div>
+            <span class="subpage-progress__meta">+2 sessões</span>
+          </div>
+          <div class="subpage-progress">
+            <span>Mindset</span>
+            <div class="progress-bar">
+              <div class="progress-bar__fill" style="--progress: 0.64"></div>
+            </div>
+            <span class="subpage-progress__meta">Respirações guiadas 5×</span>
+          </div>
+        </div>
+      </section>
+      <div class="subpage__grid">
+        <section class="card subpage-card">
+          <header class="card__header">
+            <h3>Momentos de destaque</h3>
+          </header>
+          <ul class="subpage-list">
+            <li>
+              <div>
+                <strong>HIIT Prisma melhor tempo</strong>
+                <p>Redução de 18 segundos na série de burpees com salto.</p>
+              </div>
+              <span class="chip chip--accent">Top 5%</span>
+            </li>
+            <li>
+              <div>
+                <strong>Feedback da tribo</strong>
+                <p>12 reações positivas no post sobre mobilidade de quadril.</p>
+              </div>
+              <span class="chip chip--soft">+40 XP</span>
+            </li>
+            <li>
+              <div>
+                <strong>Mindset consistente</strong>
+                <p>4 sessões seguidas de respiração guiada antes do treino.</p>
+              </div>
+              <span class="chip chip--soft">Streak +1</span>
+            </li>
+          </ul>
+        </section>
+        <section class="card subpage-card">
+          <header class="card__header">
+            <h3>Pontos de atenção</h3>
+          </header>
+          <ul class="subpage-list">
+            <li>
+              <div>
+                <strong>Recuperação</strong>
+                <p>Apenas 1 sessão de alongamento regenerativo nesta semana.</p>
+              </div>
+              <span class="chip chip--soft">Adicionar sábado</span>
+            </li>
+            <li>
+              <div>
+                <strong>Hidratação</strong>
+                <p>Meta diária atingida em 4 de 7 dias.</p>
+              </div>
+              <span class="chip chip--soft">+1 lembrete</span>
+            </li>
+            <li>
+              <div>
+                <strong>Sono</strong>
+                <p>Média abaixo da meta em 18 minutos — reduza telas antes de dormir.</p>
+              </div>
+              <span class="chip chip--soft">Sugestão</span>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+</section>
+<section
+  class="subpage"
+  data-subpage="customize-workout"
+  aria-hidden="true"
+  aria-labelledby="subpage-customize-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="subpage__container">
+    <header class="subpage__header">
+      <button class="subpage__back" type="button" data-close-subpage>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+        </svg>
+        Voltar
+      </button>
+      <div>
+        <span class="subpage__eyebrow">Personalização</span>
+        <h2 id="subpage-customize-title">Ajuste o próximo treino</h2>
+      </div>
+    </header>
+    <p class="subpage__description">
+      Defina intensidade, focos e extras para que o plano acompanhe seu ritmo atual.
+    </p>
+    <div class="subpage__content">
+      <form class="card subpage-form" id="customWorkoutForm">
+        <div class="subpage-form__group">
+          <label for="customFocus">Foco principal</label>
+          <select id="customFocus" name="focus">
+            <option value="força explosiva">Força explosiva</option>
+            <option value="resistência híbrida">Resistência híbrida</option>
+            <option value="mobilidade avançada">Mobilidade avançada</option>
+            <option value="mindset + respiração">Mindset + respiração</option>
+          </select>
+        </div>
+        <div class="subpage-form__group">
+          <label for="customIntensity">Intensidade</label>
+          <div class="subpage-range">
+            <input id="customIntensity" name="intensity" type="range" min="1" max="10" value="6" />
+            <span class="subpage-range__value" id="customIntensityValue">6 / 10</span>
+          </div>
+        </div>
+        <fieldset class="subpage-form__group">
+          <legend>Adicionar camadas extras</legend>
+          <label class="chip-choice">
+            <input type="checkbox" name="extras" value="sprint final" checked />
+            <span>Sprint final</span>
+          </label>
+          <label class="chip-choice">
+            <input type="checkbox" name="extras" value="respiração guiada" />
+            <span>Respiração guiada</span>
+          </label>
+          <label class="chip-choice">
+            <input type="checkbox" name="extras" value="mobilidade complementar" />
+            <span>Mobilidade complementar</span>
+          </label>
+          <label class="chip-choice">
+            <input type="checkbox" name="extras" value="finisher de core" />
+            <span>Finisher de core</span>
+          </label>
+        </fieldset>
+        <div class="subpage-form__group subpage-form__group--row">
+          <label for="customDuration">Duração alvo</label>
+          <select id="customDuration" name="duration">
+            <option value="30 min">30 min</option>
+            <option value="40 min">40 min</option>
+            <option value="50 min">50 min</option>
+            <option value="60 min">60 min</option>
+          </select>
+        </div>
+        <div class="subpage-form__actions">
+          <button class="button button--ghost" type="button" data-close-subpage>Cancelar</button>
+          <button class="button button--primary" type="submit">Salvar ajustes</button>
+        </div>
+      </form>
+      <section class="card subpage-card subpage-card--emphasis" id="customWorkoutPreview">
+        <header class="card__header">
+          <h3>Pré-visualização</h3>
+          <span class="badge badge--soft" id="customWorkoutIntensityLabel">Intensidade 6 / 10</span>
+        </header>
+        <p id="customWorkoutSummary">
+          Treino focado em força explosiva com extras selecionados para elevar potência e estabilidade.
+        </p>
+        <ul class="subpage-list subpage-list--steps" id="customWorkoutSteps">
+          <li>
+            <strong>Aquecimento dinâmico</strong>
+            <p>Mobilidade articular + respiração box.</p>
+          </li>
+          <li>
+            <strong>Bloco principal</strong>
+            <p>Agachamento búlgaro, push press unilateral e sprint final.</p>
+          </li>
+          <li>
+            <strong>Desaceleração consciente</strong>
+            <p>Alongamento em fluxo e foco em respiração.</p>
+          </li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</section>
+<section
+  class="subpage"
+  data-subpage="ritual-history"
+  aria-hidden="true"
+  aria-labelledby="subpage-ritual-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="subpage__container">
+    <header class="subpage__header">
+      <button class="subpage__back" type="button" data-close-subpage>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+        </svg>
+        Voltar
+      </button>
+      <div>
+        <span class="subpage__eyebrow">Rituais do dia</span>
+        <h2 id="subpage-ritual-title">Histórico completo</h2>
+      </div>
+    </header>
+    <p class="subpage__description">
+      Revise seus hábitos micro para entender onde conquistar mais XP de consistência.
+    </p>
+    <div class="subpage__content">
+      <section class="card subpage-card">
+        <header class="card__header">
+          <h3>Últimos check-ins</h3>
+        </header>
+        <ul class="subpage-list subpage-list--timeline">
+          <li>
+            <span class="subpage-list__day">Hoje</span>
+            <div>
+              <strong>Respiração box</strong>
+              <p>4 ciclos completos antes do treino de força.</p>
+            </div>
+            <span class="chip chip--soft">+15 foco</span>
+          </li>
+          <li>
+            <span class="subpage-list__day">Ontem</span>
+            <div>
+              <strong>Registro pós-treino</strong>
+              <p>Compartilhou sensação de flow no mural público.</p>
+            </div>
+            <span class="chip chip--soft">+10 XP</span>
+          </li>
+          <li>
+            <span class="subpage-list__day">Qua</span>
+            <div>
+              <strong>Alongamento guiado</strong>
+              <p>Sessão completa de mobilidade para quadril e ombro.</p>
+            </div>
+            <span class="chip chip--soft">+20 mobilidade</span>
+          </li>
+          <li>
+            <span class="subpage-list__day">Ter</span>
+            <div>
+              <strong>Recuperação ativa</strong>
+              <p>Caminhada consciente pós HIIT e hidratação com eletrólitos.</p>
+            </div>
+            <span class="chip chip--soft">+12 vitalidade</span>
+          </li>
+        </ul>
+      </section>
+      <section class="card subpage-card">
+        <header class="card__header">
+          <h3>Padrões da semana</h3>
+        </header>
+        <div class="subpage-stat-grid">
+          <div>
+            <span class="subpage-stat__label">Consistência</span>
+            <strong>86%</strong>
+            <span class="subpage-stat__trend is-up">+6 pts</span>
+          </div>
+          <div>
+            <span class="subpage-stat__label">Tempo médio</span>
+            <strong>12 min</strong>
+            <span class="subpage-stat__trend is-flat">Meta atingida</span>
+          </div>
+          <div>
+            <span class="subpage-stat__label">Pontos ganhos</span>
+            <strong>+57</strong>
+            <span class="subpage-stat__trend is-up">Semana recorde</span>
+          </div>
+        </div>
+        <p class="subpage__note">
+          Dica: combine a respiração box com o finisher de mobilidade para potencializar a recuperação muscular.
+        </p>
+      </section>
+    </div>
+  </div>
+</section>
+<section
+  class="subpage"
+  data-subpage="reward-store"
+  aria-hidden="true"
+  aria-labelledby="subpage-reward-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="subpage__container">
+    <header class="subpage__header">
+      <button class="subpage__back" type="button" data-close-subpage>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+        </svg>
+        Voltar
+      </button>
+      <div>
+        <span class="subpage__eyebrow">Loja de recompensas</span>
+        <h2 id="subpage-reward-title">Troque XP por experiências</h2>
+      </div>
+    </header>
+    <p class="subpage__description">
+      Itens exclusivos para celebrar a constância e manter o foco elevado.
+    </p>
+    <div class="subpage__content">
+      <div class="subpage__grid subpage__grid--cards">
+        <article class="reward-card card" data-reward-card>
+          <header class="card__header">
+            <div>
+              <h3>Drop Aurora</h3>
+              <p class="card__subtitle">Avatar com jaqueta luminosa e tênis neon.</p>
+            </div>
+            <span class="chip chip--accent">600 XP</span>
+          </header>
+          <p>Personalize sua identidade na tribo com a coleção limitada da temporada.</p>
+          <button class="button button--primary button--block" type="button" data-reward="aurora">Resgatar</button>
+        </article>
+        <article class="reward-card card" data-reward-card>
+          <header class="card__header">
+            <div>
+              <h3>Recovery kit</h3>
+              <p class="card__subtitle">Mobilidade guiada + checklist pós treino.</p>
+            </div>
+            <span class="chip chip--accent">420 XP</span>
+          </header>
+          <p>Biblioteca com vídeos de liberação miofascial, protocolos de sono e respiração.</p>
+          <button class="button button--primary button--block" type="button" data-reward="recovery">Resgatar</button>
+        </article>
+        <article class="reward-card card" data-reward-card>
+          <header class="card__header">
+            <div>
+              <h3>Mentoria flash</h3>
+              <p class="card__subtitle">Sessão coletiva com treinador da tribo.</p>
+            </div>
+            <span class="chip chip--accent">800 XP</span>
+          </header>
+          <p>Receba feedback personalizado sobre postura, intensidade e mindset.</p>
+          <button class="button button--primary button--block" type="button" data-reward="mentoria">Reservar</button>
+        </article>
+        <article class="reward-card card" data-reward-card>
+          <header class="card__header">
+            <div>
+              <h3>Playlist Prisma</h3>
+              <p class="card__subtitle">Set exclusivo para treinos de alta energia.</p>
+            </div>
+            <span class="chip chip--accent">250 XP</span>
+          </header>
+          <p>Faixas selecionadas pela comunidade para sincronizar respiração e ritmo.</p>
+          <button class="button button--primary button--block" type="button" data-reward="playlist">Desbloquear</button>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+<section
+  class="subpage"
+  data-subpage="quest-board"
+  aria-hidden="true"
+  aria-labelledby="subpage-quest-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="subpage__container">
+    <header class="subpage__header">
+      <button class="subpage__back" type="button" data-close-subpage>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+        </svg>
+        Voltar
+      </button>
+      <div>
+        <span class="subpage__eyebrow">Quadro completo</span>
+        <h2 id="subpage-quest-title">Missões da semana</h2>
+      </div>
+    </header>
+    <p class="subpage__description">
+      Escolha quais desafios acompanhar de perto e avance rumo ao título Tempestade Azul.
+    </p>
+    <div class="subpage__content">
+      <section class="card subpage-card">
+        <header class="card__header">
+          <h3>Missões lendárias</h3>
+        </header>
+        <ul class="subpage-list subpage-list--quests">
+          <li>
+            <div>
+              <strong>Tempestade azul</strong>
+              <p>Complete 3 treinos HIIT e receba 6 reações na comunidade.</p>
+            </div>
+            <button class="chip chip--accent" type="button" data-track-quest="tempestade">Acompanhar</button>
+          </li>
+          <li>
+            <div>
+              <strong>Mentor da tribo</strong>
+              <p>Compartilhe 2 dicas úteis e responda a perguntas da comunidade.</p>
+            </div>
+            <button class="chip chip--accent" type="button" data-track-quest="mentor">Acompanhar</button>
+          </li>
+          <li>
+            <div>
+              <strong>Guardião da recuperação</strong>
+              <p>Priorize sono de 7h+, alongamento regenerativo e registro de sensação.</p>
+            </div>
+            <button class="chip chip--accent" type="button" data-track-quest="recuperacao">Acompanhar</button>
+          </li>
+        </ul>
+      </section>
+      <section class="card subpage-card">
+        <header class="card__header">
+          <h3>Missões rápidas</h3>
+        </header>
+        <ul class="subpage-list subpage-list--quests">
+          <li>
+            <div>
+              <strong>Sprint matinal</strong>
+              <p>Finalize aquecimento em menos de 8 minutos.</p>
+            </div>
+            <button class="chip chip--soft" type="button" data-track-quest="sprint">Adicionar</button>
+          </li>
+          <li>
+            <div>
+              <strong>Flow híbrido</strong>
+              <p>Misture força + mobilidade em sessão personalizada.</p>
+            </div>
+            <button class="chip chip--soft" type="button" data-track-quest="flow">Adicionar</button>
+          </li>
+          <li>
+            <div>
+              <strong>Check-in mindset</strong>
+              <p>Pratique respiração ou journaling por 5 minutos.</p>
+            </div>
+            <button class="chip chip--soft" type="button" data-track-quest="mindset">Adicionar</button>
+          </li>
+        </ul>
+      </section>
+      <p class="subpage__note" id="questSelectionMessage">Selecione missões para acompanhar no topo do quadro.</p>
+    </div>
+  </div>
+</section>
+<section
+  class="subpage"
+  data-subpage="badge-curation"
+  aria-hidden="true"
+  aria-labelledby="subpage-badge-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="subpage__container">
+    <header class="subpage__header">
+      <button class="subpage__back" type="button" data-close-subpage>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+        </svg>
+        Voltar
+      </button>
+      <div>
+        <span class="subpage__eyebrow">Vitrine pessoal</span>
+        <h2 id="subpage-badge-title">Escolha os destaques</h2>
+      </div>
+    </header>
+    <p class="subpage__description">
+      Fixe até três badges para aparecerem na galeria principal da sua jornada.
+    </p>
+    <div class="subpage__content">
+      <p class="subpage__note" id="badgeSelectionMessage">Selecione até 3 badges para destacar.</p>
+      <div class="subpage__grid subpage__grid--badges">
+        <button class="badge-selector" type="button" data-badge-select="fogo" data-badge-label="Fogo infinito">
+          <span class="badge-selector__icon">🔥</span>
+          <strong>Fogo infinito</strong>
+          <small>Streak 15 dias</small>
+        </button>
+        <button class="badge-selector" type="button" data-badge-select="flow" data-badge-label="Fluxo perfeito">
+          <span class="badge-selector__icon">🌀</span>
+          <strong>Fluxo perfeito</strong>
+          <small>Mobilidade avançada</small>
+        </button>
+        <button class="badge-selector" type="button" data-badge-select="ritmo" data-badge-label="Ritmo supremo">
+          <span class="badge-selector__icon">⚡</span>
+          <strong>Ritmo supremo</strong>
+          <small>HIIT em alta</small>
+        </button>
+        <button
+          class="badge-selector is-locked"
+          type="button"
+          data-badge-select="prisma"
+          data-badge-label="Troféu Prisma"
+          data-badge-locked="true"
+          aria-disabled="true"
+        >
+          <span class="badge-selector__icon">🌈</span>
+          <strong>Troféu Prisma</strong>
+          <small>Complete 5 desafios lendários</small>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+<section
+  class="subpage"
+  data-subpage="squad-chat"
+  aria-hidden="true"
+  aria-labelledby="subpage-chat-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="subpage__container">
+    <header class="subpage__header">
+      <button class="subpage__back" type="button" data-close-subpage>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+        </svg>
+        Voltar
+      </button>
+      <div>
+        <span class="subpage__eyebrow">Tribo MachoMuscle</span>
+        <h2 id="subpage-chat-title">Chat semanal</h2>
+      </div>
+    </header>
+    <p class="subpage__description">
+      Compartilhe resultados, peça dicas instantâneas e mantenha a energia coletiva pulsando.
+    </p>
+    <div class="subpage__content subpage__content--chat">
+      <div class="chat card">
+        <ul class="chat-log" id="squadChatLog">
+          <li class="chat-message">
+            <div class="chat-message__avatar" aria-hidden="true">AH</div>
+            <div class="chat-message__content">
+              <span class="chat-message__author">Ana H.</span>
+              <span class="chat-message__timestamp">há 4 min</span>
+              <p>Acabei o HIIT prisma, energia nas alturas! Quem topa medalha dupla amanhã?</p>
+            </div>
+          </li>
+          <li class="chat-message">
+            <div class="chat-message__avatar" aria-hidden="true">RB</div>
+            <div class="chat-message__content">
+              <span class="chat-message__author">Rafa B.</span>
+              <span class="chat-message__timestamp">há 2 min</span>
+              <p>Soltei nos destaques um fluxo novo para mobilidade de ombro, confere lá!</p>
+            </div>
+          </li>
+          <li class="chat-message chat-message--self">
+            <div class="chat-message__avatar" aria-hidden="true">JD</div>
+            <div class="chat-message__content">
+              <span class="chat-message__author">Você</span>
+              <span class="chat-message__timestamp">há 1 min</span>
+              <p>Vou testar o flow mais tarde. Quem quiser desafio de força + mobilidade comenta aqui!</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <form class="chat-form" id="squadChatForm">
+        <label class="sr-only" for="squadChatMessage">Enviar mensagem</label>
+        <div class="chat-form__row">
+          <input
+            id="squadChatMessage"
+            type="text"
+            name="message"
+            autocomplete="off"
+            placeholder="Compartilhe com a tribo..."
+            required
+          />
+          <button class="button button--primary" type="submit">Enviar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+<section
+  class="subpage"
+  data-subpage="trend-filter"
+  aria-hidden="true"
+  aria-labelledby="subpage-trend-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="subpage__container">
+    <header class="subpage__header">
+      <button class="subpage__back" type="button" data-close-subpage>
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+        </svg>
+        Voltar
+      </button>
+      <div>
+        <span class="subpage__eyebrow">Explorar comunidade</span>
+        <h2 id="subpage-trend-title">Filtrar trends</h2>
+      </div>
+    </header>
+    <p class="subpage__description">
+      Ajuste o feed para acompanhar os temas que mais combinam com seu momento atual.
+    </p>
+    <div class="subpage__content">
+      <form class="card subpage-form" id="trendFilterForm">
+        <fieldset class="subpage-form__group">
+          <legend>Escolha os temas</legend>
+          <label class="chip-choice">
+            <input type="checkbox" name="trendFilters" value="Força" />
+            <span>Força</span>
+          </label>
+          <label class="chip-choice">
+            <input type="checkbox" name="trendFilters" value="HIIT" />
+            <span>HIIT</span>
+          </label>
+          <label class="chip-choice">
+            <input type="checkbox" name="trendFilters" value="Mobilidade" />
+            <span>Mobilidade</span>
+          </label>
+          <label class="chip-choice">
+            <input type="checkbox" name="trendFilters" value="Mindset" />
+            <span>Mindset</span>
+          </label>
+        </fieldset>
+        <fieldset class="subpage-form__group">
+          <legend>Mostrar apenas posts</legend>
+          <label class="chip-choice">
+            <input type="checkbox" name="trendFilters" value="Playlist" />
+            <span>Playlists</span>
+          </label>
+          <label class="chip-choice">
+            <input type="checkbox" name="trendFilters" value="Dica" />
+            <span>Dicas rápidas</span>
+          </label>
+          <label class="chip-choice">
+            <input type="checkbox" name="trendFilters" value="Mindful" />
+            <span>Mindful</span>
+          </label>
+        </fieldset>
+        <div class="subpage-form__actions">
+          <button class="button button--ghost" type="reset">Limpar</button>
+          <button class="button button--primary" type="submit">Aplicar filtros</button>
+        </div>
+      </form>
+      <p class="subpage__note" id="trendFilterSummary">Todos os posts visíveis.</p>
+    </div>
+  </div>
+</section>
+      </div>
     </div>
 
     <script src="script.js"></script>
