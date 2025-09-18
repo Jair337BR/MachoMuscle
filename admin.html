@@ -42,9 +42,6 @@
               <label for="adminPassword">Senha</label>
               <input id="adminPassword" name="password" type="password" required placeholder="••••••••" />
               <button class="button button--primary" type="submit">Acessar painel</button>
-              <p class="admin-login__hint">
-                Dica rápida: usuário <strong>admin1</strong> e senha <strong>machomuscle</strong>.
-              </p>
               <p class="admin-login__feedback" id="adminLoginFeedback" role="alert"></p>
             </form>
           </div>
@@ -57,6 +54,19 @@
               <section class="card admin-card">
                 <h2>Editar rotina personalizada</h2>
                 <form class="admin-form" id="adminUpdateForm">
+                  <label for="adminUserIdInput">Buscar por ID do usuário</label>
+                  <div class="admin-form__lookup">
+                    <input
+                      id="adminUserIdInput"
+                      name="userId"
+                      type="text"
+                      inputmode="text"
+                      autocomplete="off"
+                      placeholder="Ex.: MM-001"
+                    />
+                    <button class="button button--ghost" type="button" id="adminUserIdButton">Carregar</button>
+                  </div>
+                  <p class="admin-form__hint" id="adminUserIdFeedback" role="status"></p>
                   <label for="adminUserSelect">Pessoa</label>
                   <select id="adminUserSelect" name="user"></select>
                   <label for="adminDaySelect">Dia da semana</label>

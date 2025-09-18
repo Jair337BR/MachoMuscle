@@ -1048,6 +1048,13 @@ textarea:focus,
   font-size: 0.9rem;
 }
 
+.profile__id {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-soft);
+}
+
 .profile__bio {
   color: var(--color-text-muted);
   font-size: 0.9rem;
@@ -1500,6 +1507,23 @@ input {
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.admin-form__lookup {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.admin-form__lookup input {
+  flex: 1 1 auto;
+}
+
+.admin-form__hint {
+  margin: -6px 0 4px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  min-height: 1em;
 }
 
 .admin-form label {

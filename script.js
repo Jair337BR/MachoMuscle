@@ -138,6 +138,7 @@ const bioInput = document.getElementById('bio');
 const profileName = document.getElementById('profileName');
 const profileUsername = document.getElementById('profileUsername');
 const profileBio = document.getElementById('profileBio');
+const profileId = document.getElementById('profileId');
 const profileAvatar = document.getElementById('profileAvatar');
 const composerAvatar = document.querySelector('.composer__avatar');
 const rewardButtons = document.querySelectorAll('[data-reward]');
@@ -170,6 +171,9 @@ const adminPanel = document.getElementById('adminPanel');
 const adminLoginForm = document.getElementById('adminLoginForm');
 const adminLoginFeedback = document.getElementById('adminLoginFeedback');
 const adminUpdateForm = document.getElementById('adminUpdateForm');
+const adminUserIdInput = document.getElementById('adminUserIdInput');
+const adminUserIdButton = document.getElementById('adminUserIdButton');
+const adminUserIdFeedback = document.getElementById('adminUserIdFeedback');
 const adminUserSelect = document.getElementById('adminUserSelect');
 const adminDaySelect = document.getElementById('adminDaySelect');
 const adminFocusInput = document.getElementById('adminFocusInput');
@@ -213,283 +217,359 @@ const weekDayLabels = {
 const defaultAthleteKey = 'voce';
 
 const defaultPlanTemplate = {
-  focus: 'Treino personalizado',
-  summary: 'Descreva o objetivo do dia com orientações simples e linguagem acessível.',
-  duration: '30 min',
-  calories: '300 kcal',
+  focus: 'Sessão de hipertrofia personalizada',
+  summary: 'Defina o grupamento muscular, cadência e carga sugerida para potencializar o ganho de massa.',
+  duration: '45 min',
+  calories: '420 kcal',
   video: '',
   exercises: []
 };
 
 const trainingPlans = {
   voce: {
+    id: 'MM-001',
     name: 'Você',
     routine: {
       segunda: {
-        focus: 'Base estável de pernas',
-        summary: 'Primeiro contato com agachamentos usando apoio para garantir segurança do movimento.',
-        duration: '35 min',
-        calories: '320 kcal',
-        video: 'https://www.youtube.com/embed/VHyGqsPOUHs',
+        focus: 'Peito e tríceps para hipertrofia',
+        summary: 'Trabalhe supinos e isoladores com cadência controlada para maximizar a tensão mecânica.',
+        duration: '45 min',
+        calories: '420 kcal',
+        video: 'https://www.youtube.com/embed/m8K3b0UpwOQ',
         exercises: [
-          { name: 'Agachamento assistido', detail: '3 séries de 12 repetições com apoio em cadeira' },
-          { name: 'Elevação de calcanhar encostado na parede', detail: '2 séries de 15 repetições' },
-          { name: 'Passada estacionária lenta', detail: '2 séries de 10 passos por perna' }
+          { name: 'Supino reto com halteres', detail: '4 séries de 8-10 repetições' },
+          { name: 'Crucifixo inclinado', detail: '3 séries de 12 repetições' },
+          { name: 'Mergulho no banco', detail: '3 séries de 10-12 repetições' },
+          { name: 'Tríceps francês com halteres', detail: '3 séries de 12 repetições' }
         ]
       },
       terca: {
-        focus: 'Mobilidade tranquila',
-        summary: 'Sequência suave para soltar quadris, ombros e coluna, ideal para dias de descanso ativo.',
-        duration: '25 min',
-        calories: '180 kcal',
-        video: 'https://www.youtube.com/embed/UoC_O3HzsH0',
+        focus: 'Costas e bíceps em tempo sob tensão',
+        summary: 'Remadas horizontais e puxadas com pausa isométrica para ativar dorsais sem perder postura.',
+        duration: '46 min',
+        calories: '400 kcal',
+        video: 'https://www.youtube.com/embed/Ob5Avzkdxl0',
         exercises: [
-          { name: 'Gato e vaca no solo', detail: '2 minutos com respiração controlada' },
-          { name: 'Alongamento de flexor de quadril', detail: '2 séries de 30 segundos por lado' },
-          { name: 'Rotação de ombros com toalha', detail: '2 séries de 12 repetições' }
+          { name: 'Remada curvada com barra', detail: '4 séries de 8-10 repetições' },
+          { name: 'Puxada aberta na polia', detail: '3 séries de 10-12 repetições' },
+          { name: 'Remada unilateral com halter', detail: '3 séries de 12 repetições por lado' },
+          { name: 'Rosca direta com barra W', detail: '3 séries de 10-12 repetições' }
         ]
       },
       quarta: {
-        focus: 'Circuito leve de corpo inteiro',
-        summary: 'Movimentos simples para elevar a frequência cardíaca de forma controlada.',
-        duration: '28 min',
-        calories: '260 kcal',
-        video: 'https://www.youtube.com/embed/ml6cT4AZdqI',
+        focus: 'Pernas focadas em quadríceps',
+        summary: 'Agachamentos controlados combinados com isoladores para estimular o quadríceps em diferentes ângulos.',
+        duration: '48 min',
+        calories: '450 kcal',
+        video: 'https://www.youtube.com/embed/COd4IITZ1wk',
         exercises: [
-          { name: 'Polichinelo moderado', detail: '3 blocos de 40 segundos' },
-          { name: 'Remada com elástico ou mochila', detail: '3 séries de 12 repetições' },
-          { name: 'Prancha de joelhos', detail: '3 séries de 30 segundos' }
+          { name: 'Agachamento livre', detail: '4 séries de 8-10 repetições' },
+          { name: 'Leg press 45°', detail: '3 séries de 12 repetições' },
+          { name: 'Avanço caminhando', detail: '3 séries de 12 passos por perna' },
+          { name: 'Extensora unilateral', detail: '3 séries de 12-15 repetições' }
         ]
       },
       quinta: {
-        focus: 'Postura e core consciente',
-        summary: 'Exercícios lentos para fortalecer a região central e alinhar a postura.',
-        duration: '22 min',
-        calories: '190 kcal',
-        video: 'https://www.youtube.com/embed/50kH47ZztHs',
+        focus: 'Ombros e trapézio com ênfase em volume',
+        summary: 'Use variações de desenvolvimento e elevações laterais para preencher a parte superior.',
+        duration: '42 min',
+        calories: '360 kcal',
+        video: 'https://www.youtube.com/embed/5sGOlKn-IxI',
         exercises: [
-          { name: 'Respiração diafragmática deitada', detail: '3 ciclos de 1 minuto' },
-          { name: 'Dead bug com apoio de almofada', detail: '3 séries de 10 repetições' },
-          { name: 'Prancha lateral com joelho apoiado', detail: '2 séries de 20 segundos por lado' }
+          { name: 'Desenvolvimento com halteres', detail: '4 séries de 8-10 repetições' },
+          { name: 'Elevação lateral em pé', detail: '3 séries de 12-15 repetições' },
+          { name: 'Remada alta com barra', detail: '3 séries de 10-12 repetições' },
+          { name: 'Face pull com elástico', detail: '3 séries de 15 repetições' }
         ]
       },
       sexta: {
-        focus: 'Força com peso corporal',
-        summary: 'Sequência progressiva utilizando apenas o peso do corpo para ganhar confiança.',
-        duration: '32 min',
-        calories: '310 kcal',
-        video: 'https://www.youtube.com/embed/VHyGqsPOUHs',
+        focus: 'Posterior de coxa e glúteos',
+        summary: 'Enfatize a fase excêntrica em movimentos de hinge para recrutar posteriores e glúteos.',
+        duration: '47 min',
+        calories: '430 kcal',
+        video: 'https://www.youtube.com/embed/3i7iI-yRzyc',
         exercises: [
-          { name: 'Flexão inclinada em mesa', detail: '3 séries de 10 repetições' },
-          { name: 'Ponte de glúteo', detail: '3 séries de 15 repetições' },
-          { name: 'Agachamento sumô lento', detail: '3 séries de 12 repetições' }
+          { name: 'Levantamento romeno com halteres', detail: '4 séries de 8-10 repetições' },
+          { name: 'Mesa flexora ou flexão nórdica assistida', detail: '3 séries de 10-12 repetições' },
+          { name: 'Elevação de quadril com barra', detail: '4 séries de 12 repetições' },
+          { name: 'Abdução de quadril em polia ou miniband', detail: '3 séries de 15 repetições' }
         ]
       },
       sabado: {
-        focus: 'Recuperação ativa completa',
-        summary: 'Rotina relaxante para regenerar músculos e mente após a semana.',
-        duration: '20 min',
-        calories: '160 kcal',
-        video: 'https://www.youtube.com/embed/UoC_O3HzsH0',
+        focus: 'Braços com técnicas de pico de contração',
+        summary: 'Superséries de bíceps e tríceps para manter congestionamento e sensação de pump.',
+        duration: '40 min',
+        calories: '330 kcal',
+        video: 'https://www.youtube.com/embed/Xfx6tDr7guo',
         exercises: [
-          { name: 'Mobilidade de tornozelo na parede', detail: '2 séries de 10 repetições por lado' },
-          { name: 'Alongamento de cadeia posterior com faixa', detail: '2 séries de 45 segundos' },
-          { name: 'Respiração box sentada', detail: '4 ciclos de 4 segundos' }
+          { name: 'Rosca alternada com giro', detail: '3 séries de 12 repetições' },
+          { name: 'Rosca martelo no banco inclinado', detail: '3 séries de 10-12 repetições' },
+          { name: 'Tríceps testa com barra', detail: '3 séries de 10-12 repetições' },
+          { name: 'Tríceps na corda com pausa', detail: '3 séries de 12-15 repetições' }
         ]
       },
       domingo: {
-        focus: 'Mindset e respiração guiada',
-        summary: 'Finalize a semana com foco mental, visualização e respiração consciente.',
-        duration: '18 min',
-        calories: '120 kcal',
-        video: 'https://www.youtube.com/embed/4pKly2JojMw',
+        focus: 'Recuperação ativa e mobilidade para hipertrofia',
+        summary: 'Descarregue a musculatura com mobilidade específica e respiração profunda.',
+        duration: '30 min',
+        calories: '220 kcal',
+        video: 'https://www.youtube.com/embed/w0l9F9lYGDI',
         exercises: [
-          { name: 'Respiração box guiada', detail: '5 ciclos completos' },
-          { name: 'Visualização de metas', detail: '5 minutos anotando sensações' },
-          { name: 'Alongamento cervical suave', detail: '2 séries de 30 segundos por lado' }
+          { name: 'Alongamento de peitoral com apoio', detail: '3 séries de 40 segundos por lado' },
+          { name: 'Mobilidade torácica com foam roller', detail: '3 séries de 12 repetições' },
+          { name: 'Relaxamento de quadril com 90/90', detail: '3 séries de 45 segundos por lado' },
+          { name: 'Respiração diafragmática guiada', detail: '5 ciclos de 1 minuto' }
         ]
       }
     }
   },
   ana: {
+    id: 'MM-204',
     name: 'Ana Torres',
     routine: {
       segunda: {
-        focus: 'Funcional com apoio leve',
-        summary: 'Circuito introdutório com garrafas de água para ganhar resistência de forma segura.',
-        duration: '30 min',
-        calories: '280 kcal',
-        video: 'https://www.youtube.com/embed/50kH47ZztHs',
+        focus: 'Peito e tríceps com estabilidade',
+        summary: 'Combine halteres leves e cadência lenta para sentir o peitoral trabalhando sem perder postura.',
+        duration: '42 min',
+        calories: '360 kcal',
+        video: 'https://www.youtube.com/embed/AV6wQK1WyPM',
         exercises: [
-          { name: 'Agachamento com garrafa', detail: '3 séries de 12 repetições' },
-          { name: 'Remada curvada com mochila', detail: '3 séries de 10 repetições' },
-          { name: 'Prancha alta com joelho apoiado', detail: '3 séries de 20 segundos' }
+          { name: 'Supino reto com halteres', detail: '4 séries de 10-12 repetições' },
+          { name: 'Crucifixo com elástico', detail: '3 séries de 15 repetições controladas' },
+          { name: 'Flexão inclinada apoiada', detail: '3 séries de 12 repetições' },
+          { name: 'Tríceps testa com halteres', detail: '3 séries de 12 repetições' }
         ]
       },
       terca: {
-        focus: 'Cardio dançante leve',
-        summary: 'Movimentos ritmados para elevar energia sem exigir coordenação avançada.',
-        duration: '25 min',
-        calories: '240 kcal',
-        video: 'https://www.youtube.com/embed/ml6cT4AZdqI',
+        focus: 'Costas e bíceps com foco em postura',
+        summary: 'Remadas sentadas e unilaterais com tempo sob tensão para ativar dorsais sem sobrecarregar a lombar.',
+        duration: '44 min',
+        calories: '370 kcal',
+        video: 'https://www.youtube.com/embed/Ob5Avzkdxl0',
         exercises: [
-          { name: 'Passos laterais com braço', detail: '3 blocos de 45 segundos' },
-          { name: 'Giro de tronco controlado', detail: '3 séries de 12 repetições' },
-          { name: 'Deslocamento frontal e voltar', detail: '3 séries de 30 segundos' }
+          { name: 'Puxada frente com triângulo', detail: '4 séries de 10-12 repetições' },
+          { name: 'Remada baixa no cabo', detail: '3 séries de 12 repetições' },
+          { name: 'Remada unilateral com apoio', detail: '3 séries de 12 repetições por lado' },
+          { name: 'Rosca direta na polia', detail: '3 séries de 12 repetições' }
         ]
       },
       quarta: {
-        focus: 'Força superior consciente',
-        summary: 'Exercícios simples para ombros e costas usando resistência moderada.',
-        duration: '28 min',
-        calories: '260 kcal',
-        video: 'https://www.youtube.com/embed/VHyGqsPOUHs',
+        focus: 'Pernas e glúteos para volume',
+        summary: 'Estruture a sessão com agachamentos guiados e ênfase na subida explosiva.',
+        duration: '48 min',
+        calories: '430 kcal',
+        video: 'https://www.youtube.com/embed/COd4IITZ1wk',
         exercises: [
-          { name: 'Elevação lateral com garrafas', detail: '3 séries de 12 repetições' },
-          { name: 'Tríceps testa com elástico', detail: '3 séries de 10 repetições' },
-          { name: 'Prancha de antebraço', detail: '3 séries de 25 segundos' }
+          { name: 'Agachamento no smith', detail: '4 séries de 10 repetições' },
+          { name: 'Passada no step', detail: '3 séries de 12 repetições por perna' },
+          { name: 'Cadeira abdutora', detail: '3 séries de 15 repetições' },
+          { name: 'Elevação de quadril com miniband', detail: '3 séries de 15 repetições' }
         ]
       },
       quinta: {
-        focus: 'Yoga restaurativa guiada',
-        summary: 'Sessão calma para relaxar lombar e ombros com foco na respiração.',
-        duration: '24 min',
-        calories: '170 kcal',
-        video: 'https://www.youtube.com/embed/UoC_O3HzsH0',
+        focus: 'Ombros e deltoides definidos',
+        summary: 'Variações de elevação e desenvolvimento alternando ângulos para preencher os deltoides.',
+        duration: '40 min',
+        calories: '320 kcal',
+        video: 'https://www.youtube.com/embed/5sGOlKn-IxI',
         exercises: [
-          { name: 'Cachorro olhando para baixo adaptado', detail: '3 séries de 30 segundos' },
-          { name: 'Postura da criança com alongamento lateral', detail: '3 ciclos de 40 segundos' },
-          { name: 'Torção suave deitado', detail: '2 séries de 45 segundos por lado' }
+          { name: 'Desenvolvimento arnold', detail: '3 séries de 10-12 repetições' },
+          { name: 'Elevação lateral sentada', detail: '3 séries de 15 repetições' },
+          { name: 'Elevação frontal com disco', detail: '3 séries de 12 repetições' },
+          { name: 'Encolhimento com halteres', detail: '3 séries de 15 repetições' }
         ]
       },
       sexta: {
-        focus: 'HIIT moderado guiado',
-        summary: 'Intervalos curtos com intensidade controlada para quem já tem alguma experiência.',
-        duration: '30 min',
-        calories: '320 kcal',
-        video: 'https://www.youtube.com/embed/ml6cT4AZdqI',
+        focus: 'Posterior e glúteos concentrados',
+        summary: 'Mantenha a cadência lenta na fase excêntrica para sentir a contração máxima.',
+        duration: '45 min',
+        calories: '380 kcal',
+        video: 'https://www.youtube.com/embed/3i7iI-yRzyc',
         exercises: [
-          { name: 'Corrida estacionária', detail: '4 blocos de 30 segundos' },
-          { name: 'Agachamento com salto leve', detail: '3 séries de 12 repetições' },
-          { name: 'Prancha escalador controlada', detail: '3 séries de 30 segundos' }
+          { name: 'Stiff com halteres', detail: '4 séries de 10-12 repetições' },
+          { name: 'Glúteo quatro apoios com caneleira', detail: '3 séries de 15 repetições por perna' },
+          { name: 'Mesa flexora alternada', detail: '3 séries de 12 repetições' },
+          { name: 'Abdução em pé na polia', detail: '3 séries de 15 repetições por lado' }
         ]
       },
       sabado: {
-        focus: 'Core e estabilidade',
-        summary: 'Trabalhe o centro do corpo com movimentos conscientes e apoio de colchonete.',
-        duration: '26 min',
-        calories: '240 kcal',
-        video: 'https://www.youtube.com/embed/50kH47ZztHs',
+        focus: 'Braços e core com ênfase em pump',
+        summary: 'Superséries de bíceps, tríceps e pranchas para finalizar a semana energizada.',
+        duration: '38 min',
+        calories: '300 kcal',
+        video: 'https://www.youtube.com/embed/Xfx6tDr7guo',
         exercises: [
-          { name: 'Prancha com toque de ombro', detail: '3 séries de 10 repetições por lado' },
-          { name: 'Abdominal bicicleta controlado', detail: '3 séries de 16 repetições' },
-          { name: 'Elevação de quadril unilateral', detail: '3 séries de 12 repetições por lado' }
+          { name: 'Rosca alternada com halteres', detail: '3 séries de 12 repetições' },
+          { name: 'Rosca concentrada no banco', detail: '3 séries de 12 repetições por braço' },
+          { name: 'Tríceps na corda', detail: '3 séries de 15 repetições' },
+          { name: 'Prancha com toque no ombro', detail: '3 séries de 20 repetições alternadas' }
         ]
       },
       domingo: {
-        focus: 'Caminhada guiada e alongamento',
-        summary: 'Planejamento de caminhada leve com fechamento em alongamentos simples.',
-        duration: '35 min',
-        calories: '250 kcal',
-        video: 'https://www.youtube.com/embed/UoC_O3HzsH0',
+        focus: 'Mobilidade guiada e descarrego',
+        summary: 'Use alongamentos ativos para acelerar a recuperação e preparar a próxima semana.',
+        duration: '28 min',
+        calories: '200 kcal',
+        video: 'https://www.youtube.com/embed/w0l9F9lYGDI',
         exercises: [
-          { name: 'Caminhada consciente', detail: '20 minutos em ritmo confortável' },
-          { name: 'Alongamento de panturrilha na parede', detail: '2 séries de 30 segundos por lado' },
-          { name: 'Respiração profunda sentada', detail: '5 ciclos completos' }
+          { name: 'Alongamento de dorsal em banco', detail: '3 séries de 40 segundos' },
+          { name: 'Liberação de glúteo com bola', detail: '3 séries de 30 segundos por lado' },
+          { name: 'Cadeia posterior em PNF', detail: '3 séries de 45 segundos' },
+          { name: 'Respiração 4-7-8', detail: '4 ciclos completos' }
         ]
       }
     }
   },
   carlos: {
+    id: 'MM-418',
     name: 'Carlos Lima',
     routine: {
       segunda: {
-        focus: 'Força funcional básica',
-        summary: 'Comece a semana reforçando membros inferiores e postura com apoio de cadeira.',
-        duration: '32 min',
-        calories: '300 kcal',
-        video: 'https://www.youtube.com/embed/VHyGqsPOUHs',
+        focus: 'Peito pesado com pré-exaustão',
+        summary: 'Abra a semana com movimentos compostos seguidos de isoladores para congestionar o peitoral.',
+        duration: '50 min',
+        calories: '480 kcal',
+        video: 'https://www.youtube.com/embed/m8K3b0UpwOQ',
         exercises: [
-          { name: 'Agachamento na cadeira', detail: '3 séries de 15 repetições' },
-          { name: 'Avanço estático com apoio', detail: '3 séries de 10 repetições por perna' },
-          { name: 'Prancha no sofá', detail: '3 séries de 25 segundos' }
+          { name: 'Supino reto com barra', detail: '4 séries de 6-8 repetições' },
+          { name: 'Supino inclinado com halteres', detail: '4 séries de 8-10 repetições' },
+          { name: 'Crucifixo no crossover', detail: '3 séries de 12-15 repetições' },
+          { name: 'Tríceps mergulho nas paralelas', detail: '3 séries até a falha técnica' }
         ]
       },
       terca: {
-        focus: 'Mobilidade de ombro e coluna',
-        summary: 'Solte tensões com movimentos circulares e respiração guiada.',
-        duration: '20 min',
-        calories: '150 kcal',
-        video: 'https://www.youtube.com/embed/UoC_O3HzsH0',
+        focus: 'Costas densas e bíceps fortes',
+        summary: 'Remadas pesadas e puxadas neutras para aumentar densidade e largura dorsal.',
+        duration: '52 min',
+        calories: '460 kcal',
+        video: 'https://www.youtube.com/embed/Ob5Avzkdxl0',
         exercises: [
-          { name: 'Círculo de ombros com bastão', detail: '3 séries de 12 repetições' },
-          { name: 'Torção torácica sentado', detail: '3 séries de 8 repetições por lado' },
-          { name: 'Respiração 4-4-4-4', detail: '5 ciclos completos' }
+          { name: 'Barra fixa com sobrecarga', detail: '4 séries de 6-8 repetições' },
+          { name: 'Remada curvada pronada', detail: '4 séries de 8-10 repetições' },
+          { name: 'Pulldown neutro com pausa', detail: '3 séries de 12 repetições' },
+          { name: 'Rosca direta pesada', detail: '3 séries de 8-10 repetições' }
         ]
       },
       quarta: {
-        focus: 'Cardio acessível',
-        summary: 'Intervalos de intensidade baixa a moderada que cabem na pausa do almoço.',
-        duration: '27 min',
-        calories: '240 kcal',
-        video: 'https://www.youtube.com/embed/ml6cT4AZdqI',
+        focus: 'Pernas completas com foco em força',
+        summary: 'Volume alto com ênfase em compostos para gerar estímulo máximo em quadríceps e glúteos.',
+        duration: '55 min',
+        calories: '520 kcal',
+        video: 'https://www.youtube.com/embed/COd4IITZ1wk',
         exercises: [
-          { name: 'Marcha com joelhos altos', detail: '4 blocos de 40 segundos' },
-          { name: 'Shadow boxing leve', detail: '3 séries de 45 segundos' },
-          { name: 'Burpee sem salto', detail: '3 séries de 8 repetições' }
+          { name: 'Agachamento livre pesado', detail: '5 séries de 6-8 repetições' },
+          { name: 'Leg press unilateral', detail: '4 séries de 10 repetições por perna' },
+          { name: 'Hack machine', detail: '3 séries de 10-12 repetições' },
+          { name: 'Afundo búlgaro com halteres', detail: '3 séries de 12 repetições por perna' }
         ]
       },
       quinta: {
-        focus: 'Estabilidade de core',
-        summary: 'Sequência para fortalecer abdômen e lombar com movimentos controlados.',
-        duration: '24 min',
-        calories: '210 kcal',
-        video: 'https://www.youtube.com/embed/50kH47ZztHs',
+        focus: 'Ombros 3D e trapézio ativo',
+        summary: 'Alternância entre desenvolvimentos, elevações e remadas altas para destacar os deltoides.',
+        duration: '44 min',
+        calories: '360 kcal',
+        video: 'https://www.youtube.com/embed/5sGOlKn-IxI',
         exercises: [
-          { name: 'Prancha com apoio nos antebraços', detail: '3 séries de 30 segundos' },
-          { name: 'Superman alternado', detail: '3 séries de 12 repetições' },
-          { name: 'Prancha lateral com apoio de joelho', detail: '2 séries de 20 segundos por lado' }
+          { name: 'Desenvolvimento militar com barra', detail: '4 séries de 6-8 repetições' },
+          { name: 'Elevação lateral na máquina', detail: '4 séries de 12-15 repetições' },
+          { name: 'Face pull pesado', detail: '3 séries de 15 repetições' },
+          { name: 'Encolhimento com barra', detail: '4 séries de 12 repetições' }
         ]
       },
       sexta: {
-        focus: 'Treino combinado força + cardio',
-        summary: 'Blocos curtos que alternam resistência e ritmo para fechar a semana em alta.',
-        duration: '30 min',
-        calories: '320 kcal',
-        video: 'https://www.youtube.com/embed/VHyGqsPOUHs',
+        focus: 'Posterior dominante com cargas altas',
+        summary: 'Movimentos de hinge e flexão combinados para consolidar posteriores de coxa e glúteos.',
+        duration: '50 min',
+        calories: '440 kcal',
+        video: 'https://www.youtube.com/embed/3i7iI-yRzyc',
         exercises: [
-          { name: 'Agachamento com joelho alto', detail: '3 séries de 12 repetições' },
-          { name: 'Flexão inclinada', detail: '3 séries de 10 repetições' },
-          { name: 'Polichinelo com braço cruzado', detail: '3 séries de 40 segundos' }
+          { name: 'Levantamento terra romeno', detail: '4 séries de 8 repetições' },
+          { name: 'Mesa flexora bilateral', detail: '4 séries de 10-12 repetições' },
+          { name: 'Glúteo máquina 45°', detail: '3 séries de 12 repetições' },
+          { name: 'Good morning com barra', detail: '3 séries de 10 repetições' }
         ]
       },
       sabado: {
-        focus: 'Alongamento completo',
-        summary: 'Tempo para relaxar musculatura posterior e quadris com apoio de tapete.',
-        duration: '22 min',
-        calories: '170 kcal',
-        video: 'https://www.youtube.com/embed/UoC_O3HzsH0',
+        focus: 'Braços volumosos e antebraço forte',
+        summary: 'Estruture superséries entre bíceps e tríceps para manter o pump até o final.',
+        duration: '42 min',
+        calories: '340 kcal',
+        video: 'https://www.youtube.com/embed/Xfx6tDr7guo',
         exercises: [
-          { name: 'Alongamento borboleta', detail: '3 séries de 40 segundos' },
-          { name: 'Postura do pombo adaptada', detail: '2 séries de 40 segundos por lado' },
-          { name: 'Respiração profunda deitada', detail: '4 ciclos de 1 minuto' }
+          { name: 'Rosca scott', detail: '4 séries de 8-10 repetições' },
+          { name: 'Rosca martelo cruzada', detail: '3 séries de 12 repetições' },
+          { name: 'Tríceps testa com corda', detail: '4 séries de 10-12 repetições' },
+          { name: 'Tríceps coice com halter', detail: '3 séries de 12 repetições por braço' }
         ]
       },
       domingo: {
-        focus: 'Planejamento da nova semana',
-        summary: 'Revise metas, caminhe leve e prepare o corpo para o próximo ciclo.',
-        duration: '30 min',
-        calories: '200 kcal',
-        video: 'https://www.youtube.com/embed/4pKly2JojMw',
+        focus: 'Recuperação ativa estruturada',
+        summary: 'Ative a circulação e alivie tensões com mobilidade guiada e respiração consciente.',
+        duration: '32 min',
+        calories: '230 kcal',
+        video: 'https://www.youtube.com/embed/w0l9F9lYGDI',
         exercises: [
-          { name: 'Caminhada consciente', detail: '15 minutos em ritmo relaxado' },
-          { name: 'Alongamento de peitoral na parede', detail: '2 séries de 30 segundos por lado' },
-          { name: 'Anotações de progresso', detail: '5 minutos refletindo sobre aprendizados' }
+          { name: 'Caminhada regenerativa', detail: '25 minutos em ritmo leve' },
+          { name: 'Mobilidade de quadril com bastão', detail: '3 séries de 12 repetições' },
+          { name: 'Liberação miofascial de dorsais', detail: '3 séries de 45 segundos por lado' },
+          { name: 'Respiração profunda supina', detail: '5 ciclos de 90 segundos' }
         ]
       }
     }
   }
 };
+
+
+function ensureUserIdentifiers() {
+  const used = new Set();
+  Object.values(trainingPlans).forEach((user) => {
+    if (!user || typeof user !== 'object') return;
+    if (typeof user.id === 'string') {
+      const trimmed = user.id.trim().toUpperCase();
+      user.id = trimmed;
+      if (trimmed) {
+        used.add(trimmed);
+      }
+    } else {
+      user.id = '';
+    }
+  });
+  let counter = 1;
+  Object.values(trainingPlans).forEach((user) => {
+    if (!user || typeof user !== 'object') return;
+    if (!user.id) {
+      let candidate = '';
+      while (!candidate || used.has(candidate)) {
+        candidate = `MM-${String(counter).padStart(3, '0')}`;
+        counter += 1;
+      }
+      user.id = candidate;
+      used.add(candidate);
+    }
+  });
+}
+
+function getUserKeyById(rawId) {
+  if (!rawId || typeof rawId !== 'string') return '';
+  const target = rawId.trim().toUpperCase();
+  if (!target) return '';
+  const entry = Object.entries(trainingPlans).find(([, user]) => {
+    if (!user || typeof user !== 'object') return false;
+    if (typeof user.id !== 'string') return false;
+    return user.id.toUpperCase() === target;
+  });
+  return entry ? entry[0] : '';
+}
+
+function updateProfileIdDisplay() {
+  if (!profileId) return;
+  const current = trainingPlans[defaultAthleteKey];
+  const idValue = current && typeof current.id === 'string' ? current.id : '';
+  profileId.textContent = idValue ? `ID pessoal: ${idValue}` : 'ID pessoal: defina com o painel';
+}
+
+ensureUserIdentifiers();
+
 
 function normaliseExercises(exercises = []) {
   if (!Array.isArray(exercises)) return [];
@@ -520,6 +600,9 @@ function mergeTrainingPlans(base, saved) {
     if (userValue.name) {
       targetUser.name = userValue.name;
     }
+    if (typeof userValue.id === 'string' && userValue.id.trim()) {
+      targetUser.id = userValue.id.trim().toUpperCase();
+    }
     const savedRoutine = userValue.routine;
     if (!savedRoutine || typeof savedRoutine !== 'object') return;
     Object.entries(savedRoutine).forEach(([dayKey, planValue]) => {
@@ -540,13 +623,18 @@ function restoreTrainingPlansFromStorage() {
   const saved = readStorage(STORAGE_KEYS.trainingPlans, null);
   if (!saved || typeof saved !== 'object') return;
   mergeTrainingPlans(trainingPlans, saved);
+  ensureUserIdentifiers();
 }
 
 function persistTrainingPlans() {
+  ensureUserIdentifiers();
   writeStorage(STORAGE_KEYS.trainingPlans, trainingPlans);
+  updateProfileIdDisplay();
 }
 
 restoreTrainingPlansFromStorage();
+ensureUserIdentifiers();
+updateProfileIdDisplay();
 
 const adminCredentials = { login: 'admin1', password: 'machomuscle' };
 let isAdminAuthenticated = false;
@@ -647,6 +735,30 @@ function renderAdminPreview() {
   adminPlanPreview.innerHTML = previewMarkup;
 }
 
+function setAdminUserById(rawId) {
+  const key = getUserKeyById(rawId);
+  if (!key) {
+    if (adminUserIdFeedback) {
+      adminUserIdFeedback.textContent = 'ID não encontrado. Confira com o usuário.';
+    }
+    return false;
+  }
+  selectedAdminUser = key;
+  if (adminUserSelect) {
+    adminUserSelect.value = key;
+  }
+  fillAdminForm();
+  renderAdminPreview();
+  if (adminUserIdFeedback) {
+    const userName = trainingPlans[key]?.name || 'Usuário';
+    adminUserIdFeedback.textContent = `Plano carregado para ${userName}.`;
+  }
+  if (selectedAdminUser === defaultAthleteKey && selectedAdminDay === getCurrentDayKey()) {
+    renderDailyTrainingCard();
+  }
+  return true;
+}
+
 function populateAdminUserOptions() {
   if (!adminUserSelect) return;
   const options = Object.entries(trainingPlans)
@@ -719,6 +831,12 @@ function prepareAdminPanel() {
   populateAdminDayOptions();
   fillAdminForm();
   renderAdminPreview();
+  if (adminUserIdFeedback) {
+    adminUserIdFeedback.textContent = '';
+  }
+  if (adminUserIdInput) {
+    adminUserIdInput.value = '';
+  }
 }
 
 function getPlanForDailyCard() {
@@ -1317,6 +1435,42 @@ if (adminLoginForm) {
   });
 }
 
+if (adminUserIdButton && adminUserIdInput) {
+  const triggerLookup = () => {
+    const rawValue = adminUserIdInput.value.trim();
+    if (!rawValue) {
+      if (adminUserIdFeedback) {
+        adminUserIdFeedback.textContent = 'Informe um ID válido.';
+      }
+      return;
+    }
+    if (!isAdminAuthenticated) {
+      if (adminUserIdFeedback) {
+        adminUserIdFeedback.textContent = 'Faça login para buscar um ID.';
+      }
+      return;
+    }
+    const success = setAdminUserById(rawValue);
+    if (success && adminUserIdInput) {
+      adminUserIdInput.value = '';
+    }
+  };
+  adminUserIdButton.addEventListener('click', () => {
+    triggerLookup();
+  });
+  adminUserIdInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      triggerLookup();
+    }
+  });
+  adminUserIdInput.addEventListener('input', () => {
+    if (adminUserIdFeedback) {
+      adminUserIdFeedback.textContent = '';
+    }
+  });
+}
+
 if (adminUserSelect) {
   adminUserSelect.addEventListener('change', (event) => {
     selectedAdminUser = event.target.value;
@@ -1325,6 +1479,12 @@ if (adminUserSelect) {
     }
     fillAdminForm();
     renderAdminPreview();
+    if (adminUserIdFeedback) {
+      adminUserIdFeedback.textContent = '';
+    }
+    if (adminUserIdInput) {
+      adminUserIdInput.value = '';
+    }
   });
 }
 
