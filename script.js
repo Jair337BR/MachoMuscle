@@ -1316,6 +1316,10 @@ rewardButtons.forEach((button) => {
         ? 'Reservado'
         : lower.includes('desbloquear')
         ? 'Desbloqueado'
+        : lower.includes('equipar')
+        ? 'Equipado'
+        : lower.includes('aplicar')
+        ? 'Aplicado'
         : 'Resgatado';
       button.textContent = claimedLabel;
       button.setAttribute('aria-pressed', 'true');
