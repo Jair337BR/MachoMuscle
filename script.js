@@ -4,7 +4,8 @@ const navButtons = document.querySelectorAll('.tabbar__item');
 
 const STORAGE_KEYS = {
   trainingPlans: 'machoTrainingPlans',
-  trendFilters: 'machoTrendFilters'
+  trendFilters: 'machoTrendFilters',
+  flashMessage: 'machoFlashMessage'
 };
 
 function storageAvailable() {
@@ -37,6 +38,15 @@ function writeStorage(key, value) {
     window.localStorage.setItem(key, JSON.stringify(value));
   } catch (error) {
     // ignore quota issues
+  }
+}
+
+function clearStorage(key) {
+  if (!canPersistState) return;
+  try {
+    window.localStorage.removeItem(key);
+  } catch (error) {
+    // ignore
   }
 }
 
@@ -155,6 +165,16 @@ const customWorkoutSummary = document.getElementById('customWorkoutSummary');
 const customWorkoutIntensityValue = document.getElementById('customIntensityValue');
 const customWorkoutIntensityLabel = document.getElementById('customWorkoutIntensityLabel');
 const customWorkoutSteps = document.getElementById('customWorkoutSteps');
+const plannerGrid = document.getElementById('plannerGrid');
+const plannerPalette = document.getElementById('plannerPalette');
+const plannerDetails = document.getElementById('plannerDetails');
+const plannerDetailsTitle = document.getElementById('plannerDetailsTitle');
+const plannerDetailsFocus = document.getElementById('plannerDetailsFocus');
+const plannerDetailsSummary = document.getElementById('plannerDetailsSummary');
+const plannerDetailsMeta = document.getElementById('plannerDetailsMeta');
+const plannerDetailsExercises = document.getElementById('plannerDetailsExercises');
+const plannerSaveButton = document.getElementById('plannerSaveButton');
+const plannerResetButton = document.getElementById('plannerResetButton');
 const squadChatForm = document.getElementById('squadChatForm');
 const squadChatInput = document.getElementById('squadChatMessage');
 const squadChatLog = document.getElementById('squadChatLog');
@@ -184,6 +204,7 @@ const adminCaloriesInput = document.getElementById('adminCaloriesInput');
 const adminVideoInput = document.getElementById('adminVideoInput');
 const adminUpdateFeedback = document.getElementById('adminUpdateFeedback');
 const adminPlanPreview = document.getElementById('adminPlanPreview');
+const globalMessage = document.getElementById('globalMessage');
 
 function getInitials(name) {
   const parts = name
@@ -216,305 +237,350 @@ const weekDayLabels = {
 
 const defaultAthleteKey = 'voce';
 
+const hypertrophyCatalog = {
+  ombros: {
+    label: 'Ombros completos',
+    focus: 'Ombros 3D e estabilidade escapular',
+    summary:
+      'Combine desenvolvimentos e elevações com cadência controlada para manter deltoides cheios e saudáveis.',
+    duration: '45 min',
+    calories: '360 kcal',
+    video: 'https://www.youtube.com/embed/5sGOlKn-IxI',
+    exercises: [
+      {
+        name: 'Desenvolvimento com halteres',
+        detail: '4 séries de 8-10 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExd29nbTN2aWIyNGZrbnJvdnRibGIyMzN4Mmw3dTY1cmNtZHVzejZmbSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/g9582DNuQppxC/giphy.gif'
+      },
+      {
+        name: 'Elevação lateral em pé',
+        detail: '3 séries de 12-15 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcmg0MGwxM2RzdGdzMzZsYnA0MDVlN2JkYWo5OTMwZ3U5cGZlZzRzNCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/XbJdo0AZ35cww/giphy.gif'
+      },
+      {
+        name: 'Remada alta com barra',
+        detail: '3 séries de 10-12 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHc2djV2OWM1anVwdXB1YnhwZjU3NWJiMmJvNjN2bXlrbnAxcmttcyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7TKxy5G4ko7X1SNi/giphy.gif'
+      },
+      {
+        name: 'Face pull com elástico',
+        detail: '3 séries de 15 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3E5OTV5NXNnN2Jxb3p5bHQ3Y2Z5bnljcnBocnlyam9pejNyMG5oOCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o6ZtcQ4G1nL8eBFfa/giphy.gif'
+      }
+    ]
+  },
+  quadriceps: {
+    label: 'Pernas quadríceps',
+    focus: 'Pernas com foco em quadríceps',
+    summary:
+      'Agachamentos e isoladores estratégicos para estimular quadríceps em diferentes ângulos sem perder técnica.',
+    duration: '48 min',
+    calories: '430 kcal',
+    video: 'https://www.youtube.com/embed/COd4IITZ1wk',
+    exercises: [
+      {
+        name: 'Agachamento livre',
+        detail: '4 séries de 8-10 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmcxamZzbHNkNTZzMmdpc2l6MjMxY3Y2cmg5YW1wdnhxaHRheWhsOSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7TKCk0oRdbv6VJtu/giphy.gif'
+      },
+      {
+        name: 'Leg press 45°',
+        detail: '3 séries de 12 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnY2eGg2Y2g5djl3MmNpdjQyaGh3cGEzZGlnb25mdnFrMW10ZG52ciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0HlRJ1A5kKQJ4efK/giphy.gif'
+      },
+      {
+        name: 'Avanço caminhando',
+        detail: '3 séries de 12 passos por perna',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTZtYzU4NjI4d2FmcWJrdzV3bmwycjdwb3M4NmZsMW9qcTJqN3djNCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o85xo5rXDBi0tyMJi/giphy.gif'
+      },
+      {
+        name: 'Extensora unilateral',
+        detail: '3 séries de 12-15 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGNrMGdyY2U2NnpoN2M4YnF5Z3RsdnZmanZrbWlyZHRuMDhnamZqMCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26BRuo6sLetdllPAQ/giphy.gif'
+      }
+    ]
+  },
+  peitoTriceps: {
+    label: 'Peito e tríceps',
+    focus: 'Peito e tríceps para hipertrofia',
+    summary:
+      'Abra peito e tríceps com compostos e isoladores que mantêm o tempo sob tensão elevado.',
+    duration: '46 min',
+    calories: '420 kcal',
+    video: 'https://www.youtube.com/embed/m8K3b0UpwOQ',
+    exercises: [
+      {
+        name: 'Supino reto com halteres',
+        detail: '4 séries de 8-10 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdW5uY2d6aTJ2c2V4NTMxcTNsZzRwNHVta3o2aWx4Y2F2aGR4ZjdpZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o6ZtaO9D6HzJbD0tq/giphy.gif'
+      },
+      {
+        name: 'Crucifixo inclinado',
+        detail: '3 séries de 12 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbnF2a2g2cjd4MzZ4NG1kaXVmZXo1a21nZjd5dDkyM3FycWlpcGdheSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7TKAvj3b31c4EEn6/giphy.gif'
+      },
+      {
+        name: 'Mergulho no banco',
+        detail: '3 séries de 10-12 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDM0cTd0dXc0bzhwdGtpa3loNXl4OHlsdWtvNGdzYnNlYXMzYXlociZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0HlIkxz5pS6LbYic/giphy.gif'
+      },
+      {
+        name: 'Tríceps francês com halteres',
+        detail: '3 séries de 12 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmtvaXZuNmZsMGt6eTE2dXA5ajd2NnJjMG13NnZpcXhmcTEyaDk0YiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7TKBv6fGIenp2S8Q/giphy.gif'
+      }
+    ]
+  },
+  posterior: {
+    label: 'Posterior de coxa',
+    focus: 'Posterior de coxa e glúteos',
+    summary:
+      'Ênfase excêntrica em movimentos de hinge para recrutar posteriores e glúteos com segurança.',
+    duration: '47 min',
+    calories: '430 kcal',
+    video: 'https://www.youtube.com/embed/3i7iI-yRzyc',
+    exercises: [
+      {
+        name: 'Levantamento romeno com halteres',
+        detail: '4 séries de 8-10 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3FkN2Y4MW9jZmdqMnRranlzZHZhdXBmNXRzdTF2c3Vua3U0Zmx1dSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7TKoOPcNTgYJQ3z6/giphy.gif'
+      },
+      {
+        name: 'Mesa flexora',
+        detail: '3 séries de 10-12 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTE0aDg3YTY3bzZ4cjcyd3A4Zmx0ZjA2c2dkeDJkYzQyZzNvYWtleiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0ExyZ5F7bKnzsyqk/giphy.gif'
+      },
+      {
+        name: 'Elevação de quadril com barra',
+        detail: '4 séries de 12 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ2p1M3R6dmJ5MWRqM2UzOXZkbWZtbDZqYnpvYjhrOTZ5ZnNrOHphMiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26BGzZxzzlDP7U9GQ/giphy.gif'
+      },
+      {
+        name: 'Abdução de quadril em polia',
+        detail: '3 séries de 15 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWJ2NXY3bTRpaWh2Y2IxMnZyamd2d2NnaTV6cmJqenFneTBqMWIzOCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3ohzdPVa3vD8Q2Wkfm/giphy.gif'
+      }
+    ]
+  },
+  costasBiceps: {
+    label: 'Costas e bíceps',
+    focus: 'Costas densas e bíceps firmes',
+    summary:
+      'Remadas e puxadas com tempo sob tensão para engrossar dorsais enquanto os bíceps acompanham.',
+    duration: '46 min',
+    calories: '410 kcal',
+    video: 'https://www.youtube.com/embed/Ob5Avzkdxl0',
+    exercises: [
+      {
+        name: 'Remada curvada com barra',
+        detail: '4 séries de 8-10 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2x2ZGpvNjV5NGFyaWwwa3R0a2l1dXk3Mmw4c2JrbnNqaTJ2bTZrOCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7aTskHEUdgCQAXde/giphy.gif'
+      },
+      {
+        name: 'Puxada aberta na polia',
+        detail: '3 séries de 10-12 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcWE1dnR0cW5rdXBuMjJzY20zcTN3YTB5NGQ3c3BodWRndXl4NjBqZyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26BGzKpO4nwx0HfHi/giphy.gif'
+      },
+      {
+        name: 'Remada unilateral com halter',
+        detail: '3 séries de 12 repetições por lado',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpmNHphYTZlM2Q1NXZnOTUzMGEwZTFzeDJxcm43eWd1NmI3cGJ5biZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7btR6yofk6RVYq2Q/giphy.gif'
+      },
+      {
+        name: 'Rosca direta com barra W',
+        detail: '3 séries de 10-12 repetições',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2ZxM2c3cmR4cnJnbDczcW1mM2o0OGdjNDN3ODByN3MxNGRhM3Y2eCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/26xBI73gWquCBBCDe/giphy.gif'
+      }
+    ]
+  },
+  descanso: {
+    label: 'Descanso ativo',
+    focus: 'Descanso e mobilidade leve',
+    summary:
+      'Reserve o dia para alongamentos suaves, respiração profunda e caminhada leve para recuperar energia.',
+    duration: '25 min',
+    calories: '180 kcal',
+    video: 'https://www.youtube.com/embed/w0l9F9lYGDI',
+    exercises: [
+      {
+        name: 'Caminhada regenerativa',
+        detail: '15 minutos em ritmo confortável',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWVsMmU3d3lzcWNycGoxZTEzMHBoYjUxYzZuaGNkMTRramQ1c3NpMyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7btMCltyDvSgF92E/giphy.gif'
+      },
+      {
+        name: 'Alongamento de peitoral apoiado',
+        detail: '3 séries de 40 segundos por lado',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGZ6ZWNvcTcxMW80cnJ1dXF2cnZ1c3d1NWZucHgycmwxZzk4ZDIzNyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/3o7btMCltyDvSgF92E/giphy.gif'
+      },
+      {
+        name: 'Mobilidade torácica com rolo',
+        detail: '3 séries de 12 repetições controladas',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExczNsdmw1NmU3d2FubjQyYTAydWc0eDZlcWc0cDQ0cDAyNWp6azJjeiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0MYEqEzwMWFCg8rW/giphy.gif'
+      },
+      {
+        name: 'Respiração diafragmática guiada',
+        detail: '5 ciclos de 1 minuto',
+        media: 'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2ptOThxejNtMGJ2cjJheHcwY3dpczdmYnEzNTBrN2c1ejY3ZXduYSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0MYDGAODclXEGXy4/giphy.gif'
+      }
+    ]
+  }
+};
+
 const defaultPlanTemplate = {
   focus: 'Sessão de hipertrofia personalizada',
   summary: 'Defina o grupamento muscular, cadência e carga sugerida para potencializar o ganho de massa.',
   duration: '45 min',
   calories: '420 kcal',
   video: '',
-  exercises: []
+  exercises: [],
+  template: 'personalizado'
 };
+
+function cloneCatalogEntry(key) {
+  const catalogItem = hypertrophyCatalog[key];
+  if (!catalogItem) {
+    return {
+      focus: defaultPlanTemplate.focus,
+      summary: defaultPlanTemplate.summary,
+      duration: defaultPlanTemplate.duration,
+      calories: defaultPlanTemplate.calories,
+      video: defaultPlanTemplate.video,
+      exercises: [],
+      template: key || 'personalizado'
+    };
+  }
+  return {
+    focus: catalogItem.focus,
+    summary: catalogItem.summary,
+    duration: catalogItem.duration,
+    calories: catalogItem.calories,
+    video: catalogItem.video,
+    exercises: catalogItem.exercises.map((exercise) => ({
+      name: exercise.name,
+      detail: exercise.detail,
+      media: exercise.media || ''
+    })),
+    template: key
+  };
+}
+
+function createPlan(catalogKey, overrides = {}) {
+  const plan = cloneCatalogEntry(catalogKey);
+  const result = { ...plan, ...overrides };
+  if (overrides.exercises) {
+    result.exercises = overrides.exercises.map((exercise) => ({
+      name: String(exercise.name || '').trim() || 'Exercício guiado',
+      detail: String(exercise.detail || '').trim() || 'Repetições livres',
+      media: String(exercise.media || '').trim()
+    }));
+  }
+  if (!result.template) {
+    result.template = catalogKey || plan.template || 'personalizado';
+  }
+  return result;
+}
 
 const trainingPlans = {
   voce: {
     id: 'MM-001',
     name: 'Você',
     routine: {
-      segunda: {
-        focus: 'Peito e tríceps para hipertrofia',
-        summary: 'Trabalhe supinos e isoladores com cadência controlada para maximizar a tensão mecânica.',
-        duration: '45 min',
-        calories: '420 kcal',
-        video: 'https://www.youtube.com/embed/m8K3b0UpwOQ',
-        exercises: [
-          { name: 'Supino reto com halteres', detail: '4 séries de 8-10 repetições' },
-          { name: 'Crucifixo inclinado', detail: '3 séries de 12 repetições' },
-          { name: 'Mergulho no banco', detail: '3 séries de 10-12 repetições' },
-          { name: 'Tríceps francês com halteres', detail: '3 séries de 12 repetições' }
-        ]
-      },
-      terca: {
-        focus: 'Costas e bíceps em tempo sob tensão',
-        summary: 'Remadas horizontais e puxadas com pausa isométrica para ativar dorsais sem perder postura.',
-        duration: '46 min',
-        calories: '400 kcal',
-        video: 'https://www.youtube.com/embed/Ob5Avzkdxl0',
-        exercises: [
-          { name: 'Remada curvada com barra', detail: '4 séries de 8-10 repetições' },
-          { name: 'Puxada aberta na polia', detail: '3 séries de 10-12 repetições' },
-          { name: 'Remada unilateral com halter', detail: '3 séries de 12 repetições por lado' },
-          { name: 'Rosca direta com barra W', detail: '3 séries de 10-12 repetições' }
-        ]
-      },
-      quarta: {
-        focus: 'Pernas focadas em quadríceps',
-        summary: 'Agachamentos controlados combinados com isoladores para estimular o quadríceps em diferentes ângulos.',
-        duration: '48 min',
-        calories: '450 kcal',
-        video: 'https://www.youtube.com/embed/COd4IITZ1wk',
-        exercises: [
-          { name: 'Agachamento livre', detail: '4 séries de 8-10 repetições' },
-          { name: 'Leg press 45°', detail: '3 séries de 12 repetições' },
-          { name: 'Avanço caminhando', detail: '3 séries de 12 passos por perna' },
-          { name: 'Extensora unilateral', detail: '3 séries de 12-15 repetições' }
-        ]
-      },
-      quinta: {
-        focus: 'Ombros e trapézio com ênfase em volume',
-        summary: 'Use variações de desenvolvimento e elevações laterais para preencher a parte superior.',
-        duration: '42 min',
-        calories: '360 kcal',
-        video: 'https://www.youtube.com/embed/5sGOlKn-IxI',
-        exercises: [
-          { name: 'Desenvolvimento com halteres', detail: '4 séries de 8-10 repetições' },
-          { name: 'Elevação lateral em pé', detail: '3 séries de 12-15 repetições' },
-          { name: 'Remada alta com barra', detail: '3 séries de 10-12 repetições' },
-          { name: 'Face pull com elástico', detail: '3 séries de 15 repetições' }
-        ]
-      },
-      sexta: {
-        focus: 'Posterior de coxa e glúteos',
-        summary: 'Enfatize a fase excêntrica em movimentos de hinge para recrutar posteriores e glúteos.',
-        duration: '47 min',
-        calories: '430 kcal',
-        video: 'https://www.youtube.com/embed/3i7iI-yRzyc',
-        exercises: [
-          { name: 'Levantamento romeno com halteres', detail: '4 séries de 8-10 repetições' },
-          { name: 'Mesa flexora ou flexão nórdica assistida', detail: '3 séries de 10-12 repetições' },
-          { name: 'Elevação de quadril com barra', detail: '4 séries de 12 repetições' },
-          { name: 'Abdução de quadril em polia ou miniband', detail: '3 séries de 15 repetições' }
-        ]
-      },
-      sabado: {
-        focus: 'Braços com técnicas de pico de contração',
-        summary: 'Superséries de bíceps e tríceps para manter congestionamento e sensação de pump.',
-        duration: '40 min',
-        calories: '330 kcal',
-        video: 'https://www.youtube.com/embed/Xfx6tDr7guo',
-        exercises: [
-          { name: 'Rosca alternada com giro', detail: '3 séries de 12 repetições' },
-          { name: 'Rosca martelo no banco inclinado', detail: '3 séries de 10-12 repetições' },
-          { name: 'Tríceps testa com barra', detail: '3 séries de 10-12 repetições' },
-          { name: 'Tríceps na corda com pausa', detail: '3 séries de 12-15 repetições' }
-        ]
-      },
-      domingo: {
-        focus: 'Recuperação ativa e mobilidade para hipertrofia',
-        summary: 'Descarregue a musculatura com mobilidade específica e respiração profunda.',
-        duration: '30 min',
-        calories: '220 kcal',
-        video: 'https://www.youtube.com/embed/w0l9F9lYGDI',
-        exercises: [
-          { name: 'Alongamento de peitoral com apoio', detail: '3 séries de 40 segundos por lado' },
-          { name: 'Mobilidade torácica com foam roller', detail: '3 séries de 12 repetições' },
-          { name: 'Relaxamento de quadril com 90/90', detail: '3 séries de 45 segundos por lado' },
-          { name: 'Respiração diafragmática guiada', detail: '5 ciclos de 1 minuto' }
-        ]
-      }
+      segunda: createPlan('ombros'),
+      terca: createPlan('quadriceps'),
+      quarta: createPlan('peitoTriceps'),
+      quinta: createPlan('posterior'),
+      sexta: createPlan('costasBiceps'),
+      sabado: createPlan('descanso'),
+      domingo: createPlan('descanso')
     }
   },
   ana: {
     id: 'MM-204',
     name: 'Ana Torres',
     routine: {
-      segunda: {
-        focus: 'Peito e tríceps com estabilidade',
-        summary: 'Combine halteres leves e cadência lenta para sentir o peitoral trabalhando sem perder postura.',
+      segunda: createPlan('ombros', {
+        summary:
+          'Cadência moderada e halteres controlados para fortalecer deltoides sem sobrecarregar a lombar.',
         duration: '42 min',
-        calories: '360 kcal',
-        video: 'https://www.youtube.com/embed/AV6wQK1WyPM',
-        exercises: [
-          { name: 'Supino reto com halteres', detail: '4 séries de 10-12 repetições' },
-          { name: 'Crucifixo com elástico', detail: '3 séries de 15 repetições controladas' },
-          { name: 'Flexão inclinada apoiada', detail: '3 séries de 12 repetições' },
-          { name: 'Tríceps testa com halteres', detail: '3 séries de 12 repetições' }
-        ]
-      },
-      terca: {
-        focus: 'Costas e bíceps com foco em postura',
-        summary: 'Remadas sentadas e unilaterais com tempo sob tensão para ativar dorsais sem sobrecarregar a lombar.',
-        duration: '44 min',
-        calories: '370 kcal',
-        video: 'https://www.youtube.com/embed/Ob5Avzkdxl0',
-        exercises: [
-          { name: 'Puxada frente com triângulo', detail: '4 séries de 10-12 repetições' },
-          { name: 'Remada baixa no cabo', detail: '3 séries de 12 repetições' },
-          { name: 'Remada unilateral com apoio', detail: '3 séries de 12 repetições por lado' },
-          { name: 'Rosca direta na polia', detail: '3 séries de 12 repetições' }
-        ]
-      },
-      quarta: {
-        focus: 'Pernas e glúteos para volume',
-        summary: 'Estruture a sessão com agachamentos guiados e ênfase na subida explosiva.',
-        duration: '48 min',
-        calories: '430 kcal',
-        video: 'https://www.youtube.com/embed/COd4IITZ1wk',
-        exercises: [
-          { name: 'Agachamento no smith', detail: '4 séries de 10 repetições' },
-          { name: 'Passada no step', detail: '3 séries de 12 repetições por perna' },
-          { name: 'Cadeira abdutora', detail: '3 séries de 15 repetições' },
-          { name: 'Elevação de quadril com miniband', detail: '3 séries de 15 repetições' }
-        ]
-      },
-      quinta: {
-        focus: 'Ombros e deltoides definidos',
-        summary: 'Variações de elevação e desenvolvimento alternando ângulos para preencher os deltoides.',
-        duration: '40 min',
-        calories: '320 kcal',
-        video: 'https://www.youtube.com/embed/5sGOlKn-IxI',
-        exercises: [
-          { name: 'Desenvolvimento arnold', detail: '3 séries de 10-12 repetições' },
-          { name: 'Elevação lateral sentada', detail: '3 séries de 15 repetições' },
-          { name: 'Elevação frontal com disco', detail: '3 séries de 12 repetições' },
-          { name: 'Encolhimento com halteres', detail: '3 séries de 15 repetições' }
-        ]
-      },
-      sexta: {
-        focus: 'Posterior e glúteos concentrados',
-        summary: 'Mantenha a cadência lenta na fase excêntrica para sentir a contração máxima.',
+        calories: '330 kcal'
+      }),
+      terca: createPlan('quadriceps', {
+        summary: 'Priorize amplitude nos movimentos guiados e mantenha a respiração estável do início ao fim.',
         duration: '45 min',
-        calories: '380 kcal',
-        video: 'https://www.youtube.com/embed/3i7iI-yRzyc',
-        exercises: [
-          { name: 'Stiff com halteres', detail: '4 séries de 10-12 repetições' },
-          { name: 'Glúteo quatro apoios com caneleira', detail: '3 séries de 15 repetições por perna' },
-          { name: 'Mesa flexora alternada', detail: '3 séries de 12 repetições' },
-          { name: 'Abdução em pé na polia', detail: '3 séries de 15 repetições por lado' }
-        ]
-      },
-      sabado: {
-        focus: 'Braços e core com ênfase em pump',
-        summary: 'Superséries de bíceps, tríceps e pranchas para finalizar a semana energizada.',
-        duration: '38 min',
-        calories: '300 kcal',
-        video: 'https://www.youtube.com/embed/Xfx6tDr7guo',
-        exercises: [
-          { name: 'Rosca alternada com halteres', detail: '3 séries de 12 repetições' },
-          { name: 'Rosca concentrada no banco', detail: '3 séries de 12 repetições por braço' },
-          { name: 'Tríceps na corda', detail: '3 séries de 15 repetições' },
-          { name: 'Prancha com toque no ombro', detail: '3 séries de 20 repetições alternadas' }
-        ]
-      },
-      domingo: {
-        focus: 'Mobilidade guiada e descarrego',
-        summary: 'Use alongamentos ativos para acelerar a recuperação e preparar a próxima semana.',
-        duration: '28 min',
-        calories: '200 kcal',
-        video: 'https://www.youtube.com/embed/w0l9F9lYGDI',
-        exercises: [
-          { name: 'Alongamento de dorsal em banco', detail: '3 séries de 40 segundos' },
-          { name: 'Liberação de glúteo com bola', detail: '3 séries de 30 segundos por lado' },
-          { name: 'Cadeia posterior em PNF', detail: '3 séries de 45 segundos' },
-          { name: 'Respiração 4-7-8', detail: '4 ciclos completos' }
-        ]
-      }
+        calories: '380 kcal'
+      }),
+      quarta: createPlan('peitoTriceps', {
+        summary: 'Foque em postura neutra e tempo sob tensão constante para sentir o peitoral trabalhando.',
+        duration: '44 min',
+        calories: '360 kcal'
+      }),
+      quinta: createPlan('posterior', {
+        summary:
+          'Alongue bem antes dos hinges e controle a descida para ativar posteriores de forma segura.',
+        duration: '46 min',
+        calories: '370 kcal'
+      }),
+      sexta: createPlan('costasBiceps', {
+        summary: 'Use pegadas confortáveis e mantenha a escápula firme para proteger a lombar e otimizar o pump.',
+        duration: '45 min',
+        calories: '360 kcal'
+      }),
+      sabado: createPlan('descanso', {
+        summary: 'Registre sensações da semana, alongue e prepare o corpo para o próximo ciclo de treinos.',
+        duration: '25 min',
+        calories: '180 kcal'
+      }),
+      domingo: createPlan('descanso', {
+        summary: 'Dia livre para regeneração ativa leve e respiração consciente.',
+        duration: '25 min',
+        calories: '180 kcal'
+      })
     }
   },
   carlos: {
     id: 'MM-418',
     name: 'Carlos Lima',
     routine: {
-      segunda: {
+      segunda: createPlan('peitoTriceps', {
         focus: 'Peito pesado com pré-exaustão',
         summary: 'Abra a semana com movimentos compostos seguidos de isoladores para congestionar o peitoral.',
         duration: '50 min',
-        calories: '480 kcal',
-        video: 'https://www.youtube.com/embed/m8K3b0UpwOQ',
-        exercises: [
-          { name: 'Supino reto com barra', detail: '4 séries de 6-8 repetições' },
-          { name: 'Supino inclinado com halteres', detail: '4 séries de 8-10 repetições' },
-          { name: 'Crucifixo no crossover', detail: '3 séries de 12-15 repetições' },
-          { name: 'Tríceps mergulho nas paralelas', detail: '3 séries até a falha técnica' }
-        ]
-      },
-      terca: {
+        calories: '480 kcal'
+      }),
+      terca: createPlan('costasBiceps', {
         focus: 'Costas densas e bíceps fortes',
         summary: 'Remadas pesadas e puxadas neutras para aumentar densidade e largura dorsal.',
         duration: '52 min',
-        calories: '460 kcal',
-        video: 'https://www.youtube.com/embed/Ob5Avzkdxl0',
-        exercises: [
-          { name: 'Barra fixa com sobrecarga', detail: '4 séries de 6-8 repetições' },
-          { name: 'Remada curvada pronada', detail: '4 séries de 8-10 repetições' },
-          { name: 'Pulldown neutro com pausa', detail: '3 séries de 12 repetições' },
-          { name: 'Rosca direta pesada', detail: '3 séries de 8-10 repetições' }
-        ]
-      },
-      quarta: {
+        calories: '460 kcal'
+      }),
+      quarta: createPlan('quadriceps', {
         focus: 'Pernas completas com foco em força',
-        summary: 'Volume alto com ênfase em compostos para gerar estímulo máximo em quadríceps e glúteos.',
+        summary: 'Volume alto em compostos para gerar estímulo máximo em quadríceps e glúteos.',
         duration: '55 min',
-        calories: '520 kcal',
-        video: 'https://www.youtube.com/embed/COd4IITZ1wk',
-        exercises: [
-          { name: 'Agachamento livre pesado', detail: '5 séries de 6-8 repetições' },
-          { name: 'Leg press unilateral', detail: '4 séries de 10 repetições por perna' },
-          { name: 'Hack machine', detail: '3 séries de 10-12 repetições' },
-          { name: 'Afundo búlgaro com halteres', detail: '3 séries de 12 repetições por perna' }
-        ]
-      },
-      quinta: {
+        calories: '520 kcal'
+      }),
+      quinta: createPlan('ombros', {
         focus: 'Ombros 3D e trapézio ativo',
-        summary: 'Alternância entre desenvolvimentos, elevações e remadas altas para destacar os deltoides.',
-        duration: '44 min',
-        calories: '360 kcal',
-        video: 'https://www.youtube.com/embed/5sGOlKn-IxI',
-        exercises: [
-          { name: 'Desenvolvimento militar com barra', detail: '4 séries de 6-8 repetições' },
-          { name: 'Elevação lateral na máquina', detail: '4 séries de 12-15 repetições' },
-          { name: 'Face pull pesado', detail: '3 séries de 15 repetições' },
-          { name: 'Encolhimento com barra', detail: '4 séries de 12 repetições' }
-        ]
-      },
-      sexta: {
+        summary: 'Alterne desenvolvimentos, elevações e remadas altas para destacar os deltoides.',
+        duration: '46 min',
+        calories: '380 kcal'
+      }),
+      sexta: createPlan('posterior', {
         focus: 'Posterior dominante com cargas altas',
         summary: 'Movimentos de hinge e flexão combinados para consolidar posteriores de coxa e glúteos.',
-        duration: '50 min',
-        calories: '440 kcal',
-        video: 'https://www.youtube.com/embed/3i7iI-yRzyc',
-        exercises: [
-          { name: 'Levantamento terra romeno', detail: '4 séries de 8 repetições' },
-          { name: 'Mesa flexora bilateral', detail: '4 séries de 10-12 repetições' },
-          { name: 'Glúteo máquina 45°', detail: '3 séries de 12 repetições' },
-          { name: 'Good morning com barra', detail: '3 séries de 10 repetições' }
-        ]
-      },
-      sabado: {
-        focus: 'Braços volumosos e antebraço forte',
-        summary: 'Estruture superséries entre bíceps e tríceps para manter o pump até o final.',
-        duration: '42 min',
-        calories: '340 kcal',
-        video: 'https://www.youtube.com/embed/Xfx6tDr7guo',
-        exercises: [
-          { name: 'Rosca scott', detail: '4 séries de 8-10 repetições' },
-          { name: 'Rosca martelo cruzada', detail: '3 séries de 12 repetições' },
-          { name: 'Tríceps testa com corda', detail: '4 séries de 10-12 repetições' },
-          { name: 'Tríceps coice com halter', detail: '3 séries de 12 repetições por braço' }
-        ]
-      },
-      domingo: {
-        focus: 'Recuperação ativa estruturada',
-        summary: 'Ative a circulação e alivie tensões com mobilidade guiada e respiração consciente.',
-        duration: '32 min',
-        calories: '230 kcal',
-        video: 'https://www.youtube.com/embed/w0l9F9lYGDI',
-        exercises: [
-          { name: 'Caminhada regenerativa', detail: '25 minutos em ritmo leve' },
-          { name: 'Mobilidade de quadril com bastão', detail: '3 séries de 12 repetições' },
-          { name: 'Liberação miofascial de dorsais', detail: '3 séries de 45 segundos por lado' },
-          { name: 'Respiração profunda supina', detail: '5 ciclos de 90 segundos' }
-        ]
-      }
+        duration: '52 min',
+        calories: '450 kcal'
+      }),
+      sabado: createPlan('descanso', {
+        summary: 'Utilize o sábado para alongar suavemente e revisar indicadores no aplicativo.',
+        duration: '30 min',
+        calories: '190 kcal'
+      }),
+      domingo: createPlan('descanso', {
+        summary: 'Respiração consciente e caminhada leve para iniciar uma nova semana com energia.',
+        duration: '30 min',
+        calories: '190 kcal'
+      })
     }
   }
 };
@@ -578,9 +644,11 @@ function normaliseExercises(exercises = []) {
       if (!exercise || typeof exercise !== 'object') return null;
       const name = String(exercise.name || '').trim();
       const detail = String(exercise.detail || '').trim();
+      const media = String(exercise.media || '').trim();
       return {
         name: name || 'Exercício guiado',
-        detail: detail || 'Repetições livres'
+        detail: detail || 'Repetições livres',
+        media
       };
     })
     .filter(Boolean);
@@ -613,7 +681,8 @@ function mergeTrainingPlans(base, saved) {
         duration: planValue.duration || defaultPlanTemplate.duration,
         calories: planValue.calories || defaultPlanTemplate.calories,
         video: planValue.video || '',
-        exercises: normaliseExercises(planValue.exercises)
+        exercises: normaliseExercises(planValue.exercises),
+        template: planValue.template || (planValue.focus && '') || 'personalizado'
       };
     });
   });
@@ -635,6 +704,26 @@ function persistTrainingPlans() {
 restoreTrainingPlansFromStorage();
 ensureUserIdentifiers();
 updateProfileIdDisplay();
+
+function showGlobalMessage(message) {
+  if (!globalMessage || !message) return;
+  globalMessage.textContent = message;
+  globalMessage.hidden = false;
+  globalMessage.classList.add('is-visible');
+  setTimeout(() => {
+    globalMessage.classList.add('is-fading');
+  }, 4500);
+  setTimeout(() => {
+    globalMessage.hidden = true;
+    globalMessage.classList.remove('is-visible', 'is-fading');
+  }, 6000);
+}
+
+const pendingFlashMessage = readStorage(STORAGE_KEYS.flashMessage, '');
+if (typeof pendingFlashMessage === 'string' && pendingFlashMessage.trim()) {
+  showGlobalMessage(pendingFlashMessage.trim());
+  clearStorage(STORAGE_KEYS.flashMessage);
+}
 
 const adminCredentials = { login: 'admin1', password: 'machomuscle' };
 let isAdminAuthenticated = false;
@@ -679,7 +768,8 @@ function getOrCreatePlan(userKey, dayKey) {
   const user = trainingPlans[userKey];
   if (!user) return null;
   if (!user.routine[dayKey]) {
-    user.routine[dayKey] = { ...defaultPlanTemplate };
+    const fallback = cloneCatalogEntry('descanso');
+    user.routine[dayKey] = { ...fallback, template: fallback.template || 'descanso' };
   }
   return user.routine[dayKey];
 }
@@ -691,12 +781,18 @@ function parseExerciseLines(value) {
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => {
-      const parts = line.split(/[-–—|]/);
-      const name = parts.shift() || line;
-      const detail = parts.join(' - ').trim();
+      const segments = line.split('|');
+      const base = segments.shift() || '';
+      const media = (segments.pop() || '').trim();
+      const detailCandidate = segments.length ? segments[0] : '';
+      const hyphenParts = base.split(/[-–—]/);
+      const name = hyphenParts.shift() || base;
+      const detailFromHyphen = hyphenParts.join(' - ').trim();
+      const detail = (detailCandidate || detailFromHyphen).trim();
       return {
         name: name.trim(),
-        detail: detail || 'Repetições livres'
+        detail: detail || 'Repetições livres',
+        media
       };
     });
 }
@@ -797,7 +893,11 @@ function fillAdminForm() {
   }
   if (adminExercisesInput) {
     adminExercisesInput.value = plan.exercises
-      .map((exercise) => `${exercise.name} - ${exercise.detail}`)
+      .map((exercise) => {
+        const detail = exercise.detail ? ` - ${exercise.detail}` : '';
+        const media = exercise.media ? ` | ${exercise.media}` : '';
+        return `${exercise.name}${detail}${media}`;
+      })
       .join('\n');
   }
   if (adminDurationInput) {
@@ -894,9 +994,16 @@ function renderDailyTrainingCard() {
     item.innerHTML = `
       <label class="checklist__item">
         <input type="checkbox" data-daily-exercise="${dayKey}-${index}" />
-        <span>
-          ${escapeHTML(exercise.name)}
-          <span class="checklist__detail">${escapeHTML(exercise.detail)}</span>
+        <span class="checklist__content">
+          <span class="checklist__text">
+            ${escapeHTML(exercise.name)}
+            <span class="checklist__detail">${escapeHTML(exercise.detail)}</span>
+          </span>
+          ${exercise.media
+            ? `<span class="checklist__media"><img src="${escapeHTML(exercise.media)}" alt="Demonstração de ${escapeHTML(
+                exercise.name
+              )}" loading="lazy" /></span>`
+            : ''}
         </span>
       </label>`;
     const checkbox = item.querySelector('input');
@@ -1285,82 +1392,329 @@ if (trendFilterForm) {
   });
 }
 
-function updateWorkoutPreview() {
-  if (
-    !customWorkoutForm ||
-    !customWorkoutSummary ||
-    !customWorkoutIntensityValue ||
-    !customWorkoutIntensityLabel ||
-    !customWorkoutSteps
-  ) {
-    return;
+const plannerDayOrder = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
+let plannerAssignments = {};
+let plannerInitialAssignments = {};
+let plannerSelectedDay = 'segunda';
+let plannerActivePalette = '';
+let plannerDragData = null;
+
+function inferTemplateFromPlan(plan) {
+  if (!plan || typeof plan !== 'object') return 'descanso';
+  if (plan.template && hypertrophyCatalog[plan.template]) {
+    return plan.template;
   }
-  const focus = customWorkoutForm.elements['focus']?.value || 'treino personalizado';
-  const intensity = Number(customWorkoutForm.elements['intensity']?.value || 5);
-  const duration = customWorkoutForm.elements['duration']?.value || '40 min';
-  const extras = Array.from(
-    customWorkoutForm.querySelectorAll('input[name="extras"]:checked')
-  )
-    .map((input) => input.value)
-    .filter(Boolean);
+  const match = Object.entries(hypertrophyCatalog).find(([, catalogPlan]) => {
+    return catalogPlan.focus === plan.focus;
+  });
+  return match ? match[0] : 'descanso';
+}
 
-  customWorkoutIntensityValue.textContent = `${intensity} / 10`;
-  customWorkoutIntensityLabel.textContent = `Intensidade ${intensity} / 10`;
+function initialisePlannerAssignments() {
+  const user = trainingPlans[defaultAthleteKey];
+  plannerAssignments = {};
+  plannerInitialAssignments = {};
+  plannerDayOrder.forEach((dayKey) => {
+    const plan = user?.routine?.[dayKey];
+    const template = inferTemplateFromPlan(plan);
+    plannerAssignments[dayKey] = template;
+    plannerInitialAssignments[dayKey] = template;
+  });
+  if (!plannerAssignments[plannerSelectedDay]) {
+    plannerSelectedDay = plannerDayOrder[1] || plannerDayOrder[0] || 'segunda';
+  }
+  plannerActivePalette = plannerAssignments[plannerSelectedDay] || 'descanso';
+}
 
-  const focusText = focus.charAt(0).toUpperCase() + focus.slice(1);
-  const extrasText = extras.length ? extras.join(', ') : 'sem extras adicionais';
-  customWorkoutSummary.textContent = `${focusText} com ${duration} e ${extrasText}.`;
+function updatePaletteSelection() {
+  if (!plannerPalette) return;
+  const options = plannerPalette.querySelectorAll('[data-template]');
+  options.forEach((option) => {
+    const isActive = option.dataset.template === plannerActivePalette;
+    option.classList.toggle('is-active', isActive);
+    option.setAttribute('aria-pressed', String(isActive));
+  });
+}
 
-  const steps = [
-    {
-      title: 'Aquecimento dinâmico',
-      detail: extras.includes('respiração guiada')
-        ? 'Respiração guiada e mobilidade leve para preparar o corpo.'
-        : 'Mobilidade articular e elevação gradual da frequência.'
-    },
-    {
-      title: 'Bloco principal',
-      detail: focus.includes('força')
-        ? 'Séries compostas com foco em potência controlada.'
-        : focus.includes('mobilidade')
-        ? 'Sequências em fluxo para estabilidade e amplitude.'
-        : focus.includes('mindset')
-        ? 'Exercícios de respiração ativa com movimentos conscientes.'
-        : 'Intervalos híbridos para manter o ritmo e o foco.'
-    },
-    {
-      title: 'Finalização',
-      detail: extras.includes('finisher de core')
-        ? 'Finisher de core seguido de alongamento guiado.'
-        : extras.includes('sprint final')
-        ? 'Sprints curtos para fechar em alta intensidade.'
-        : 'Desaceleração com alongamento e registro rápido da sensação.'
+function updatePlannerActions() {
+  if (plannerSaveButton) {
+    const hasChanges = plannerDayOrder.some(
+      (dayKey) => (plannerAssignments[dayKey] || 'descanso') !== (plannerInitialAssignments[dayKey] || 'descanso')
+    );
+    plannerSaveButton.disabled = !hasChanges;
+    plannerSaveButton.setAttribute('aria-disabled', String(!hasChanges));
+    if (plannerResetButton) {
+      plannerResetButton.disabled = !hasChanges;
+      plannerResetButton.setAttribute('aria-disabled', String(!hasChanges));
     }
-  ];
-
-  customWorkoutSteps.innerHTML = steps
-    .map(
-      (step) => `<li><strong>${escapeHTML(step.title)}</strong><p>${escapeHTML(step.detail)}</p></li>`
-    )
-    .join('');
+  }
 }
 
-if (
-  customWorkoutForm &&
-  customWorkoutSummary &&
-  customWorkoutIntensityValue &&
-  customWorkoutIntensityLabel &&
-  customWorkoutSteps
-) {
-  customWorkoutForm.addEventListener('input', () => {
-    updateWorkoutPreview();
-  });
-  customWorkoutForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    updateWorkoutPreview();
-  });
-  updateWorkoutPreview();
+function setSelectedDay(dayKey) {
+  plannerSelectedDay = dayKey;
+  updatePlannerGrid();
+  updatePlannerDetails();
+  updatePaletteSelection();
 }
+
+function createPlannerBlock(templateKey, dayKey) {
+  const block = document.createElement('div');
+  const catalogItem = hypertrophyCatalog[templateKey] || hypertrophyCatalog.descanso;
+  block.className = 'planner-block';
+  if (plannerSelectedDay === dayKey) {
+    block.classList.add('is-selected');
+  }
+  block.dataset.template = templateKey;
+  block.dataset.day = dayKey;
+  block.draggable = true;
+  block.innerHTML = `
+    <span class="planner-block__title">${escapeHTML(catalogItem.label)}</span>
+    <span class="planner-block__subtitle">${escapeHTML(catalogItem.focus)}</span>
+  `;
+  block.addEventListener('dragstart', handlePlannerDragStart);
+  block.addEventListener('dragend', handlePlannerDragEnd);
+  block.addEventListener('click', (event) => {
+    event.stopPropagation();
+    setSelectedDay(dayKey);
+  });
+  return block;
+}
+
+function updatePlannerGrid() {
+  if (!plannerGrid) return;
+  plannerDayOrder.forEach((dayKey) => {
+    const slot = plannerGrid.querySelector(`[data-slot-day="${dayKey}"]`);
+    if (!slot) return;
+    const templateKey = plannerAssignments[dayKey] || 'descanso';
+    slot.innerHTML = '';
+    slot.append(createPlannerBlock(templateKey, dayKey));
+    slot.classList.toggle('is-selected', plannerSelectedDay === dayKey);
+    const catalogItem = hypertrophyCatalog[templateKey] || hypertrophyCatalog.descanso;
+    slot.setAttribute(
+      'aria-label',
+      `${weekDayLabels[dayKey] || dayKey}: ${catalogItem.label}`
+    );
+    const summaryEl = plannerGrid.querySelector(`[data-summary-day="${dayKey}"]`);
+    if (summaryEl) {
+      summaryEl.textContent = catalogItem.summary;
+    }
+  });
+}
+
+function updatePlannerDetails() {
+  if (!plannerDetails || !plannerDetailsFocus || !plannerDetailsSummary || !plannerDetailsMeta) return;
+  const dayKey = plannerSelectedDay || plannerDayOrder[0];
+  const templateKey = plannerAssignments[dayKey] || 'descanso';
+  const plan = createPlan(templateKey);
+  if (plannerDetailsTitle) {
+    plannerDetailsTitle.textContent = weekDayLabels[dayKey] || 'Dia selecionado';
+  }
+  plannerDetailsFocus.textContent = plan.focus;
+  plannerDetailsSummary.textContent = plan.summary;
+  plannerDetailsMeta.textContent = `${plan.duration} · ${plan.calories}`;
+  if (plannerDetailsExercises) {
+    plannerDetailsExercises.innerHTML = plan.exercises
+      .map(
+        (exercise) => `
+          <li>
+            <strong>${escapeHTML(exercise.name)}</strong>
+            <span>${escapeHTML(exercise.detail)}</span>
+          </li>`
+      )
+      .join('');
+  }
+}
+
+function assignTemplateToDay(dayKey, templateKey) {
+  if (!hypertrophyCatalog[templateKey]) {
+    templateKey = 'descanso';
+  }
+  plannerAssignments[dayKey] = templateKey;
+  plannerActivePalette = templateKey;
+  plannerSelectedDay = dayKey;
+  updatePlannerGrid();
+  updatePlannerDetails();
+  updatePlannerActions();
+  updatePaletteSelection();
+}
+
+function handlePlannerDragStart(event) {
+  const template = event.currentTarget?.dataset?.template;
+  if (!template) return;
+  plannerDragData = {
+    template,
+    sourceDay: event.currentTarget.dataset.day || '',
+    fromPalette: event.currentTarget.classList.contains('planner-block--palette')
+  };
+  plannerActivePalette = template;
+  updatePaletteSelection();
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', template);
+  }
+}
+
+function handlePlannerDragEnd() {
+  plannerDragData = null;
+}
+
+function handlePlannerDragOver(event) {
+  if (!plannerDragData) return;
+  event.preventDefault();
+  if (event.dataTransfer) {
+    event.dataTransfer.dropEffect = 'move';
+  }
+}
+
+function handlePlannerDragEnter(event) {
+  if (!plannerDragData) return;
+  event.currentTarget.classList.add('is-over');
+}
+
+function handlePlannerDragLeave(event) {
+  event.currentTarget.classList.remove('is-over');
+}
+
+function handlePlannerDrop(event) {
+  if (!plannerDragData) return;
+  event.preventDefault();
+  const dayKey = event.currentTarget.dataset.day;
+  if (!dayKey) return;
+  const targetTemplate = plannerAssignments[dayKey] || 'descanso';
+  const { template, sourceDay, fromPalette } = plannerDragData;
+  if (sourceDay && sourceDay !== dayKey && !fromPalette) {
+    plannerAssignments[sourceDay] = targetTemplate;
+  }
+  assignTemplateToDay(dayKey, template);
+  event.currentTarget.classList.remove('is-over');
+  plannerDragData = null;
+}
+
+function buildPlannerGrid() {
+  if (!plannerGrid) return;
+  plannerGrid.innerHTML = '';
+  plannerDayOrder.forEach((dayKey) => {
+    const dayCard = document.createElement('article');
+    dayCard.className = 'planner-day card';
+    dayCard.dataset.day = dayKey;
+    dayCard.innerHTML = `
+      <header class="planner-day__header">
+        <span class="planner-day__label">${escapeHTML(weekDayLabels[dayKey] || dayKey)}</span>
+      </header>
+      <div class="planner-day__body">
+        <div
+          class="planner-slot"
+          data-slot-day="${dayKey}"
+          data-day="${dayKey}"
+          role="button"
+          tabindex="0"
+          aria-label="Configurar ${escapeHTML(weekDayLabels[dayKey] || dayKey)}"
+        ></div>
+        <p class="planner-day__summary" data-summary-day="${dayKey}"></p>
+      </div>
+    `;
+    const slot = dayCard.querySelector('.planner-slot');
+    if (slot) {
+      slot.addEventListener('click', () => {
+        setSelectedDay(dayKey);
+        if (plannerActivePalette) {
+          assignTemplateToDay(dayKey, plannerActivePalette);
+        }
+      });
+      slot.addEventListener('focus', () => {
+        setSelectedDay(dayKey);
+      });
+      slot.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          assignTemplateToDay(dayKey, plannerActivePalette || plannerAssignments[dayKey]);
+        }
+      });
+      slot.addEventListener('dragover', handlePlannerDragOver);
+      slot.addEventListener('dragenter', handlePlannerDragEnter);
+      slot.addEventListener('dragleave', handlePlannerDragLeave);
+      slot.addEventListener('drop', handlePlannerDrop);
+    }
+    plannerGrid.append(dayCard);
+  });
+  updatePlannerGrid();
+}
+
+function resetPlanner() {
+  plannerAssignments = { ...plannerInitialAssignments };
+  plannerActivePalette = plannerAssignments[plannerSelectedDay] || plannerActivePalette || 'descanso';
+  updatePlannerGrid();
+  updatePlannerDetails();
+  updatePlannerActions();
+  updatePaletteSelection();
+}
+
+function savePlanner() {
+  const user = trainingPlans[defaultAthleteKey];
+  if (!user || !user.routine) return;
+  plannerDayOrder.forEach((dayKey) => {
+    const templateKey = plannerAssignments[dayKey] || 'descanso';
+    const plan = user.routine[dayKey];
+    const currentTemplate = inferTemplateFromPlan(plan);
+    if (currentTemplate === templateKey && plan) {
+      plan.template = templateKey;
+      return;
+    }
+    user.routine[dayKey] = createPlan(templateKey);
+  });
+  persistTrainingPlans();
+  writeStorage(
+    STORAGE_KEYS.flashMessage,
+    'Configurações salvas! Seu calendário de hipertrofia foi atualizado.'
+  );
+  window.location.href = 'index.html';
+}
+
+function preparePlanner() {
+  if (!plannerGrid || !plannerPalette) return;
+  initialisePlannerAssignments();
+  buildPlannerGrid();
+  updatePlannerDetails();
+  updatePlannerActions();
+  const paletteOptions = plannerPalette.querySelectorAll('[data-template]');
+  paletteOptions.forEach((option) => {
+    option.addEventListener('dragstart', handlePlannerDragStart);
+    option.addEventListener('dragend', handlePlannerDragEnd);
+    option.addEventListener('click', () => {
+      const templateKey = option.dataset.template;
+      if (!templateKey) return;
+      plannerActivePalette = templateKey;
+      updatePaletteSelection();
+      assignTemplateToDay(plannerSelectedDay, templateKey);
+    });
+    option.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        const templateKey = option.dataset.template;
+        if (!templateKey) return;
+        plannerActivePalette = templateKey;
+        updatePaletteSelection();
+        assignTemplateToDay(plannerSelectedDay, templateKey);
+      }
+    });
+  });
+  updatePaletteSelection();
+  if (plannerResetButton) {
+    plannerResetButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      resetPlanner();
+    });
+  }
+  if (plannerSaveButton) {
+    plannerSaveButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (plannerSaveButton.disabled) return;
+      savePlanner();
+    });
+  }
+}
+
+preparePlanner();
 
 function appendChatMessage({ author, message, self = false }) {
   if (!squadChatLog) return;

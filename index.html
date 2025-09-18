@@ -52,6 +52,7 @@
       </header>
 
       <main class="screens">
+        <div class="global-message" id="globalMessage" role="status" aria-live="polite" hidden></div>
         <section class="screen screen--active" data-screen="home" aria-label="Início">
           <article class="hero-card">
             <div class="hero-card__content">
@@ -121,17 +122,17 @@
               </div>
               <div class="next-workout">
                 <div>
-                  <h3>Inferiores explosivos</h3>
-                  <p>Agachamento búlgaro, levantamento terra romeno e sprint intervalado.</p>
+                  <h3>Ombros 3D lapidados</h3>
+                  <p>Desenvolvimento com halteres, elevação lateral e face pull para preencher os deltoides.</p>
                   <ul class="chip-list">
-                    <li class="chip">Força</li>
-                    <li class="chip">HIIT</li>
-                    <li class="chip">Mobilidade</li>
+                    <li class="chip">Hipertrofia</li>
+                    <li class="chip">Deltoides</li>
+                    <li class="chip">Tempo sob tensão</li>
                   </ul>
                 </div>
                 <div class="next-workout__meta">
-                  <span>40 min</span>
-                  <span>480 kcal</span>
+                  <span>45 min</span>
+                  <span>360 kcal</span>
                 </div>
               </div>
             </div>
@@ -213,38 +214,38 @@
               <article class="video-card">
                 <div class="video-card__frame">
                   <iframe
-                    src="https://www.youtube.com/embed/ml6cT4AZdqI"
-                    title="HIIT guiado para iniciantes"
+                    src="https://www.youtube.com/embed/5sGOlKn-IxI"
+                    title="Rotina completa de ombros para hipertrofia"
                     loading="lazy"
                     allowfullscreen
                   ></iframe>
                 </div>
-                <h4>HIIT guiado para iniciantes</h4>
-                <p>Aula curta com explicações claras sobre ritmo, respiração e pausas seguras.</p>
+                <h4>Ombros definidos sem mistério</h4>
+                <p>Aprenda a sequência com desenvolvimento, elevações e face pull em português.</p>
               </article>
               <article class="video-card">
                 <div class="video-card__frame">
                   <iframe
-                    src="https://www.youtube.com/embed/UoC_O3HzsH0"
-                    title="Alongamento completo em casa"
+                    src="https://www.youtube.com/embed/m8K3b0UpwOQ"
+                    title="Supino controlado e tríceps guiado"
                     loading="lazy"
                     allowfullscreen
                   ></iframe>
                 </div>
-                <h4>Alongamento completo em casa</h4>
-                <p>Sequência didática para soltar o corpo e evitar desconfortos após o treino.</p>
+                <h4>Peito e tríceps passo a passo</h4>
+                <p>Entenda cadência, amplitude e variações ideais para construir volume.</p>
               </article>
               <article class="video-card">
                 <div class="video-card__frame">
                   <iframe
-                    src="https://www.youtube.com/embed/VHyGqsPOUHs"
-                    title="Força com peso corporal"
+                    src="https://www.youtube.com/embed/COd4IITZ1wk"
+                    title="Treino de pernas com foco em quadríceps"
                     loading="lazy"
                     allowfullscreen
                   ></iframe>
                 </div>
-                <h4>Força com peso corporal</h4>
-                <p>Explicações passo a passo para quem está começando sem equipamentos.</p>
+                <h4>Pernas fortes para iniciantes</h4>
+                <p>Veja como executar agachamento, leg press e avanços com segurança.</p>
               </article>
             </div>
           </section>
@@ -295,15 +296,15 @@
             <ul class="mission-list">
               <li>
                 <div>
-                  <h4>Explosão matinal</h4>
-                  <p>Finalize o aquecimento dinâmico em menos de 8 minutos.</p>
+                  <h4>Cadência perfeita</h4>
+                  <p>Mantenha 3 segundos na descida do supino reto durante todo o bloco principal.</p>
                 </div>
                 <span class="mission-list__reward">+120 XP</span>
               </li>
               <li>
                 <div>
-                  <h4>Flow híbrido</h4>
-                  <p>Combine força e mobilidade em um treino customizado.</p>
+                  <h4>Posterior acordado</h4>
+                  <p>Execute um drop set na mesa flexora priorizando técnica e amplitude completa.</p>
                 </div>
                 <span class="mission-list__reward">+150 XP</span>
               </li>
@@ -331,13 +332,13 @@
               </div>
               <div class="badge-token" data-badge-key="flow">
                 <span class="badge-token__icon">🌀</span>
-                <h4>Fluxo perfeito</h4>
-                <p>Mobilidade avançada</p>
+                <h4>Alongamento premium</h4>
+                <p>Mobilidade consistente</p>
               </div>
               <div class="badge-token" data-badge-key="ritmo">
-                <span class="badge-token__icon">⚡</span>
-                <h4>Ritmo supremo</h4>
-                <p>HIIT em alta</p>
+                <span class="badge-token__icon">💪</span>
+                <h4>Volume supremo</h4>
+                <p>Semana 100% hipertrofia</p>
               </div>
               <div class="badge-token is-locked" data-badge-key="prisma" data-badge-locked="true">
                 <span class="badge-token__icon">🌈</span>
@@ -407,9 +408,9 @@
               <div class="composer__toolbar">
                 <div class="chip-toggle-group" role="group" aria-label="Categorias do post">
                   <button type="button" class="chip-toggle" data-tag="Força">Força</button>
-                  <button type="button" class="chip-toggle" data-tag="Cardio">Cardio</button>
+                  <button type="button" class="chip-toggle" data-tag="Hipertrofia">Hipertrofia</button>
                   <button type="button" class="chip-toggle" data-tag="Mobilidade">Mobilidade</button>
-                  <button type="button" class="chip-toggle" data-tag="Mindset">Mindset</button>
+                  <button type="button" class="chip-toggle" data-tag="Recuperação">Recuperação</button>
                 </div>
                 <button class="button button--primary" type="submit">Postar</button>
               </div>
@@ -417,13 +418,13 @@
           </form>
 
           <div class="feed" id="communityFeed">
-            <article class="post card" data-tags="Força,HIIT">
+            <article class="post card" data-tags="Força,Hipertrofia">
               <div class="post__avatar" aria-hidden="true">AH</div>
               <div class="post__content">
                 <header class="post__header">
                   <div>
                     <h3>Ana H.</h3>
-                    <span class="post__meta">há 2h · Treino HIIT</span>
+                    <span class="post__meta">há 2h · Ombros e deltoides</span>
                   </div>
                   <button class="icon-button" type="button" aria-label="Mais ações">
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -434,12 +435,12 @@
                   </button>
                 </header>
                 <p>
-                  Misturei agachamentos com saltos pliométricos e finalizei com corrida curta.
-                  Energia lá em cima! Quem topa um duplo desafio amanhã?
+                  Foquei na cadência lenta do desenvolvimento com halteres e finalizei com elevação
+                  lateral até a falha técnica. Ombros queimando, mas o pump valeu demais!
                 </p>
                 <div class="post__tags">
                   <span class="chip">Força</span>
-                  <span class="chip">HIIT</span>
+                  <span class="chip">Hipertrofia</span>
                 </div>
                 <footer class="post__footer">
                   <button class="post-action" type="button">
@@ -470,25 +471,25 @@
               </div>
             </article>
 
-            <article class="post card" data-tags="Mobilidade,Mindset">
+            <article class="post card" data-tags="Recuperação,Mobilidade">
               <div class="post__avatar" aria-hidden="true">RB</div>
               <div class="post__content">
                 <header class="post__header">
                   <div>
                     <h3>Rafa B.</h3>
-                    <span class="post__meta">há 4h · Mobilidade</span>
+                    <span class="post__meta">há 4h · Recuperação ativa</span>
                   </div>
                 </header>
                 <p>
-                  Fiz a sequência Flow para quadril e ombro. A sensação de leveza é absurda!
-                  Deixei salvo nos destaques do perfil para quem quiser testar.
+                  Fiz alongamentos focados em quadríceps e cadeia posterior para manter a flexibilidade
+                  entre os treinos pesados. Deixei salvo nos destaques para quem quiser acompanhar.
                 </p>
                 <div class="post__media">
-                  <span>Sequência Flow · 18 min</span>
+                  <span>Alongamento guiado · 18 min</span>
                 </div>
                 <div class="post__tags">
+                  <span class="chip">Recuperação</span>
                   <span class="chip">Mobilidade</span>
-                  <span class="chip">Mindset</span>
                 </div>
                 <footer class="post__footer">
                   <button class="post-action" type="button">
@@ -540,8 +541,8 @@
                 </div>
               </div>
               <p class="profile__bio" id="profileBio">
-                Treinos híbridos com foco em mobilidade e força. Em busca do equilíbrio
-                entre intensidade e autocuidado.
+                Rotina guiada para hipertrofia com técnica controlada, descanso estratégico e
+                registro constante da evolução.
               </p>
             </div>
 
@@ -570,7 +571,7 @@
               </div>
               <div class="profile-form__group profile-form__group--full">
                 <label for="bio">Bio</label>
-                <textarea id="bio" name="bio" rows="3" maxlength="160">Treinos híbridos com foco em mobilidade e força. Em busca do equilíbrio entre intensidade e autocuidado.</textarea>
+                <textarea id="bio" name="bio" rows="3" maxlength="160">Rotina guiada para hipertrofia com técnica controlada, descanso estratégico e registro constante da evolução.</textarea>
               </div>
               <div class="profile-form__group profile-form__group--full">
                 <span>Escolha a vibe de cor</span>
@@ -631,12 +632,12 @@
               </header>
               <ul class="profile-feed__list" id="profileHighlights">
                 <li class="profile-feed__item card">
-                  <span class="profile-feed__date">Ontem · Treino híbrido</span>
-                  <p>Completei o combo força + mobilidade com tempo recorde. Sensação de flow total!</p>
+                  <span class="profile-feed__date">Ontem · Peito e tríceps</span>
+                  <p>Supino inclinado controlando 3 segundos na descida. Finalizei com tríceps corda até a falha.</p>
                 </li>
                 <li class="profile-feed__item card">
-                  <span class="profile-feed__date">3 dias atrás · Mindset</span>
-                  <p>Nova playlist para manter a energia elevada durante os sprints finais.</p>
+                  <span class="profile-feed__date">3 dias atrás · Costas e bíceps</span>
+                  <p>Remada curvada pesada e rosca alternada com tempo sob tensão. Pump insano!</p>
                 </li>
               </ul>
               <form class="highlight-form" id="highlightForm">
