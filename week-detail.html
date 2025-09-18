@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Semana em detalhes · MachoMuscle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app app--standalone" role="application">
+      <main class="subpage subpage--standalone" aria-labelledby="week-detail-title">
+        <div class="subpage__container">
+          <header class="subpage__header">
+            <a class="subpage__back" href="index.html">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+              </svg>
+              Voltar
+            </a>
+            <div>
+              <span class="subpage__eyebrow">Insights detalhados</span>
+              <h1 id="week-detail-title">Sua semana em números</h1>
+            </div>
+          </header>
+          <p class="subpage__description">
+            Compare o desempenho da semana atual com a anterior e descubra quais hábitos estão impulsionando sua evolução.
+          </p>
+          <div class="subpage__content">
+            <section class="card subpage-card">
+              <header class="card__header">
+                <h2>Snapshot geral</h2>
+                <span class="badge badge--soft">Atualizado agora</span>
+              </header>
+              <div class="subpage-stat-grid">
+                <div>
+                  <span class="subpage-stat__label">Tempo ativo</span>
+                  <strong>4h 35min</strong>
+                  <span class="subpage-stat__trend is-up">+12% vs última semana</span>
+                </div>
+                <div>
+                  <span class="subpage-stat__label">Calorias queimadas</span>
+                  <strong>3.480 kcal</strong>
+                  <span class="subpage-stat__trend is-up">+8%</span>
+                </div>
+                <div>
+                  <span class="subpage-stat__label">Sessões concluídas</span>
+                  <strong>7</strong>
+                  <span class="subpage-stat__trend is-flat">Meta atingida</span>
+                </div>
+                <div>
+                  <span class="subpage-stat__label">Horas de sono</span>
+                  <strong>7h 12</strong>
+                  <span class="subpage-stat__trend is-down">-18 min</span>
+                </div>
+              </div>
+              <div class="subpage-progress-group">
+                <div class="subpage-progress">
+                  <span>Força</span>
+                  <div class="progress-bar">
+                    <div class="progress-bar__fill" style="--progress: 0.82"></div>
+                  </div>
+                  <span class="subpage-progress__meta">+5% XP</span>
+                </div>
+                <div class="subpage-progress">
+                  <span>Mobilidade</span>
+                  <div class="progress-bar">
+                    <div class="progress-bar__fill" style="--progress: 0.74"></div>
+                  </div>
+                  <span class="subpage-progress__meta">+2 sessões</span>
+                </div>
+                <div class="subpage-progress">
+                  <span>Mindset</span>
+                  <div class="progress-bar">
+                    <div class="progress-bar__fill" style="--progress: 0.64"></div>
+                  </div>
+                  <span class="subpage-progress__meta">Respirações guiadas 5×</span>
+                </div>
+              </div>
+            </section>
+            <div class="subpage__grid">
+              <section class="card subpage-card">
+                <header class="card__header">
+                  <h2>Momentos de destaque</h2>
+                </header>
+                <ul class="subpage-list">
+                  <li>
+                    <div>
+                      <strong>HIIT Prisma melhor tempo</strong>
+                      <p>Redução de 18 segundos na série de burpees com salto.</p>
+                    </div>
+                    <span class="chip chip--accent">Top 5%</span>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Feedback da tribo</strong>
+                      <p>12 reações positivas no post sobre mobilidade de quadril.</p>
+                    </div>
+                    <span class="chip chip--soft">+40 XP</span>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Mindset consistente</strong>
+                      <p>4 sessões seguidas de respiração guiada antes do treino.</p>
+                    </div>
+                    <span class="chip chip--soft">Streak +1</span>
+                  </li>
+                </ul>
+              </section>
+              <section class="card subpage-card">
+                <header class="card__header">
+                  <h2>Pontos de atenção</h2>
+                </header>
+                <ul class="subpage-list">
+                  <li>
+                    <div>
+                      <strong>Recuperação</strong>
+                      <p>Apenas 1 sessão de alongamento regenerativo nesta semana.</p>
+                    </div>
+                    <span class="chip chip--soft">Adicionar sábado</span>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Hidratação</strong>
+                      <p>Meta diária atingida em 4 de 7 dias.</p>
+                    </div>
+                    <span class="chip chip--soft">+1 lembrete</span>
+                  </li>
+                  <li>
+                    <div>
+                      <strong>Sono</strong>
+                      <p>Média abaixo da meta em 18 minutos — reduza telas antes de dormir.</p>
+                    </div>
+                    <span class="chip chip--soft">Sugestão</span>
+                  </li>
+                </ul>
+              </section>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personalizar treino · MachoMuscle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app app--standalone" role="application">
+      <main class="subpage subpage--standalone" aria-labelledby="customize-title">
+        <div class="subpage__container">
+          <header class="subpage__header">
+            <a class="subpage__back" href="index.html">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+              </svg>
+              Voltar
+            </a>
+            <div>
+              <span class="subpage__eyebrow">Personalização</span>
+              <h1 id="customize-title">Ajuste o próximo treino</h1>
+            </div>
+          </header>
+          <p class="subpage__description">
+            Defina intensidade, focos e extras para que o plano acompanhe seu ritmo atual.
+          </p>
+          <div class="subpage__content">
+            <form class="card subpage-form" id="customWorkoutForm">
+              <div class="subpage-form__group">
+                <label for="customFocus">Foco principal</label>
+                <select id="customFocus" name="focus">
+                  <option value="força explosiva">Força explosiva</option>
+                  <option value="resistência híbrida">Resistência híbrida</option>
+                  <option value="mobilidade avançada">Mobilidade avançada</option>
+                  <option value="mindset + respiração">Mindset + respiração</option>
+                </select>
+              </div>
+              <div class="subpage-form__group">
+                <label for="customIntensity">Intensidade</label>
+                <div class="subpage-range">
+                  <input id="customIntensity" name="intensity" type="range" min="1" max="10" value="6" />
+                  <span class="subpage-range__value" id="customIntensityValue">6 / 10</span>
+                </div>
+              </div>
+              <fieldset class="subpage-form__group">
+                <legend>Adicionar camadas extras</legend>
+                <label class="chip-choice">
+                  <input type="checkbox" name="extras" value="sprint final" checked />
+                  <span>Sprint final</span>
+                </label>
+                <label class="chip-choice">
+                  <input type="checkbox" name="extras" value="respiração guiada" />
+                  <span>Respiração guiada</span>
+                </label>
+                <label class="chip-choice">
+                  <input type="checkbox" name="extras" value="mobilidade complementar" />
+                  <span>Mobilidade complementar</span>
+                </label>
+                <label class="chip-choice">
+                  <input type="checkbox" name="extras" value="finisher de core" />
+                  <span>Finisher de core</span>
+                </label>
+              </fieldset>
+              <div class="subpage-form__group subpage-form__group--row">
+                <label for="customDuration">Duração alvo</label>
+                <select id="customDuration" name="duration">
+                  <option value="30 min">30 min</option>
+                  <option value="40 min">40 min</option>
+                  <option value="50 min">50 min</option>
+                  <option value="60 min">60 min</option>
+                </select>
+              </div>
+              <div class="subpage-form__actions">
+                <a class="button button--ghost" href="index.html">Cancelar</a>
+                <button class="button button--primary" type="submit">Salvar ajustes</button>
+              </div>
+            </form>
+            <section class="card subpage-card subpage-card--emphasis" id="customWorkoutPreview">
+              <header class="card__header">
+                <h2>Pré-visualização</h2>
+                <span class="badge badge--soft" id="customWorkoutIntensityLabel">Intensidade 6 / 10</span>
+              </header>
+              <p id="customWorkoutSummary">
+                Treino focado em força explosiva com extras selecionados para elevar potência e estabilidade.
+              </p>
+              <ul class="subpage-list subpage-list--steps" id="customWorkoutSteps">
+                <li>
+                  <strong>Aquecimento dinâmico</strong>
+                  <p>Mobilidade articular + respiração box.</p>
+                </li>
+                <li>
+                  <strong>Bloco principal</strong>
+                  <p>Agachamento búlgaro, push press unilateral e sprint final.</p>
+                </li>
+                <li>
+                  <strong>Desaceleração consciente</strong>
+                  <p>Alongamento em fluxo e foco em respiração.</p>
+                </li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

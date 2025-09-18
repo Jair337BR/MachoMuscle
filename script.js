@@ -1,115 +1,47 @@
 const appRoot = document.querySelector('.app');
 const screens = document.querySelectorAll('.screen');
 const navButtons = document.querySelectorAll('.tabbar__item');
-const subpages = document.querySelectorAll('[data-subpage]');
-const subpagesContainer = document.querySelector('.subpages');
-const subpageBackdrop = document.querySelector('[data-subpage-backdrop]');
-const subpageOpeners = document.querySelectorAll('[data-open-subpage]');
-const subpageClosers = document.querySelectorAll('[data-close-subpage]');
 
-let activeSubpage = null;
-let lastSubpageTrigger = null;
-const subpageOpenCallbacks = new Map();
+const STORAGE_KEYS = {
+  trainingPlans: 'machoTrainingPlans',
+  trendFilters: 'machoTrendFilters'
+};
 
-function registerSubpageCallback(id, callback) {
-  if (!id || typeof callback !== 'function') return;
-  subpageOpenCallbacks.set(id, callback);
-}
-
-function closeSubpage({ restoreFocus = true } = {}) {
-  if (!activeSubpage) return;
-  activeSubpage.classList.remove('subpage--active');
-  activeSubpage.setAttribute('aria-hidden', 'true');
-  activeSubpage = null;
-  if (appRoot) {
-    appRoot.classList.remove('has-subpage');
-  }
-  if (subpagesContainer) {
-    subpagesContainer.classList.remove('is-active');
-  }
-  if (subpageBackdrop) {
-    subpageBackdrop.classList.remove('is-visible');
-    subpageBackdrop.setAttribute('aria-hidden', 'true');
-  }
-  if (restoreFocus && lastSubpageTrigger instanceof HTMLElement) {
-    lastSubpageTrigger.focus();
-  }
-  lastSubpageTrigger = null;
-}
-
-function openSubpage(id, trigger) {
-  const page = Array.from(subpages).find((section) => section.dataset.subpage === id);
-  if (!page) return;
-  if (activeSubpage) {
-    activeSubpage.classList.remove('subpage--active');
-    activeSubpage.setAttribute('aria-hidden', 'true');
-  }
-  activeSubpage = page;
-  lastSubpageTrigger = trigger || null;
-  if (appRoot) {
-    appRoot.classList.add('has-subpage');
-  }
-  if (subpagesContainer) {
-    subpagesContainer.classList.add('is-active');
-  }
-  if (subpageBackdrop) {
-    subpageBackdrop.classList.add('is-visible');
-    subpageBackdrop.setAttribute('aria-hidden', 'false');
-  }
-  page.classList.add('subpage--active');
-  page.setAttribute('aria-hidden', 'false');
-  const scrollTarget = page.querySelector('.subpage__container');
-  if (scrollTarget) {
-    scrollTarget.scrollTop = 0;
-  } else {
-    page.scrollTop = 0;
-  }
-  const callback = subpageOpenCallbacks.get(id);
-  if (typeof callback === 'function') {
-    callback();
-  }
-  const focusTarget =
-    page.querySelector('[data-autofocus]') ||
-    page.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-  if (focusTarget instanceof HTMLElement) {
-    focusTarget.focus();
+function storageAvailable() {
+  try {
+    const testKey = '__macho_muscle__';
+    window.localStorage.setItem(testKey, '1');
+    window.localStorage.removeItem(testKey);
+    return true;
+  } catch (error) {
+    return false;
   }
 }
 
-subpages.forEach((page) => {
-  page.setAttribute('aria-hidden', page.classList.contains('subpage--active') ? 'false' : 'true');
-});
+const canPersistState = storageAvailable();
 
-subpageOpeners.forEach((button) => {
-  button.addEventListener('click', () => {
-    const target = button.dataset.openSubpage;
-    if (target) {
-      openSubpage(target, button);
-    }
-  });
-});
-
-subpageClosers.forEach((button) => {
-  button.addEventListener('click', () => {
-    closeSubpage();
-  });
-});
-
-if (subpageBackdrop) {
-  subpageBackdrop.addEventListener('click', () => {
-    closeSubpage({ restoreFocus: false });
-  });
+function readStorage(key, fallback = null) {
+  if (!canPersistState) return fallback;
+  try {
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw);
+  } catch (error) {
+    return fallback;
+  }
 }
 
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape') {
-    closeSubpage();
+function writeStorage(key, value) {
+  if (!canPersistState) return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    // ignore quota issues
   }
-});
+}
 
 navButtons.forEach((button) => {
   button.addEventListener('click', () => {
-    closeSubpage({ restoreFocus: false });
     const target = button.dataset.target;
     screens.forEach((screen) => {
       const isActive = screen.dataset.screen === target;
@@ -559,6 +491,63 @@ const trainingPlans = {
   }
 };
 
+function normaliseExercises(exercises = []) {
+  if (!Array.isArray(exercises)) return [];
+  return exercises
+    .map((exercise) => {
+      if (!exercise || typeof exercise !== 'object') return null;
+      const name = String(exercise.name || '').trim();
+      const detail = String(exercise.detail || '').trim();
+      return {
+        name: name || 'Exercício guiado',
+        detail: detail || 'Repetições livres'
+      };
+    })
+    .filter(Boolean);
+}
+
+function mergeTrainingPlans(base, saved) {
+  if (!saved || typeof saved !== 'object') return;
+  Object.entries(saved).forEach(([userKey, userValue]) => {
+    if (!userValue || typeof userValue !== 'object') return;
+    if (!base[userKey]) {
+      base[userKey] = { name: userValue.name || 'Atleta', routine: {} };
+    }
+    const targetUser = base[userKey];
+    if (!targetUser.routine || typeof targetUser.routine !== 'object') {
+      targetUser.routine = {};
+    }
+    if (userValue.name) {
+      targetUser.name = userValue.name;
+    }
+    const savedRoutine = userValue.routine;
+    if (!savedRoutine || typeof savedRoutine !== 'object') return;
+    Object.entries(savedRoutine).forEach(([dayKey, planValue]) => {
+      if (!planValue || typeof planValue !== 'object') return;
+      targetUser.routine[dayKey] = {
+        focus: planValue.focus || defaultPlanTemplate.focus,
+        summary: planValue.summary || defaultPlanTemplate.summary,
+        duration: planValue.duration || defaultPlanTemplate.duration,
+        calories: planValue.calories || defaultPlanTemplate.calories,
+        video: planValue.video || '',
+        exercises: normaliseExercises(planValue.exercises)
+      };
+    });
+  });
+}
+
+function restoreTrainingPlansFromStorage() {
+  const saved = readStorage(STORAGE_KEYS.trainingPlans, null);
+  if (!saved || typeof saved !== 'object') return;
+  mergeTrainingPlans(trainingPlans, saved);
+}
+
+function persistTrainingPlans() {
+  writeStorage(STORAGE_KEYS.trainingPlans, trainingPlans);
+}
+
+restoreTrainingPlansFromStorage();
+
 const adminCredentials = { login: 'admin1', password: 'machomuscle' };
 let isAdminAuthenticated = false;
 let selectedAdminUser = trainingPlans[defaultAthleteKey] ? defaultAthleteKey : Object.keys(trainingPlans)[0] || '';
@@ -857,6 +846,21 @@ const trackedQuests = new Set(
 
 let activeTrendFilters = new Set();
 
+function restoreTrendFiltersFromStorage() {
+  const saved = readStorage(STORAGE_KEYS.trendFilters, []);
+  if (!Array.isArray(saved)) {
+    activeTrendFilters = new Set();
+    return;
+  }
+  activeTrendFilters = new Set(saved.filter(Boolean));
+}
+
+function persistTrendFilters() {
+  writeStorage(STORAGE_KEYS.trendFilters, Array.from(activeTrendFilters));
+}
+
+restoreTrendFiltersFromStorage();
+
 const communityComposer = document.getElementById('communityComposer');
 const communityFeed = document.getElementById('communityFeed');
 
@@ -866,15 +870,19 @@ function updateTrendFilterUI() {
     filterTriggerLabel.textContent = count ? `Trends (${count})` : 'Filtrar trends';
   }
   if (trendFilterSummary) {
-    const visibleCount = communityFeed
+    const hasCommunityFeed = Boolean(communityFeed);
+    const visibleCount = hasCommunityFeed
       ? Array.from(communityFeed.querySelectorAll('.post')).filter((post) => !post.classList.contains('is-hidden')).length
-      : 0;
+      : activeTrendFilters.size;
     if (!activeTrendFilters.size) {
       trendFilterSummary.textContent = 'Todos os posts visíveis.';
-    } else if (visibleCount === 0) {
+    } else if (hasCommunityFeed && visibleCount === 0) {
       trendFilterSummary.textContent = `Nenhum post corresponde a ${Array.from(activeTrendFilters).join(', ')} ainda.`;
     } else {
-      trendFilterSummary.textContent = `Filtrando por ${Array.from(activeTrendFilters).join(', ')} · ${visibleCount} posts.`;
+      const activeLabels = Array.from(activeTrendFilters).join(', ');
+      trendFilterSummary.textContent = hasCommunityFeed
+        ? `Filtrando por ${activeLabels} · ${visibleCount} posts.`
+        : `Filtrando por ${activeLabels}.`;
     }
   }
 }
@@ -1126,6 +1134,13 @@ questButtons.forEach((button) => {
 });
 
 if (trendFilterForm) {
+  trendFilterForm
+    .querySelectorAll('input[name="trendFilters"]')
+    .forEach((input) => {
+      input.checked = activeTrendFilters.has(input.value);
+    });
+  updateTrendFilterUI();
+
   trendFilterForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const selected = Array.from(
@@ -1134,24 +1149,21 @@ if (trendFilterForm) {
       .map((input) => input.value.trim())
       .filter(Boolean);
     activeTrendFilters = new Set(selected);
+    persistTrendFilters();
     applyFeedFilters();
-    closeSubpage();
+    updateTrendFilterUI();
+    if (!communityFeed) {
+      window.location.href = 'index.html';
+    }
   });
 
   trendFilterForm.addEventListener('reset', () => {
     setTimeout(() => {
       activeTrendFilters = new Set();
       applyFeedFilters();
+      persistTrendFilters();
+      updateTrendFilterUI();
     }, 0);
-  });
-
-  registerSubpageCallback('trend-filter', () => {
-    trendFilterForm
-      .querySelectorAll('input[name="trendFilters"]')
-      .forEach((input) => {
-        input.checked = activeTrendFilters.has(input.value);
-      });
-    updateTrendFilterUI();
   });
 }
 
@@ -1229,7 +1241,6 @@ if (
     event.preventDefault();
     updateWorkoutPreview();
   });
-  registerSubpageCallback('customize-workout', updateWorkoutPreview);
   updateWorkoutPreview();
 }
 
@@ -1258,16 +1269,28 @@ if (squadChatForm && squadChatInput && squadChatLog) {
     appendChatMessage({ author: authorName, message: value, self: true });
     squadChatInput.value = '';
   });
-
-  registerSubpageCallback('squad-chat', () => {
-    if (squadChatInput) {
-      squadChatInput.focus();
-    }
-  });
+  if (!communityFeed) {
+    squadChatInput.focus();
+  }
 }
 
 renderDailyTrainingCard();
 toggleAdminSections();
+
+const isAdminView = Boolean(adminLoginSection || adminPanel);
+if (isAdminView) {
+  if (isAdminAuthenticated) {
+    prepareAdminPanel();
+    if (adminUserSelect instanceof HTMLElement) {
+      adminUserSelect.focus();
+    }
+  } else if (adminLoginForm) {
+    const loginField = adminLoginForm.elements['login'];
+    if (loginField instanceof HTMLElement) {
+      loginField.focus();
+    }
+  }
+}
 
 if (adminLoginForm) {
   adminLoginForm.addEventListener('submit', (event) => {
@@ -1337,6 +1360,7 @@ if (adminUpdateForm) {
     plan.calories = caloriesValue;
     plan.video = videoValue;
     plan.exercises = exercisesValue;
+    persistTrainingPlans();
     if (adminUpdateFeedback) {
       adminUpdateFeedback.textContent = 'Plano atualizado com sucesso!';
     }
@@ -1352,24 +1376,6 @@ if (adminUpdateForm) {
     }
   });
 }
-
-registerSubpageCallback('admin', () => {
-  toggleAdminSections();
-  if (isAdminAuthenticated) {
-    prepareAdminPanel();
-    if (adminUserSelect instanceof HTMLElement) {
-      adminUserSelect.focus();
-    }
-  } else if (adminLoginForm) {
-    const loginField = adminLoginForm.elements['login'];
-    if (loginField instanceof HTMLElement) {
-      loginField.focus();
-    }
-  }
-});
-
-registerSubpageCallback('badge-curation', () => updateBadgeSelections());
-registerSubpageCallback('quest-board', updateQuestMessage);
 
 applyFeedFilters();
 updateBadgeSelections();

@@ -28,7 +28,7 @@ A paleta foi construída para que amarelo, laranja, roxo e azul se complementem 
 
 1. Clone o repositório e navegue até a pasta `MachoMuscle`.
 2. Abra o arquivo `index.html` no navegador (ou utilize uma extensão como Live Server no VS Code).
-3. Explore os botões da barra inferior para navegar entre as seções.
+3. Explore os botões da barra inferior para navegar entre as seções e utilize os CTAs para abrir as páginas complementares (Jornada, semana detalhada, personalização, histórico etc.).
 
 ## Interações implementadas
 
@@ -40,7 +40,7 @@ A paleta foi construída para que amarelo, laranja, roxo e azul se complementem 
 - Loja de recompensas com estados de resgate, vitrine de badges com seleção dinâmica e acompanhamento de missões favoritas.
 - Chat da tribo com envio de mensagens rápidas sincronizado com o nome configurado no perfil.
 - Checklists do treino diário com contagem de progresso em tempo real e atualização automática conforme os exercícios são concluídos.
-- Pop-ups centralizados com fundo desfocado para toda a navegação secundária (plano da semana, personalização, filtros etc.).
+- Páginas dedicadas com design consistente para plano da semana, personalização de treino, histórico de rituais, filtros de trends e painel administrativo.
 - Painel administrativo com login protegido para editar cada dia da semana, atualizar vídeos de referência e sincronizar o plano visível no cartão "Treino do dia".
 
 Sinta-se à vontade para adaptar os textos e dados mockados para refletir a experiência desejada.

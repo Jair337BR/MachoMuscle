@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Histórico de rituais · MachoMuscle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app app--standalone" role="application">
+      <main class="subpage subpage--standalone" aria-labelledby="ritual-history-title">
+        <div class="subpage__container">
+          <header class="subpage__header">
+            <a class="subpage__back" href="index.html">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+              </svg>
+              Voltar
+            </a>
+            <div>
+              <span class="subpage__eyebrow">Rituais do dia</span>
+              <h1 id="ritual-history-title">Histórico completo</h1>
+            </div>
+          </header>
+          <p class="subpage__description">
+            Revise seus hábitos micro para entender onde conquistar mais XP de consistência.
+          </p>
+          <div class="subpage__content">
+            <section class="card subpage-card">
+              <header class="card__header">
+                <h2>Últimos check-ins</h2>
+              </header>
+              <ul class="subpage-list subpage-list--timeline">
+                <li>
+                  <span class="subpage-list__day">Hoje</span>
+                  <div>
+                    <strong>Respiração box</strong>
+                    <p>4 ciclos completos antes do treino de força.</p>
+                  </div>
+                  <span class="chip chip--soft">+15 foco</span>
+                </li>
+                <li>
+                  <span class="subpage-list__day">Ontem</span>
+                  <div>
+                    <strong>Registro pós-treino</strong>
+                    <p>Compartilhou sensação de flow no mural público.</p>
+                  </div>
+                  <span class="chip chip--soft">+10 XP</span>
+                </li>
+                <li>
+                  <span class="subpage-list__day">Qua</span>
+                  <div>
+                    <strong>Alongamento guiado</strong>
+                    <p>Sessão completa de mobilidade para quadril e ombro.</p>
+                  </div>
+                  <span class="chip chip--soft">+20 mobilidade</span>
+                </li>
+                <li>
+                  <span class="subpage-list__day">Ter</span>
+                  <div>
+                    <strong>Recuperação ativa</strong>
+                    <p>Caminhada consciente pós HIIT e hidratação com eletrólitos.</p>
+                  </div>
+                  <span class="chip chip--soft">+12 vitalidade</span>
+                </li>
+              </ul>
+            </section>
+            <section class="card subpage-card">
+              <header class="card__header">
+                <h2>Padrões da semana</h2>
+              </header>
+              <div class="subpage-stat-grid">
+                <div>
+                  <span class="subpage-stat__label">Consistência</span>
+                  <strong>86%</strong>
+                  <span class="subpage-stat__trend is-up">+6 pts</span>
+                </div>
+                <div>
+                  <span class="subpage-stat__label">Tempo médio</span>
+                  <strong>12 min</strong>
+                  <span class="subpage-stat__trend is-flat">Meta atingida</span>
+                </div>
+                <div>
+                  <span class="subpage-stat__label">Pontos ganhos</span>
+                  <strong>+57</strong>
+                  <span class="subpage-stat__trend is-up">Semana recorde</span>
+                </div>
+              </div>
+              <p class="subpage__note">
+                Dica: combine a respiração box com o finisher de mobilidade para potencializar a recuperação muscular.
+              </p>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

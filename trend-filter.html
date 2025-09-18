@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Filtrar trends · MachoMuscle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app app--standalone" role="application">
+      <main class="subpage subpage--standalone" aria-labelledby="trend-filter-title">
+        <div class="subpage__container">
+          <header class="subpage__header">
+            <a class="subpage__back" href="index.html">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+              </svg>
+              Voltar
+            </a>
+            <div>
+              <span class="subpage__eyebrow">Explorar comunidade</span>
+              <h1 id="trend-filter-title">Filtrar trends</h1>
+            </div>
+          </header>
+          <p class="subpage__description">
+            Ajuste o feed para acompanhar os temas que mais combinam com seu momento atual.
+          </p>
+          <div class="subpage__content">
+            <form class="card subpage-form" id="trendFilterForm">
+              <fieldset class="subpage-form__group">
+                <legend>Escolha os temas</legend>
+                <label class="chip-choice">
+                  <input type="checkbox" name="trendFilters" value="Força" />
+                  <span>Força</span>
+                </label>
+                <label class="chip-choice">
+                  <input type="checkbox" name="trendFilters" value="HIIT" />
+                  <span>HIIT</span>
+                </label>
+                <label class="chip-choice">
+                  <input type="checkbox" name="trendFilters" value="Mobilidade" />
+                  <span>Mobilidade</span>
+                </label>
+                <label class="chip-choice">
+                  <input type="checkbox" name="trendFilters" value="Mindset" />
+                  <span>Mindset</span>
+                </label>
+              </fieldset>
+              <fieldset class="subpage-form__group">
+                <legend>Mostrar apenas posts</legend>
+                <label class="chip-choice">
+                  <input type="checkbox" name="trendFilters" value="Playlist" />
+                  <span>Playlists</span>
+                </label>
+                <label class="chip-choice">
+                  <input type="checkbox" name="trendFilters" value="Dica" />
+                  <span>Dicas rápidas</span>
+                </label>
+                <label class="chip-choice">
+                  <input type="checkbox" name="trendFilters" value="Mindful" />
+                  <span>Mindful</span>
+                </label>
+              </fieldset>
+              <div class="subpage-form__actions">
+                <button class="button button--ghost" type="reset">Limpar</button>
+                <button class="button button--primary" type="submit">Aplicar filtros</button>
+              </div>
+            </form>
+            <p class="subpage__note" id="trendFilterSummary">Todos os posts visíveis.</p>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

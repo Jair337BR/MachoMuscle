@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quadro de missões · MachoMuscle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app app--standalone" role="application">
+      <main class="subpage subpage--standalone" aria-labelledby="quest-board-title">
+        <div class="subpage__container">
+          <header class="subpage__header">
+            <a class="subpage__back" href="index.html">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+              </svg>
+              Voltar
+            </a>
+            <div>
+              <span class="subpage__eyebrow">Quadro completo</span>
+              <h1 id="quest-board-title">Missões da semana</h1>
+            </div>
+          </header>
+          <p class="subpage__description">
+            Escolha quais desafios acompanhar de perto e avance rumo ao título Tempestade Azul.
+          </p>
+          <div class="subpage__content">
+            <section class="card subpage-card">
+              <header class="card__header">
+                <h2>Missões lendárias</h2>
+              </header>
+              <ul class="subpage-list subpage-list--quests">
+                <li>
+                  <div>
+                    <strong>Tempestade azul</strong>
+                    <p>Complete 3 treinos HIIT e receba 6 reações na comunidade.</p>
+                  </div>
+                  <button class="chip chip--accent" type="button" data-track-quest="tempestade">Acompanhar</button>
+                </li>
+                <li>
+                  <div>
+                    <strong>Mentor da tribo</strong>
+                    <p>Compartilhe 2 dicas úteis e responda a perguntas da comunidade.</p>
+                  </div>
+                  <button class="chip chip--accent" type="button" data-track-quest="mentor">Acompanhar</button>
+                </li>
+                <li>
+                  <div>
+                    <strong>Guardião da recuperação</strong>
+                    <p>Priorize sono de 7h+, alongamento regenerativo e registro de sensação.</p>
+                  </div>
+                  <button class="chip chip--accent" type="button" data-track-quest="recuperacao">Acompanhar</button>
+                </li>
+              </ul>
+            </section>
+            <section class="card subpage-card">
+              <header class="card__header">
+                <h2>Missões rápidas</h2>
+              </header>
+              <ul class="subpage-list subpage-list--quests">
+                <li>
+                  <div>
+                    <strong>Sprint matinal</strong>
+                    <p>Finalize aquecimento em menos de 8 minutos.</p>
+                  </div>
+                  <button class="chip chip--soft" type="button" data-track-quest="sprint">Adicionar</button>
+                </li>
+                <li>
+                  <div>
+                    <strong>Flow híbrido</strong>
+                    <p>Misture força + mobilidade em sessão personalizada.</p>
+                  </div>
+                  <button class="chip chip--soft" type="button" data-track-quest="flow">Adicionar</button>
+                </li>
+                <li>
+                  <div>
+                    <strong>Mindset em dia</strong>
+                    <p>Registre respiração guiada + reflexão curta.</p>
+                  </div>
+                  <button class="chip chip--soft" type="button" data-track-quest="mindset">Adicionar</button>
+                </li>
+              </ul>
+              <p class="subpage__note" id="questSelectionMessage">Selecione missões para acompanhar no topo do quadro.</p>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
