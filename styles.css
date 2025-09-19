@@ -1457,6 +1457,24 @@ input {
 .planner-layout {
   display: grid;
   gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'palette'
+    'calendar'
+    'details';
+}
+
+.planner-panel--palette {
+  grid-area: palette;
+}
+
+.planner-panel--calendar {
+  grid-area: calendar;
+  min-width: 0;
+}
+
+.planner-panel--details {
+  grid-area: details;
 }
 
 .planner-panel {
@@ -1469,6 +1487,7 @@ input {
   gap: 16px;
   backdrop-filter: blur(20px);
   box-shadow: 0 24px 40px rgba(15, 23, 42, 0.08);
+  min-width: 0;
 }
 
 .planner-panel__header {
@@ -1485,7 +1504,7 @@ input {
 .planner-palette {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
 }
 
 .planner-block {
@@ -1534,7 +1553,7 @@ input {
 .planner-grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
 .planner-day {
@@ -1636,9 +1655,23 @@ input {
   justify-content: center;
 }
 
-@media (min-width: 960px) {
+.planner-actions .button[data-has-changes='false'] {
+  opacity: 0.7;
+}
+
+@media (min-width: 720px) {
   .planner-layout {
-    grid-template-columns: minmax(220px, 0.9fr) minmax(300px, 1.2fr) minmax(220px, 0.8fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      'palette calendar'
+      'details details';
+  }
+}
+
+@media (min-width: 1040px) {
+  .planner-layout {
+    grid-template-columns: minmax(220px, 0.9fr) minmax(340px, 1.3fr) minmax(220px, 0.8fr);
+    grid-template-areas: 'palette calendar details';
     align-items: start;
   }
 

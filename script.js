@@ -150,7 +150,6 @@ const profileUsername = document.getElementById('profileUsername');
 const profileBio = document.getElementById('profileBio');
 const profileId = document.getElementById('profileId');
 const profileAvatar = document.getElementById('profileAvatar');
-const composerAvatar = document.querySelector('.composer__avatar');
 const rewardButtons = document.querySelectorAll('[data-reward]');
 const badgeTokens = document.querySelectorAll('[data-badge-key]');
 const badgeSelectButtons = document.querySelectorAll('[data-badge-select]');
@@ -1021,9 +1020,6 @@ if (displayNameInput) {
     profileName.textContent = value || 'Seu nome';
     const initials = getInitials(value || 'Macho Muscle');
     profileAvatar.textContent = initials;
-    if (composerAvatar) {
-      composerAvatar.textContent = initials;
-    }
   });
 }
 
@@ -1440,17 +1436,22 @@ function updatePaletteSelection() {
   });
 }
 
+function plannerHasPendingChanges() {
+  return plannerDayOrder.some(
+    (dayKey) => (plannerAssignments[dayKey] || 'descanso') !== (plannerInitialAssignments[dayKey] || 'descanso')
+  );
+}
+
 function updatePlannerActions() {
+  const hasChanges = plannerHasPendingChanges();
   if (plannerSaveButton) {
-    const hasChanges = plannerDayOrder.some(
-      (dayKey) => (plannerAssignments[dayKey] || 'descanso') !== (plannerInitialAssignments[dayKey] || 'descanso')
-    );
-    plannerSaveButton.disabled = !hasChanges;
-    plannerSaveButton.setAttribute('aria-disabled', String(!hasChanges));
-    if (plannerResetButton) {
-      plannerResetButton.disabled = !hasChanges;
-      plannerResetButton.setAttribute('aria-disabled', String(!hasChanges));
-    }
+    plannerSaveButton.disabled = false;
+    plannerSaveButton.setAttribute('aria-disabled', 'false');
+    plannerSaveButton.dataset.hasChanges = String(hasChanges);
+  }
+  if (plannerResetButton) {
+    plannerResetButton.disabled = !hasChanges;
+    plannerResetButton.setAttribute('aria-disabled', String(!hasChanges));
   }
 }
 
@@ -1656,6 +1657,7 @@ function resetPlanner() {
 function savePlanner() {
   const user = trainingPlans[defaultAthleteKey];
   if (!user || !user.routine) return;
+  const hadChanges = plannerHasPendingChanges();
   plannerDayOrder.forEach((dayKey) => {
     const templateKey = plannerAssignments[dayKey] || 'descanso';
     const plan = user.routine[dayKey];
@@ -1667,10 +1669,10 @@ function savePlanner() {
     user.routine[dayKey] = createPlan(templateKey);
   });
   persistTrainingPlans();
-  writeStorage(
-    STORAGE_KEYS.flashMessage,
-    'Configurações salvas! Seu calendário de hipertrofia foi atualizado.'
-  );
+  const feedbackMessage = hadChanges
+    ? 'Configurações salvas! Seu calendário de hipertrofia foi atualizado.'
+    : 'Nenhuma alteração detectada, sua rotina permanece a mesma.';
+  writeStorage(STORAGE_KEYS.flashMessage, feedbackMessage);
   window.location.href = 'index.html';
 }
 
@@ -1712,7 +1714,6 @@ function preparePlanner() {
   if (plannerSaveButton) {
     plannerSaveButton.addEventListener('click', (event) => {
       event.preventDefault();
-      if (plannerSaveButton.disabled) return;
       savePlanner();
     });
   }
