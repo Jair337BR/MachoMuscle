@@ -142,6 +142,8 @@ accentButtons.forEach((button) => {
 
 applyAccent(currentAccent);
 
+const profileForm = document.getElementById('profileForm');
+const profileEditToggle = document.getElementById('profileEditToggle');
 const displayNameInput = document.getElementById('displayName');
 const usernameInput = document.getElementById('username');
 const bioInput = document.getElementById('bio');
@@ -150,6 +152,42 @@ const profileUsername = document.getElementById('profileUsername');
 const profileBio = document.getElementById('profileBio');
 const profileId = document.getElementById('profileId');
 const profileAvatar = document.getElementById('profileAvatar');
+
+const profileInputs = [displayNameInput, usernameInput, bioInput];
+const accentOptions = Array.from(accentButtons);
+
+function setProfileEditingState(isEditing) {
+  if (!profileForm) return;
+  profileForm.classList.toggle('profile-form--editing', isEditing);
+  profileForm.classList.toggle('profile-form--locked', !isEditing);
+  profileInputs.forEach((input) => {
+    if (!input) return;
+    input.disabled = !isEditing;
+    input.setAttribute('aria-disabled', String(!isEditing));
+  });
+  accentOptions.forEach((button) => {
+    button.disabled = !isEditing;
+    button.setAttribute('aria-disabled', String(!isEditing));
+    button.tabIndex = isEditing ? 0 : -1;
+  });
+  if (profileEditToggle) {
+    profileEditToggle.setAttribute('aria-pressed', String(isEditing));
+    profileEditToggle.textContent = isEditing ? 'Concluir edição' : 'Editar perfil';
+  }
+}
+
+setProfileEditingState(false);
+
+if (profileEditToggle) {
+  profileEditToggle.addEventListener('click', () => {
+    const isCurrentlyEditing = profileForm?.classList.contains('profile-form--editing');
+    setProfileEditingState(!isCurrentlyEditing);
+    if (!isCurrentlyEditing && displayNameInput) {
+      displayNameInput.focus();
+    }
+  });
+}
+
 const rewardButtons = document.querySelectorAll('[data-reward]');
 const badgeTokens = document.querySelectorAll('[data-badge-key]');
 const badgeSelectButtons = document.querySelectorAll('[data-badge-select]');
