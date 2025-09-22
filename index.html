@@ -12,7 +12,7 @@
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body data-page="app" data-requires-auth="true">
     <div class="app" role="application">
       <header class="topbar">
         <div class="branding">
@@ -374,35 +374,6 @@
               </div>
             </div>
 
-            <section class="profile-feed">
-              <header class="profile-feed__header">
-                <div>
-                  <h3>Diário pessoal</h3>
-                  <p>Registre momentos importantes apenas para você acompanhar a evolução.</p>
-                </div>
-              </header>
-              <ul class="profile-feed__list" id="profileHighlights">
-                <li class="profile-feed__item card">
-                  <span class="profile-feed__date">Ontem · Peito e tríceps</span>
-                  <p>Supino inclinado controlando 3 segundos na descida. Finalizei com tríceps corda até a falha.</p>
-                </li>
-                <li class="profile-feed__item card">
-                  <span class="profile-feed__date">3 dias atrás · Costas e bíceps</span>
-                  <p>Remada curvada pesada e rosca alternada com tempo sob tensão. Pump insano!</p>
-                </li>
-              </ul>
-              <form class="highlight-form" id="highlightForm">
-                <label class="sr-only" for="highlightInput">Nova anotação</label>
-                <input
-                  id="highlightInput"
-                  type="text"
-                  name="highlight"
-                  maxlength="100"
-                  placeholder="Adicionar nova nota ao diário..."
-                />
-                <button class="button button--primary" type="submit">Salvar nota</button>
-              </form>
-            </section>
           </div>
         </section>
       </main>

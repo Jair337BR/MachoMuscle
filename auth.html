@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acessar MachoMuscle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="auth">
+    <div class="auth app" role="application">
+      <div class="auth__grid">
+        <section class="auth-card auth-card--intro">
+          <div class="auth-card__header">
+            <span class="auth-badge">Bem-vindo de volta</span>
+            <h1>MachoMuscle</h1>
+            <p>
+              Um hub minimalista para evoluir na hipertrofia com rotinas guiadas, vídeos didáticos e
+              gamificação que mantém a motivação.
+            </p>
+          </div>
+          <ul class="auth-highlights">
+            <li>
+              <strong>Checklists guiados</strong>
+              <span>Marcações com GIFs para executar cada exercício com segurança.</span>
+            </li>
+            <li>
+              <strong>Planner intuitivo</strong>
+              <span>Arraste blocos de grupamentos e monte sua semana ideal de treinos.</span>
+            </li>
+            <li>
+              <strong>Comunidade vibrante</strong>
+              <span>Compartilhe conquistas e inspire novos atletas diariamente.</span>
+            </li>
+          </ul>
+        </section>
+        <section class="auth-card auth-card--forms">
+          <div class="auth-toggle" role="tablist">
+            <button class="auth-toggle__button is-active" role="tab" aria-selected="true" data-auth-view="login">
+              Login
+            </button>
+            <button class="auth-toggle__button" role="tab" aria-selected="false" data-auth-view="register">
+              Criar conta
+            </button>
+          </div>
+          <form class="auth-form is-active" id="loginForm" autocomplete="off" data-auth-section="login">
+            <h2>Entre com sua conta</h2>
+            <label for="loginEmail">E-mail</label>
+            <input id="loginEmail" name="email" type="email" placeholder="voce@email.com" required />
+            <label for="loginPassword">Senha</label>
+            <input id="loginPassword" name="password" type="password" placeholder="••••••••" required />
+            <div class="auth-form__actions">
+              <button class="button button--primary button--block" type="submit">Acessar</button>
+            </div>
+            <p class="auth-feedback" id="loginFeedback" role="status"></p>
+          </form>
+          <form class="auth-form" id="registerForm" autocomplete="off" data-auth-section="register">
+            <h2>Cadastre-se gratuitamente</h2>
+            <label for="registerName">Seu nome completo</label>
+            <input id="registerName" name="name" type="text" placeholder="Nome e sobrenome" required />
+            <label for="registerEmail">E-mail</label>
+            <input id="registerEmail" name="email" type="email" placeholder="voce@email.com" required />
+            <label for="registerPassword">Senha</label>
+            <input
+              id="registerPassword"
+              name="password"
+              type="password"
+              placeholder="Crie uma senha segura"
+              minlength="6"
+              required
+            />
+            <label for="registerConfirm">Confirme a senha</label>
+            <input
+              id="registerConfirm"
+              name="confirm"
+              type="password"
+              placeholder="Repita a senha"
+              minlength="6"
+              required
+            />
+            <div class="auth-form__actions">
+              <button class="button button--primary button--block" type="submit">Criar conta</button>
+            </div>
+            <p class="auth-feedback" id="registerFeedback" role="status"></p>
+          </form>
+        </section>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

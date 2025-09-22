@@ -2,11 +2,19 @@ const appRoot = document.querySelector('.app');
 const screens = document.querySelectorAll('.screen');
 const navButtons = document.querySelectorAll('.tabbar__item');
 
+const pageDataset = document.body ? document.body.dataset : {};
+const pageType = pageDataset.page || 'app';
+const requiresAuth = pageDataset.requiresAuth === 'true';
+
 const STORAGE_KEYS = {
   trainingPlans: 'machoTrainingPlans',
   trendFilters: 'machoTrendFilters',
-  flashMessage: 'machoFlashMessage'
+  flashMessage: 'machoFlashMessage',
+  database: 'machoDatabase',
+  currentUser: 'machoCurrentUser'
 };
+
+let database = { users: [] };
 
 function storageAvailable() {
   try {
@@ -48,6 +56,63 @@ function clearStorage(key) {
   } catch (error) {
     // ignore
   }
+}
+
+function normalizeEmail(value) {
+  if (!value) return '';
+  return String(value).trim().toLowerCase();
+}
+
+function loadDatabase() {
+  const stored = readStorage(STORAGE_KEYS.database, null);
+  if (!stored || typeof stored !== 'object') {
+    return { users: [] };
+  }
+  const users = Array.isArray(stored.users) ? stored.users : [];
+  return {
+    users: users
+      .map((user) => {
+        if (!user || typeof user !== 'object') return null;
+        return {
+          key: String(user.key || '').trim(),
+          email: normalizeEmail(user.email),
+          password: typeof user.password === 'string' ? user.password : '',
+          displayName: typeof user.displayName === 'string' ? user.displayName : '',
+          username: typeof user.username === 'string' ? user.username : '',
+          bio: typeof user.bio === 'string' ? user.bio : '',
+          accent: typeof user.accent === 'string' ? user.accent : 'roxo',
+          id: typeof user.id === 'string' ? user.id : ''
+        };
+      })
+      .filter(Boolean)
+  };
+}
+
+function saveDatabase() {
+  writeStorage(STORAGE_KEYS.database, database);
+}
+
+function getUserRecordByKey(key) {
+  if (!key) return null;
+  return database.users.find((user) => user.key === key) || null;
+}
+
+function findUserByEmail(email) {
+  const target = normalizeEmail(email);
+  if (!target) return null;
+  return database.users.find((user) => normalizeEmail(user.email) === target) || null;
+}
+
+function createUsernameFromName(name) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9._-]+/g, '')
+    .slice(0, 18);
+}
+
+function generateUserKey() {
+  return `user-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
 }
 
 navButtons.forEach((button) => {
@@ -142,6 +207,13 @@ accentButtons.forEach((button) => {
 
 applyAccent(currentAccent);
 
+const authToggleButtons = document.querySelectorAll('[data-auth-view]');
+const authForms = document.querySelectorAll('.auth-form');
+const authLoginForm = document.getElementById('loginForm');
+const authRegisterForm = document.getElementById('registerForm');
+const authLoginFeedback = document.getElementById('loginFeedback');
+const authRegisterFeedback = document.getElementById('registerFeedback');
+
 const profileForm = document.getElementById('profileForm');
 const profileEditToggle = document.getElementById('profileEditToggle');
 const displayNameInput = document.getElementById('displayName');
@@ -155,6 +227,97 @@ const profileAvatar = document.getElementById('profileAvatar');
 
 const profileInputs = [displayNameInput, usernameInput, bioInput];
 const accentOptions = Array.from(accentButtons);
+
+function hydrateProfileFromAccount() {
+  const userKey = getActiveUserKey();
+  const record = getUserRecordByKey(userKey);
+  const plan = trainingPlans[userKey];
+  if (!record) return;
+
+  const displayName = record.displayName || 'Seu nome';
+  const username = record.username || '';
+  const bio = record.bio || 'Compartilhe sua energia com a tribo.';
+  const accentKey = record.accent && accentConfig[record.accent] ? record.accent : 'roxo';
+
+  if (displayNameInput) {
+    displayNameInput.value = record.displayName || '';
+  }
+  if (usernameInput) {
+    usernameInput.value = username;
+  }
+  if (bioInput) {
+    bioInput.value = record.bio || '';
+  }
+  if (profileName) {
+    profileName.textContent = displayName;
+  }
+  if (profileUsername) {
+    profileUsername.textContent = username ? `@${username}` : '@seunome';
+  }
+  if (profileBio) {
+    profileBio.textContent = bio;
+  }
+  if (profileAvatar) {
+    profileAvatar.textContent = getInitials(displayName);
+  }
+  applyAccent(accentKey);
+  if (plan) {
+    plan.name = displayName;
+  }
+}
+
+function persistProfileChanges() {
+  const userKey = getActiveUserKey();
+  const record = getUserRecordByKey(userKey);
+  if (!record) return;
+
+  const nextDisplayName = displayNameInput ? displayNameInput.value.trim() : record.displayName || '';
+  const nextUsernameRaw = usernameInput ? usernameInput.value.trim().toLowerCase() : record.username || '';
+  const sanitizedUsername = nextUsernameRaw.replace(/[^a-z0-9._-]+/g, '').slice(0, 18);
+  const nextBio = bioInput ? bioInput.value.trim() : record.bio || '';
+
+  const hadChanges =
+    nextDisplayName !== (record.displayName || '') ||
+    sanitizedUsername !== (record.username || '') ||
+    nextBio !== (record.bio || '') ||
+    currentAccent !== (record.accent || 'roxo');
+
+  record.displayName = nextDisplayName || 'Atleta MachoMuscle';
+  record.username = sanitizedUsername;
+  record.bio = nextBio || 'Compartilhe sua energia com a tribo.';
+  record.accent = currentAccent;
+
+  const plan = trainingPlans[userKey];
+  if (plan) {
+    plan.name = record.displayName;
+  }
+
+  saveDatabase();
+  persistTrainingPlans();
+  hydrateProfileFromAccount();
+  updateProfileIdDisplay();
+  if (hadChanges) {
+    showGlobalMessage('Perfil atualizado com sucesso!');
+  }
+}
+
+function refreshActiveUserViews() {
+  hydrateProfileFromAccount();
+  updateProfileIdDisplay();
+  if (typeof renderDailyTrainingCard === 'function') {
+    renderDailyTrainingCard();
+  }
+  if (plannerGrid) {
+    initialisePlannerAssignments();
+    updatePlannerGrid();
+    updatePlannerDetails();
+    updatePlannerActions();
+    updatePaletteSelection();
+  }
+  populateAdminUserOptions();
+  fillAdminForm();
+  renderAdminPreview();
+}
 
 function setProfileEditingState(isEditing) {
   if (!profileForm) return;
@@ -181,10 +344,113 @@ setProfileEditingState(false);
 if (profileEditToggle) {
   profileEditToggle.addEventListener('click', () => {
     const isCurrentlyEditing = profileForm?.classList.contains('profile-form--editing');
+    if (isCurrentlyEditing) {
+      persistProfileChanges();
+    }
     setProfileEditingState(!isCurrentlyEditing);
     if (!isCurrentlyEditing && displayNameInput) {
       displayNameInput.focus();
     }
+  });
+}
+
+if (authToggleButtons.length && authForms.length) {
+  authToggleButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const targetView = button.dataset.authView;
+      authToggleButtons.forEach((other) => {
+        const isActive = other === button;
+        other.classList.toggle('is-active', isActive);
+        other.setAttribute('aria-selected', String(isActive));
+      });
+      authForms.forEach((form) => {
+        const isActive = form.dataset.authSection === targetView;
+        form.classList.toggle('is-active', isActive);
+      });
+    });
+  });
+}
+
+if (authLoginForm) {
+  authLoginForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const email = normalizeEmail(authLoginForm.email?.value || '');
+    const password = authLoginForm.password?.value || '';
+    if (!email || !password) {
+      if (authLoginFeedback) {
+        authLoginFeedback.textContent = 'Informe e-mail e senha válidos.';
+      }
+      return;
+    }
+    const record = findUserByEmail(email);
+    if (!record || record.password !== password) {
+      if (authLoginFeedback) {
+        authLoginFeedback.textContent = 'Credenciais inválidas. Tente novamente.';
+      }
+      return;
+    }
+    ensureTrainingPlanForUserRecord(record);
+    ensureUserIdentifiers();
+    persistTrainingPlans();
+    startSession(record.key);
+    writeStorage(STORAGE_KEYS.flashMessage, 'Bem-vindo de volta à MachoMuscle!');
+    window.location.href = 'index.html';
+  });
+}
+
+if (authRegisterForm) {
+  authRegisterForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const name = authRegisterForm.name?.value.trim();
+    const email = normalizeEmail(authRegisterForm.email?.value || '');
+    const password = authRegisterForm.password?.value || '';
+    const confirm = authRegisterForm.confirm?.value || '';
+
+    if (!name || !email || !password) {
+      if (authRegisterFeedback) {
+        authRegisterFeedback.textContent = 'Preencha nome, e-mail e senha para continuar.';
+      }
+      return;
+    }
+    if (password.length < 6) {
+      if (authRegisterFeedback) {
+        authRegisterFeedback.textContent = 'A senha deve ter ao menos 6 caracteres.';
+      }
+      return;
+    }
+    if (password !== confirm) {
+      if (authRegisterFeedback) {
+        authRegisterFeedback.textContent = 'As senhas informadas não coincidem.';
+      }
+      return;
+    }
+    if (findUserByEmail(email)) {
+      if (authRegisterFeedback) {
+        authRegisterFeedback.textContent = 'Já existe uma conta com este e-mail.';
+      }
+      return;
+    }
+
+    const userKey = generateUserKey();
+    const username = createUsernameFromName(name) || `athlete${database.users.length + 1}`;
+    const newId = generateUniqueUserId();
+    const newRecord = {
+      key: userKey,
+      email,
+      password,
+      displayName: name,
+      username,
+      bio: 'Pronto para iniciar a jornada de hipertrofia.',
+      accent: 'roxo',
+      id: newId
+    };
+    database.users.push(newRecord);
+    ensureTrainingPlanForUserRecord(newRecord);
+    ensureUserIdentifiers();
+    persistTrainingPlans();
+    startSession(userKey);
+    writeStorage(STORAGE_KEYS.flashMessage, 'Conta criada! Vamos evoluir juntos.');
+    window.location.href = 'index.html';
   });
 }
 
@@ -273,6 +539,22 @@ const weekDayLabels = {
 };
 
 const defaultAthleteKey = 'voce';
+let activeUserKey = defaultAthleteKey;
+
+function getActiveUserKey() {
+  if (activeUserKey && trainingPlans[activeUserKey]) {
+    return activeUserKey;
+  }
+  const fallback = trainingPlans[defaultAthleteKey] ? defaultAthleteKey : Object.keys(trainingPlans)[0] || '';
+  activeUserKey = fallback;
+  return fallback;
+}
+
+function setActiveUserKey(key) {
+  if (!key || !trainingPlans[key]) return;
+  activeUserKey = key;
+  refreshActiveUserViews();
+}
 
 const hypertrophyCatalog = {
   ombros: {
@@ -517,6 +799,18 @@ function createPlan(catalogKey, overrides = {}) {
   return result;
 }
 
+function createDefaultRoutine() {
+  return {
+    segunda: createPlan('peitoTriceps'),
+    terca: createPlan('costasBiceps'),
+    quarta: createPlan('quadriceps'),
+    quinta: createPlan('ombros'),
+    sexta: createPlan('posterior'),
+    sabado: createPlan('descanso'),
+    domingo: createPlan('descanso')
+  };
+}
+
 const trainingPlans = {
   voce: {
     id: 'MM-001',
@@ -623,9 +917,107 @@ const trainingPlans = {
 };
 
 
-function ensureUserIdentifiers() {
+function generateUniqueUserId() {
   const used = new Set();
   Object.values(trainingPlans).forEach((user) => {
+    if (!user || typeof user !== 'object') return;
+    if (typeof user.id === 'string' && user.id.trim()) {
+      used.add(user.id.trim().toUpperCase());
+    }
+  });
+  if (Array.isArray(database.users)) {
+    database.users.forEach((user) => {
+      if (user && typeof user.id === 'string' && user.id.trim()) {
+        used.add(user.id.trim().toUpperCase());
+      }
+    });
+  }
+  let counter = 1;
+  let candidate = '';
+  while (!candidate || used.has(candidate)) {
+    candidate = `MM-${String(counter).padStart(3, '0')}`;
+    counter += 1;
+  }
+  return candidate;
+}
+
+function ensureTrainingPlanForUserRecord(record) {
+  if (!record || !record.key) return;
+  if (!trainingPlans[record.key]) {
+    trainingPlans[record.key] = {
+      id: record.id || '',
+      name: record.displayName || 'Atleta MachoMuscle',
+      routine: createDefaultRoutine()
+    };
+  } else {
+    const plan = trainingPlans[record.key];
+    if (!plan.routine || typeof plan.routine !== 'object') {
+      plan.routine = createDefaultRoutine();
+    }
+    if (record.displayName) {
+      plan.name = record.displayName;
+    }
+    if (record.id) {
+      plan.id = record.id;
+    }
+  }
+}
+
+function ensureDefaultUserRecord() {
+  const defaultPlan = trainingPlans[getActiveUserKey()];
+  if (!defaultPlan) return;
+  if (!Array.isArray(database.users)) {
+    database.users = [];
+  }
+  const existing = getUserRecordByKey(defaultAthleteKey);
+  if (!existing) {
+    database.users.push({
+      key: defaultAthleteKey,
+      email: 'voce@macho.app',
+      password: 'treino123',
+      displayName: defaultPlan.name || 'Você',
+      username: createUsernameFromName(defaultPlan.name || 'Você') || 'machomuscle',
+      bio: 'Em constante evolução rumo à hipertrofia.',
+      accent: 'roxo',
+      id: defaultPlan.id || ''
+    });
+  } else {
+    if (!existing.displayName) {
+      existing.displayName = defaultPlan.name || 'Você';
+    }
+    if (!existing.username) {
+      existing.username = createUsernameFromName(existing.displayName || 'machomuscle');
+    }
+  }
+}
+
+function startSession(userKey) {
+  if (!userKey) return;
+  writeStorage(STORAGE_KEYS.currentUser, { userKey });
+}
+
+function clearSession() {
+  clearStorage(STORAGE_KEYS.currentUser);
+}
+
+function getStoredSessionKey() {
+  const raw = readStorage(STORAGE_KEYS.currentUser, null);
+  if (!raw || typeof raw !== 'object') return '';
+  if (typeof raw.userKey !== 'string') return '';
+  return raw.userKey;
+}
+
+
+database = loadDatabase();
+ensureDefaultUserRecord();
+if (Array.isArray(database.users)) {
+  database.users.forEach((record) => ensureTrainingPlanForUserRecord(record));
+}
+
+
+function ensureUserIdentifiers() {
+  const used = new Set();
+  Object.entries(trainingPlans).forEach(([key, user]) => {
     if (!user || typeof user !== 'object') return;
     if (typeof user.id === 'string') {
       const trimmed = user.id.trim().toUpperCase();
@@ -636,9 +1028,24 @@ function ensureUserIdentifiers() {
     } else {
       user.id = '';
     }
+    const record = getUserRecordByKey(key);
+    if (record && record.id && record.id.trim()) {
+      used.add(record.id.trim().toUpperCase());
+    }
   });
+  if (Array.isArray(database.users)) {
+    database.users.forEach((record) => {
+      if (!record) return;
+      if (typeof record.id === 'string' && record.id.trim()) {
+        record.id = record.id.trim().toUpperCase();
+        used.add(record.id);
+      } else {
+        record.id = '';
+      }
+    });
+  }
   let counter = 1;
-  Object.values(trainingPlans).forEach((user) => {
+  Object.entries(trainingPlans).forEach(([key, user]) => {
     if (!user || typeof user !== 'object') return;
     if (!user.id) {
       let candidate = '';
@@ -648,6 +1055,10 @@ function ensureUserIdentifiers() {
       }
       user.id = candidate;
       used.add(candidate);
+    }
+    const record = getUserRecordByKey(key);
+    if (record) {
+      record.id = user.id;
     }
   });
 }
@@ -666,7 +1077,7 @@ function getUserKeyById(rawId) {
 
 function updateProfileIdDisplay() {
   if (!profileId) return;
-  const current = trainingPlans[defaultAthleteKey];
+  const current = trainingPlans[getActiveUserKey()];
   const idValue = current && typeof current.id === 'string' ? current.id : '';
   profileId.textContent = idValue ? `ID pessoal: ${idValue}` : 'ID pessoal: defina com o painel';
 }
@@ -730,17 +1141,51 @@ function restoreTrainingPlansFromStorage() {
   if (!saved || typeof saved !== 'object') return;
   mergeTrainingPlans(trainingPlans, saved);
   ensureUserIdentifiers();
+  saveDatabase();
 }
 
 function persistTrainingPlans() {
   ensureUserIdentifiers();
+  saveDatabase();
   writeStorage(STORAGE_KEYS.trainingPlans, trainingPlans);
   updateProfileIdDisplay();
 }
 
 restoreTrainingPlansFromStorage();
 ensureUserIdentifiers();
+saveDatabase();
+
+let sessionUserKey = getStoredSessionKey();
+if (sessionUserKey && !getUserRecordByKey(sessionUserKey)) {
+  sessionUserKey = '';
+  clearSession();
+}
+
+if (sessionUserKey) {
+  const sessionRecord = getUserRecordByKey(sessionUserKey);
+  if (sessionRecord) {
+    ensureTrainingPlanForUserRecord(sessionRecord);
+    persistTrainingPlans();
+  }
+}
+
+const shouldRestrictAccess = requiresAuth && (!sessionUserKey || !trainingPlans[sessionUserKey]);
+
+if (pageType === 'auth') {
+  if (sessionUserKey && trainingPlans[sessionUserKey]) {
+    window.location.replace('index.html');
+  }
+} else if (shouldRestrictAccess) {
+  window.location.replace('auth.html');
+} else if (sessionUserKey && trainingPlans[sessionUserKey]) {
+  activeUserKey = sessionUserKey;
+}
+
 updateProfileIdDisplay();
+
+if (!shouldRestrictAccess && trainingPlans[getActiveUserKey()]) {
+  selectedAdminUser = getActiveUserKey();
+}
 
 function showGlobalMessage(message) {
   if (!globalMessage || !message) return;
@@ -764,7 +1209,7 @@ if (typeof pendingFlashMessage === 'string' && pendingFlashMessage.trim()) {
 
 const adminCredentials = { login: 'admin1', password: 'machomuscle' };
 let isAdminAuthenticated = false;
-let selectedAdminUser = trainingPlans[defaultAthleteKey] ? defaultAthleteKey : Object.keys(trainingPlans)[0] || '';
+let selectedAdminUser = trainingPlans[getActiveUserKey()] ? getActiveUserKey() : Object.keys(trainingPlans)[0] || '';
 let selectedAdminDay = adminDayOrder[0];
 
 function getCurrentDayKey() {
@@ -886,7 +1331,7 @@ function setAdminUserById(rawId) {
     const userName = trainingPlans[key]?.name || 'Usuário';
     adminUserIdFeedback.textContent = `Plano carregado para ${userName}.`;
   }
-  if (selectedAdminUser === defaultAthleteKey && selectedAdminDay === getCurrentDayKey()) {
+  if (selectedAdminUser === getActiveUserKey() && selectedAdminDay === getCurrentDayKey()) {
     renderDailyTrainingCard();
   }
   return true;
@@ -978,7 +1423,7 @@ function prepareAdminPanel() {
 
 function getPlanForDailyCard() {
   const dayKey = getCurrentDayKey();
-  const userKey = trainingPlans[defaultAthleteKey] ? defaultAthleteKey : Object.keys(trainingPlans)[0];
+  const userKey = trainingPlans[getActiveUserKey()] ? getActiveUserKey() : Object.keys(trainingPlans)[0];
   if (!userKey) return { plan: { ...defaultPlanTemplate }, dayKey };
   const plan = getOrCreatePlan(userKey, dayKey) || { ...defaultPlanTemplate };
   return { plan, userKey, dayKey };
@@ -1232,31 +1677,6 @@ if (communityComposer && communityFeed) {
   });
 }
 
-const highlightForm = document.getElementById('highlightForm');
-const highlightInput = document.getElementById('highlightInput');
-const highlightList = document.getElementById('profileHighlights');
-
-if (highlightForm && highlightInput && highlightList) {
-  highlightForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const value = highlightInput.value.trim();
-    if (!value) return;
-    const now = new Date();
-    const timeLabel = new Intl.DateTimeFormat('pt-BR', {
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(now);
-    const item = document.createElement('li');
-    item.className = 'profile-feed__item card';
-    item.innerHTML = `
-      <span class="profile-feed__date">Agora mesmo · ${timeLabel}</span>
-      <p>${escapeHTML(value)}</p>`;
-    highlightList.prepend(item);
-    highlightInput.value = '';
-  });
-}
-
-
 function updateBadgeSelections(feedback) {
   badgeTokens.forEach((token) => {
     const key = token.dataset.badgeKey || '';
@@ -1449,7 +1869,7 @@ function inferTemplateFromPlan(plan) {
 }
 
 function initialisePlannerAssignments() {
-  const user = trainingPlans[defaultAthleteKey];
+  const user = trainingPlans[getActiveUserKey()];
   plannerAssignments = {};
   plannerInitialAssignments = {};
   plannerDayOrder.forEach((dayKey) => {
@@ -1693,7 +2113,7 @@ function resetPlanner() {
 }
 
 function savePlanner() {
-  const user = trainingPlans[defaultAthleteKey];
+  const user = trainingPlans[getActiveUserKey()];
   if (!user || !user.routine) return;
   const hadChanges = plannerHasPendingChanges();
   plannerDayOrder.forEach((dayKey) => {
@@ -1758,6 +2178,14 @@ function preparePlanner() {
 }
 
 preparePlanner();
+
+if (pageType !== 'auth' && !shouldRestrictAccess) {
+  refreshActiveUserViews();
+}
+
+if (pageType === 'auth' && authLoginFeedback) {
+  authLoginFeedback.textContent = '';
+}
 
 function appendChatMessage({ author, message, self = false }) {
   if (!squadChatLog) return;
@@ -1922,7 +2350,7 @@ if (adminUpdateForm) {
       adminUpdateFeedback.textContent = 'Plano atualizado com sucesso!';
     }
     renderAdminPreview();
-    if (selectedAdminUser === defaultAthleteKey && selectedAdminDay === getCurrentDayKey()) {
+    if (selectedAdminUser === getActiveUserKey() && selectedAdminDay === getCurrentDayKey()) {
       renderDailyTrainingCard();
     }
   });
