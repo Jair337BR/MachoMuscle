@@ -698,35 +698,46 @@ button {
   padding: 4px 8px;
 }
 
-.daily-training {
+.weekly-checklist {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.daily-training__header {
-  align-items: flex-start;
+.weekly-checklist__header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.daily-training__intro {
+.weekly-checklist__progress {
+  font-weight: 700;
+  color: var(--color-text-soft);
+}
+
+.weekly-checklist__intro {
   color: var(--color-text-muted);
   font-size: 0.95rem;
   line-height: 1.6;
 }
 
-.daily-training__video {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  border-radius: 20px;
-  overflow: hidden;
-  background: radial-gradient(circle at 20% 20%, rgba(148, 163, 184, 0.3), rgba(15, 23, 42, 0.85));
-  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+.weekly-checklist__empty {
+  margin: 0;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px dashed rgba(148, 163, 184, 0.28);
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  text-align: center;
 }
 
-.daily-training__video iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
+@media (min-width: 768px) {
+  .weekly-checklist__header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 .checklist {
@@ -828,25 +839,6 @@ button {
   }
 }
 
-.daily-training__footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.daily-training__metrics {
-  display: flex;
-  gap: 16px;
-  font-weight: 700;
-  color: var(--accent-color);
-}
-
-.daily-training__progress {
-  color: var(--color-text-soft);
-  font-weight: 600;
-}
 
 .guide-card__list {
   margin: 0;
@@ -2691,7 +2683,7 @@ input {
     grid-column: 1 / 2;
   }
 
-  .screen[data-screen="home"] > .card.daily-training,
+  .screen[data-screen="home"] > .card.weekly-checklist,
   .screen[data-screen="home"] > .card.guide-card,
   .screen[data-screen="home"] > .card.video-library {
     grid-column: 1 / -1;

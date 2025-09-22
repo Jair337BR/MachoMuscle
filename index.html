@@ -76,97 +76,22 @@
             </div>
           </article>
 
-          <header class="section-header">
-            <div>
-              <h2>Sua semana em destaque</h2>
-              <p>Monitoramento rápido para você manter a consistência.</p>
-            </div>
-            <a class="text-button" href="week-detail.html">Ver detalhes</a>
-          </header>
-
-          <div class="insights-grid">
-            <div class="card insight-card">
-              <div class="card__header">
-                <span class="badge badge--accent">Level 12</span>
-                <span class="card__meta">Faltam 320 XP</span>
-              </div>
-              <p class="card__title">Guardião da Resistência</p>
-              <p class="card__subtitle">Complete 2 missões lendárias para subir de nível.</p>
-              <div class="progress-bar" role="img" aria-label="68% de XP para o próximo nível">
-                <div class="progress-bar__fill" style="--progress: 0.68"></div>
-              </div>
-            </div>
-
-            <div class="card insight-card">
-              <div class="card__header">
-                <span class="badge">Streak ativa</span>
-                <span class="card__meta">6 dias</span>
-              </div>
-              <p class="card__title">Constância desbloqueada</p>
-              <p class="card__subtitle">Mantenha a rotina e alcance o troféu Aurora.</p>
-              <div class="streak-indicator">
-                <span class="streak-indicator__dot is-active"></span>
-                <span class="streak-indicator__dot is-active"></span>
-                <span class="streak-indicator__dot is-active"></span>
-                <span class="streak-indicator__dot is-active"></span>
-                <span class="streak-indicator__dot is-active"></span>
-                <span class="streak-indicator__dot is-active"></span>
-                <span class="streak-indicator__dot"></span>
-              </div>
-            </div>
-
-            <div class="card insight-card insight-card--wide">
-              <div class="card__header">
-                <span class="badge badge--soft">Próximo treino</span>
-                <a class="text-button" href="customize-workout.html">Personalizar</a>
-              </div>
-              <div class="next-workout">
-                <div>
-                  <h3>Ombros 3D lapidados</h3>
-                  <p>Desenvolvimento com halteres, elevação lateral e face pull para preencher os deltoides.</p>
-                  <ul class="chip-list">
-                    <li class="chip">Hipertrofia</li>
-                    <li class="chip">Deltoides</li>
-                    <li class="chip">Tempo sob tensão</li>
-                  </ul>
-                </div>
-                <div class="next-workout__meta">
-                  <span>45 min</span>
-                  <span>360 kcal</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card daily-training" id="dailyTrainingCard">
-            <header class="card__header daily-training__header">
+          <div class="card weekly-checklist" id="weeklyChecklistCard">
+            <header class="card__header weekly-checklist__header">
               <div>
-                <span class="badge badge--soft" id="dailyTrainingDay">Treino guiado</span>
-                <h3 id="dailyTrainingTitle">Treino do dia explicado passo a passo</h3>
+                <span class="badge badge--soft">Checklist semanal</span>
+                <h3>Mantenha o controle da sua rotina</h3>
               </div>
-              <a class="text-button" href="ritual-history.html">Ver hábitos anteriores</a>
+              <p class="weekly-checklist__progress" id="weeklyChecklistProgress">Nenhum treino marcado ainda.</p>
             </header>
-            <p class="daily-training__intro" id="dailyTrainingIntro">
-              Comece com uma leitura rápida do resumo, veja o vídeo demonstrativo e marque cada exercício concluído
-              no seu ritmo.
+            <p class="weekly-checklist__intro">
+              Marque os treinos concluídos para enxergar sua constância e identificar quais grupamentos ainda
+              precisam de atenção.
             </p>
-            <div class="daily-training__video">
-              <iframe
-                id="dailyTrainingVideo"
-                title="Vídeo de referência do treino"
-                src="https://www.youtube.com/embed/ml6cT4AZdqI"
-                loading="lazy"
-                allowfullscreen
-              ></iframe>
-            </div>
-            <ul class="checklist" id="dailyTrainingChecklist" aria-live="polite"></ul>
-            <footer class="daily-training__footer">
-              <div class="daily-training__metrics">
-                <span id="dailyTrainingDuration">--</span>
-                <span id="dailyTrainingCalories">--</span>
-              </div>
-              <p class="daily-training__progress" id="dailyTrainingProgress">0 de 0 concluídos</p>
-            </footer>
+            <ul class="checklist" id="weeklyChecklistList" aria-live="polite"></ul>
+            <p class="weekly-checklist__empty" id="weeklyChecklistEmpty" hidden>
+              Nenhum treino cadastrado ainda. Personalize sua semana para começar.
+            </p>
           </div>
 
           <div class="card guide-card">
@@ -261,12 +186,12 @@
                 <div class="profile__identity">
                   <div class="profile__avatar" id="profileAvatar" aria-hidden="true">JD</div>
                   <div>
-                    <h2 class="profile__name" id="profileName">Jane Doe</h2>
-                    <p class="profile__username" id="profileUsername">@janedoe</p>
-                    <p class="profile__id" id="profileId" aria-live="polite">ID pessoal: MM-001</p>
+                    <h2 class="profile__name" id="profileName">Seu nome</h2>
+                    <p class="profile__username" id="profileUsername">@seunome</p>
+                    <p class="profile__id" id="profileId" aria-live="polite">ID pessoal: defina no painel</p>
                     <div class="profile__tags">
-                      <span class="chip chip--accent">Nível 12</span>
-                      <span class="chip chip--soft">Streak 6 dias</span>
+                      <span class="chip chip--accent">Novo atleta</span>
+                      <span class="chip chip--soft">Streak em construção</span>
                     </div>
                   </div>
                 </div>
@@ -280,8 +205,7 @@
                 </button>
               </div>
               <p class="profile__bio" id="profileBio">
-                Rotina guiada para hipertrofia com técnica controlada, descanso estratégico e
-                registro constante da evolução.
+                Conte um pouco sobre você e seus objetivos para personalizar a experiência.
               </p>
             </div>
 
@@ -292,7 +216,7 @@
                   id="displayName"
                   name="displayName"
                   type="text"
-                  value="Jane Doe"
+                  value=""
                   maxlength="30"
                   autocomplete="name"
                   disabled
@@ -304,7 +228,7 @@
                   id="username"
                   name="username"
                   type="text"
-                  value="janedoe"
+                  value=""
                   maxlength="18"
                   autocomplete="nickname"
                   disabled
@@ -318,7 +242,7 @@
                   rows="3"
                   maxlength="160"
                   disabled
-                >Rotina guiada para hipertrofia com técnica controlada, descanso estratégico e registro constante da evolução.</textarea>
+                >Conte um pouco sobre você e seus objetivos para personalizar a experiência.</textarea>
               </div>
               <div class="profile-form__group profile-form__group--full">
                 <span>Escolha a vibe de cor</span>

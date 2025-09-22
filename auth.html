@@ -63,6 +63,17 @@
             <h2>Cadastre-se gratuitamente</h2>
             <label for="registerName">Seu nome completo</label>
             <input id="registerName" name="name" type="text" placeholder="Nome e sobrenome" required />
+            <label for="registerUsername">Nome de usuário</label>
+            <input
+              id="registerUsername"
+              name="username"
+              type="text"
+              placeholder="ex: musculofocado"
+              maxlength="18"
+              pattern="[a-z0-9._-]{3,18}"
+              inputmode="text"
+              required
+            />
             <label for="registerEmail">E-mail</label>
             <input id="registerEmail" name="email" type="email" placeholder="voce@email.com" required />
             <label for="registerPassword">Senha</label>

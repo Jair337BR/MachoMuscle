@@ -11,10 +11,12 @@ const STORAGE_KEYS = {
   trendFilters: 'machoTrendFilters',
   flashMessage: 'machoFlashMessage',
   database: 'machoDatabase',
-  currentUser: 'machoCurrentUser'
+  currentUser: 'machoCurrentUser',
+  weeklyCompletion: 'machoWeeklyCompletion'
 };
 
 let database = { users: [] };
+let weeklyCompletion = {};
 
 function storageAvailable() {
   try {
@@ -63,6 +65,15 @@ function normalizeEmail(value) {
   return String(value).trim().toLowerCase();
 }
 
+function sanitizeUsername(value) {
+  if (!value) return '';
+  return String(value)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9._-]+/g, '')
+    .slice(0, 18);
+}
+
 function loadDatabase() {
   const stored = readStorage(STORAGE_KEYS.database, null);
   if (!stored || typeof stored !== 'object') {
@@ -78,7 +89,7 @@ function loadDatabase() {
           email: normalizeEmail(user.email),
           password: typeof user.password === 'string' ? user.password : '',
           displayName: typeof user.displayName === 'string' ? user.displayName : '',
-          username: typeof user.username === 'string' ? user.username : '',
+          username: sanitizeUsername(user.username),
           bio: typeof user.bio === 'string' ? user.bio : '',
           accent: typeof user.accent === 'string' ? user.accent : 'roxo',
           id: typeof user.id === 'string' ? user.id : ''
@@ -86,6 +97,70 @@ function loadDatabase() {
       })
       .filter(Boolean)
   };
+}
+
+function loadWeeklyCompletionState() {
+  const stored = readStorage(STORAGE_KEYS.weeklyCompletion, null);
+  if (!stored || typeof stored !== 'object') {
+    return {};
+  }
+  return Object.entries(stored).reduce((acc, [userKey, value]) => {
+    if (!value || typeof value !== 'object') return acc;
+    acc[userKey] = Object.entries(value).reduce((userAcc, [dayKey, done]) => {
+      if (done) {
+        userAcc[dayKey] = true;
+      }
+      return userAcc;
+    }, {});
+    return acc;
+  }, {});
+}
+
+function persistWeeklyCompletionState() {
+  writeStorage(STORAGE_KEYS.weeklyCompletion, weeklyCompletion);
+}
+
+function getWeeklyCompletionForUser(userKey) {
+  if (!userKey) return {};
+  if (!weeklyCompletion[userKey] || typeof weeklyCompletion[userKey] !== 'object') {
+    weeklyCompletion[userKey] = {};
+  }
+  return weeklyCompletion[userKey];
+}
+
+function setWeeklyCompletion(userKey, dayKey, done) {
+  if (!userKey || !dayKey) return;
+  const userState = getWeeklyCompletionForUser(userKey);
+  if (done) {
+    userState[dayKey] = true;
+  } else {
+    delete userState[dayKey];
+  }
+  persistWeeklyCompletionState();
+}
+
+function resetWeeklyCompletionForUser(userKey) {
+  if (!userKey) return;
+  weeklyCompletion[userKey] = {};
+  persistWeeklyCompletionState();
+}
+
+function pruneWeeklyCompletion() {
+  weeklyCompletion = Object.entries(weeklyCompletion).reduce((acc, [userKey, value]) => {
+    if (!trainingPlans[userKey]) return acc;
+    if (!value || typeof value !== 'object') {
+      acc[userKey] = {};
+      return acc;
+    }
+    acc[userKey] = Object.entries(value).reduce((userAcc, [dayKey, done]) => {
+      if (done) {
+        userAcc[dayKey] = true;
+      }
+      return userAcc;
+    }, {});
+    return acc;
+  }, {});
+  persistWeeklyCompletionState();
 }
 
 function saveDatabase() {
@@ -103,12 +178,14 @@ function findUserByEmail(email) {
   return database.users.find((user) => normalizeEmail(user.email) === target) || null;
 }
 
+function findUserByUsername(username) {
+  const target = sanitizeUsername(username);
+  if (!target) return null;
+  return database.users.find((user) => sanitizeUsername(user.username) === target) || null;
+}
+
 function createUsernameFromName(name) {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9._-]+/g, '')
-    .slice(0, 18);
+  return sanitizeUsername(name);
 }
 
 function generateUserKey() {
@@ -235,8 +312,8 @@ function hydrateProfileFromAccount() {
   if (!record) return;
 
   const displayName = record.displayName || 'Seu nome';
-  const username = record.username || '';
-  const bio = record.bio || 'Compartilhe sua energia com a tribo.';
+  const username = sanitizeUsername(record.username) || '';
+  const bio = record.bio || 'Conte um pouco sobre você e seus objetivos para personalizar a experiência.';
   const accentKey = record.accent && accentConfig[record.accent] ? record.accent : 'roxo';
 
   if (displayNameInput) {
@@ -272,8 +349,11 @@ function persistProfileChanges() {
   if (!record) return;
 
   const nextDisplayName = displayNameInput ? displayNameInput.value.trim() : record.displayName || '';
-  const nextUsernameRaw = usernameInput ? usernameInput.value.trim().toLowerCase() : record.username || '';
-  const sanitizedUsername = nextUsernameRaw.replace(/[^a-z0-9._-]+/g, '').slice(0, 18);
+  const nextUsernameRaw = usernameInput ? usernameInput.value : record.username || '';
+  let sanitizedUsername = sanitizeUsername(nextUsernameRaw);
+  if (!sanitizedUsername) {
+    sanitizedUsername = sanitizeUsername(record.username) || createUsernameFromName(record.displayName || 'atleta');
+  }
   const nextBio = bioInput ? bioInput.value.trim() : record.bio || '';
 
   const hadChanges =
@@ -284,7 +364,7 @@ function persistProfileChanges() {
 
   record.displayName = nextDisplayName || 'Atleta MachoMuscle';
   record.username = sanitizedUsername;
-  record.bio = nextBio || 'Compartilhe sua energia com a tribo.';
+  record.bio = nextBio || 'Conte um pouco sobre você e seus objetivos para personalizar a experiência.';
   record.accent = currentAccent;
 
   const plan = trainingPlans[userKey];
@@ -304,9 +384,7 @@ function persistProfileChanges() {
 function refreshActiveUserViews() {
   hydrateProfileFromAccount();
   updateProfileIdDisplay();
-  if (typeof renderDailyTrainingCard === 'function') {
-    renderDailyTrainingCard();
-  }
+  renderWeeklyChecklist();
   if (plannerGrid) {
     initialisePlannerAssignments();
     updatePlannerGrid();
@@ -402,13 +480,15 @@ if (authRegisterForm) {
   authRegisterForm.addEventListener('submit', (event) => {
     event.preventDefault();
     const name = authRegisterForm.name?.value.trim();
+    const usernameRaw = authRegisterForm.username?.value || '';
     const email = normalizeEmail(authRegisterForm.email?.value || '');
     const password = authRegisterForm.password?.value || '';
     const confirm = authRegisterForm.confirm?.value || '';
+    const username = sanitizeUsername(usernameRaw);
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !username) {
       if (authRegisterFeedback) {
-        authRegisterFeedback.textContent = 'Preencha nome, e-mail e senha para continuar.';
+        authRegisterFeedback.textContent = 'Preencha nome, usuário, e-mail e senha para continuar.';
       }
       return;
     }
@@ -430,9 +510,14 @@ if (authRegisterForm) {
       }
       return;
     }
+    if (findUserByUsername(username)) {
+      if (authRegisterFeedback) {
+        authRegisterFeedback.textContent = 'Este nome de usuário já está em uso. Escolha outro.';
+      }
+      return;
+    }
 
     const userKey = generateUserKey();
-    const username = createUsernameFromName(name) || `athlete${database.users.length + 1}`;
     const newId = generateUniqueUserId();
     const newRecord = {
       key: userKey,
@@ -440,12 +525,13 @@ if (authRegisterForm) {
       password,
       displayName: name,
       username,
-      bio: 'Pronto para iniciar a jornada de hipertrofia.',
+      bio: 'Conte um pouco sobre você e seus objetivos para personalizar a experiência.',
       accent: 'roxo',
       id: newId
     };
     database.users.push(newRecord);
     ensureTrainingPlanForUserRecord(newRecord);
+    resetWeeklyCompletionForUser(userKey);
     ensureUserIdentifiers();
     persistTrainingPlans();
     startSession(userKey);
@@ -481,14 +567,9 @@ const plannerResetButton = document.getElementById('plannerResetButton');
 const squadChatForm = document.getElementById('squadChatForm');
 const squadChatInput = document.getElementById('squadChatMessage');
 const squadChatLog = document.getElementById('squadChatLog');
-const dailyTrainingTitle = document.getElementById('dailyTrainingTitle');
-const dailyTrainingDay = document.getElementById('dailyTrainingDay');
-const dailyTrainingIntro = document.getElementById('dailyTrainingIntro');
-const dailyTrainingChecklist = document.getElementById('dailyTrainingChecklist');
-const dailyTrainingDuration = document.getElementById('dailyTrainingDuration');
-const dailyTrainingCalories = document.getElementById('dailyTrainingCalories');
-const dailyTrainingProgress = document.getElementById('dailyTrainingProgress');
-const dailyTrainingVideo = document.getElementById('dailyTrainingVideo');
+const weeklyChecklistList = document.getElementById('weeklyChecklistList');
+const weeklyChecklistEmpty = document.getElementById('weeklyChecklistEmpty');
+const weeklyChecklistProgress = document.getElementById('weeklyChecklistProgress');
 const adminLoginSection = document.getElementById('adminLoginSection');
 const adminPanel = document.getElementById('adminPanel');
 const adminLoginForm = document.getElementById('adminLoginForm');
@@ -538,14 +619,13 @@ const weekDayLabels = {
   sabado: 'Sábado'
 };
 
-const defaultAthleteKey = 'voce';
-let activeUserKey = defaultAthleteKey;
+let activeUserKey = '';
 
 function getActiveUserKey() {
   if (activeUserKey && trainingPlans[activeUserKey]) {
     return activeUserKey;
   }
-  const fallback = trainingPlans[defaultAthleteKey] ? defaultAthleteKey : Object.keys(trainingPlans)[0] || '';
+  const fallback = Object.keys(trainingPlans)[0] || '';
   activeUserKey = fallback;
   return fallback;
 }
@@ -800,121 +880,14 @@ function createPlan(catalogKey, overrides = {}) {
 }
 
 function createDefaultRoutine() {
-  return {
-    segunda: createPlan('peitoTriceps'),
-    terca: createPlan('costasBiceps'),
-    quarta: createPlan('quadriceps'),
-    quinta: createPlan('ombros'),
-    sexta: createPlan('posterior'),
-    sabado: createPlan('descanso'),
-    domingo: createPlan('descanso')
-  };
+  return weekDayKeys.reduce((routine, dayKey) => {
+    routine[dayKey] = createPlan('descanso');
+    return routine;
+  }, {});
 }
 
-const trainingPlans = {
-  voce: {
-    id: 'MM-001',
-    name: 'Você',
-    routine: {
-      segunda: createPlan('ombros'),
-      terca: createPlan('quadriceps'),
-      quarta: createPlan('peitoTriceps'),
-      quinta: createPlan('posterior'),
-      sexta: createPlan('costasBiceps'),
-      sabado: createPlan('descanso'),
-      domingo: createPlan('descanso')
-    }
-  },
-  ana: {
-    id: 'MM-204',
-    name: 'Ana Torres',
-    routine: {
-      segunda: createPlan('ombros', {
-        summary:
-          'Cadência moderada e halteres controlados para fortalecer deltoides sem sobrecarregar a lombar.',
-        duration: '42 min',
-        calories: '330 kcal'
-      }),
-      terca: createPlan('quadriceps', {
-        summary: 'Priorize amplitude nos movimentos guiados e mantenha a respiração estável do início ao fim.',
-        duration: '45 min',
-        calories: '380 kcal'
-      }),
-      quarta: createPlan('peitoTriceps', {
-        summary: 'Foque em postura neutra e tempo sob tensão constante para sentir o peitoral trabalhando.',
-        duration: '44 min',
-        calories: '360 kcal'
-      }),
-      quinta: createPlan('posterior', {
-        summary:
-          'Alongue bem antes dos hinges e controle a descida para ativar posteriores de forma segura.',
-        duration: '46 min',
-        calories: '370 kcal'
-      }),
-      sexta: createPlan('costasBiceps', {
-        summary: 'Use pegadas confortáveis e mantenha a escápula firme para proteger a lombar e otimizar o pump.',
-        duration: '45 min',
-        calories: '360 kcal'
-      }),
-      sabado: createPlan('descanso', {
-        summary: 'Registre sensações da semana, alongue e prepare o corpo para o próximo ciclo de treinos.',
-        duration: '25 min',
-        calories: '180 kcal'
-      }),
-      domingo: createPlan('descanso', {
-        summary: 'Dia livre para regeneração ativa leve e respiração consciente.',
-        duration: '25 min',
-        calories: '180 kcal'
-      })
-    }
-  },
-  carlos: {
-    id: 'MM-418',
-    name: 'Carlos Lima',
-    routine: {
-      segunda: createPlan('peitoTriceps', {
-        focus: 'Peito pesado com pré-exaustão',
-        summary: 'Abra a semana com movimentos compostos seguidos de isoladores para congestionar o peitoral.',
-        duration: '50 min',
-        calories: '480 kcal'
-      }),
-      terca: createPlan('costasBiceps', {
-        focus: 'Costas densas e bíceps fortes',
-        summary: 'Remadas pesadas e puxadas neutras para aumentar densidade e largura dorsal.',
-        duration: '52 min',
-        calories: '460 kcal'
-      }),
-      quarta: createPlan('quadriceps', {
-        focus: 'Pernas completas com foco em força',
-        summary: 'Volume alto em compostos para gerar estímulo máximo em quadríceps e glúteos.',
-        duration: '55 min',
-        calories: '520 kcal'
-      }),
-      quinta: createPlan('ombros', {
-        focus: 'Ombros 3D e trapézio ativo',
-        summary: 'Alterne desenvolvimentos, elevações e remadas altas para destacar os deltoides.',
-        duration: '46 min',
-        calories: '380 kcal'
-      }),
-      sexta: createPlan('posterior', {
-        focus: 'Posterior dominante com cargas altas',
-        summary: 'Movimentos de hinge e flexão combinados para consolidar posteriores de coxa e glúteos.',
-        duration: '52 min',
-        calories: '450 kcal'
-      }),
-      sabado: createPlan('descanso', {
-        summary: 'Utilize o sábado para alongar suavemente e revisar indicadores no aplicativo.',
-        duration: '30 min',
-        calories: '190 kcal'
-      }),
-      domingo: createPlan('descanso', {
-        summary: 'Respiração consciente e caminhada leve para iniciar uma nova semana com energia.',
-        duration: '30 min',
-        calories: '190 kcal'
-      })
-    }
-  }
-};
+const trainingPlans = {};
+
 
 
 function generateUniqueUserId() {
@@ -961,42 +934,17 @@ function ensureTrainingPlanForUserRecord(record) {
       plan.id = record.id;
     }
   }
-}
-
-function ensureDefaultUserRecord() {
-  const defaultPlan = trainingPlans[getActiveUserKey()];
-  if (!defaultPlan) return;
-  if (!Array.isArray(database.users)) {
-    database.users = [];
-  }
-  const existing = getUserRecordByKey(defaultAthleteKey);
-  if (!existing) {
-    database.users.push({
-      key: defaultAthleteKey,
-      email: 'voce@macho.app',
-      password: 'treino123',
-      displayName: defaultPlan.name || 'Você',
-      username: createUsernameFromName(defaultPlan.name || 'Você') || 'machomuscle',
-      bio: 'Em constante evolução rumo à hipertrofia.',
-      accent: 'roxo',
-      id: defaultPlan.id || ''
-    });
-  } else {
-    if (!existing.displayName) {
-      existing.displayName = defaultPlan.name || 'Você';
-    }
-    if (!existing.username) {
-      existing.username = createUsernameFromName(existing.displayName || 'machomuscle');
-    }
-  }
+  getWeeklyCompletionForUser(record.key);
 }
 
 function startSession(userKey) {
   if (!userKey) return;
+  activeUserKey = userKey;
   writeStorage(STORAGE_KEYS.currentUser, { userKey });
 }
 
 function clearSession() {
+  activeUserKey = '';
   clearStorage(STORAGE_KEYS.currentUser);
 }
 
@@ -1009,10 +957,11 @@ function getStoredSessionKey() {
 
 
 database = loadDatabase();
-ensureDefaultUserRecord();
-if (Array.isArray(database.users)) {
-  database.users.forEach((record) => ensureTrainingPlanForUserRecord(record));
+if (!Array.isArray(database.users)) {
+  database.users = [];
 }
+weeklyCompletion = loadWeeklyCompletionState();
+database.users.forEach((record) => ensureTrainingPlanForUserRecord(record));
 
 
 function ensureUserIdentifiers() {
@@ -1079,7 +1028,7 @@ function updateProfileIdDisplay() {
   if (!profileId) return;
   const current = trainingPlans[getActiveUserKey()];
   const idValue = current && typeof current.id === 'string' ? current.id : '';
-  profileId.textContent = idValue ? `ID pessoal: ${idValue}` : 'ID pessoal: defina com o painel';
+  profileId.textContent = idValue ? `ID pessoal: ${idValue}` : 'ID pessoal: defina no painel';
 }
 
 ensureUserIdentifiers();
@@ -1152,6 +1101,7 @@ function persistTrainingPlans() {
 }
 
 restoreTrainingPlansFromStorage();
+pruneWeeklyCompletion();
 ensureUserIdentifiers();
 saveDatabase();
 
@@ -1331,8 +1281,8 @@ function setAdminUserById(rawId) {
     const userName = trainingPlans[key]?.name || 'Usuário';
     adminUserIdFeedback.textContent = `Plano carregado para ${userName}.`;
   }
-  if (selectedAdminUser === getActiveUserKey() && selectedAdminDay === getCurrentDayKey()) {
-    renderDailyTrainingCard();
+  if (selectedAdminUser === getActiveUserKey()) {
+    renderWeeklyChecklist();
   }
   return true;
 }
@@ -1342,6 +1292,12 @@ function populateAdminUserOptions() {
   const options = Object.entries(trainingPlans)
     .map(([key, value]) => `<option value="${escapeHTML(key)}">${escapeHTML(value.name)}</option>`)
     .join('');
+  if (!options) {
+    adminUserSelect.innerHTML = '<option value="" disabled>Sem usuários cadastrados</option>';
+    adminUserSelect.disabled = true;
+    return;
+  }
+  adminUserSelect.disabled = false;
   adminUserSelect.innerHTML = options;
   if (!trainingPlans[selectedAdminUser]) {
     selectedAdminUser = Object.keys(trainingPlans)[0] || '';
@@ -1421,80 +1377,73 @@ function prepareAdminPanel() {
   }
 }
 
-function getPlanForDailyCard() {
-  const dayKey = getCurrentDayKey();
-  const userKey = trainingPlans[getActiveUserKey()] ? getActiveUserKey() : Object.keys(trainingPlans)[0];
-  if (!userKey) return { plan: { ...defaultPlanTemplate }, dayKey };
-  const plan = getOrCreatePlan(userKey, dayKey) || { ...defaultPlanTemplate };
-  return { plan, userKey, dayKey };
-}
-
-function updateDailyTrainingProgress() {
-  if (!dailyTrainingChecklist || !dailyTrainingProgress) return;
-  const checkboxes = dailyTrainingChecklist.querySelectorAll('input[type="checkbox"]');
-  if (!checkboxes.length) {
-    dailyTrainingProgress.textContent = '0 de 0 concluídos';
+function updateWeeklyChecklistProgress() {
+  if (!weeklyChecklistProgress) return;
+  const userKey = getActiveUserKey();
+  const checkboxes = weeklyChecklistList
+    ? weeklyChecklistList.querySelectorAll('input[type="checkbox"][data-week-day]')
+    : [];
+  if (!userKey || !trainingPlans[userKey] || !checkboxes.length) {
+    weeklyChecklistProgress.textContent = 'Nenhum treino marcado ainda.';
     return;
   }
-  const completed = Array.from(checkboxes).filter((input) => input.checked).length;
-  dailyTrainingProgress.textContent = `${completed} de ${checkboxes.length} concluídos`;
+  const completion = getWeeklyCompletionForUser(userKey);
+  const completed = Array.from(checkboxes).filter((input) => completion[input.dataset.weekDay || '']).length;
+  weeklyChecklistProgress.textContent = `${completed} de ${checkboxes.length} treinos concluídos`;
 }
 
-function renderDailyTrainingCard() {
-  if (!dailyTrainingTitle || !dailyTrainingDay || !dailyTrainingChecklist) return;
-  const { plan, dayKey } = getPlanForDailyCard();
-  dailyTrainingTitle.textContent = plan.focus;
-  if (dailyTrainingDay) {
-    dailyTrainingDay.textContent = `${weekDayLabels[dayKey] || dayKey} guiado`;
-  }
-  if (dailyTrainingIntro) {
-    dailyTrainingIntro.textContent = plan.summary;
-  }
-  if (dailyTrainingDuration) {
-    dailyTrainingDuration.textContent = plan.duration;
-  }
-  if (dailyTrainingCalories) {
-    dailyTrainingCalories.textContent = plan.calories;
-  }
-  if (dailyTrainingVideo) {
-    const nextSrc = plan.video || 'https://www.youtube.com/embed/ml6cT4AZdqI';
-    if (dailyTrainingVideo.getAttribute('src') !== nextSrc) {
-      dailyTrainingVideo.setAttribute('src', nextSrc);
+function renderWeeklyChecklist() {
+  if (!weeklyChecklistList) return;
+  const userKey = getActiveUserKey();
+  weeklyChecklistList.innerHTML = '';
+  if (!userKey || !trainingPlans[userKey]) {
+    if (weeklyChecklistEmpty) {
+      weeklyChecklistEmpty.hidden = false;
+      weeklyChecklistEmpty.textContent = 'Nenhum treino cadastrado ainda. Personalize sua semana para começar.';
     }
-  }
-  dailyTrainingChecklist.innerHTML = '';
-  if (!plan.exercises.length) {
-    const emptyItem = document.createElement('li');
-    emptyItem.className = 'checklist__empty';
-    emptyItem.textContent = 'Adicione exercícios no painel administrativo para liberar o checklist.';
-    dailyTrainingChecklist.append(emptyItem);
-    updateDailyTrainingProgress();
+    if (weeklyChecklistProgress) {
+      weeklyChecklistProgress.textContent = 'Nenhum treino marcado ainda.';
+    }
     return;
   }
-  plan.exercises.forEach((exercise, index) => {
+  const completion = getWeeklyCompletionForUser(userKey);
+  let renderedCount = 0;
+  weekDayKeys.forEach((dayKey) => {
+    const plan = getOrCreatePlan(userKey, dayKey);
+    if (!plan) return;
+    renderedCount += 1;
     const item = document.createElement('li');
+    const isChecked = Boolean(completion[dayKey]);
     item.innerHTML = `
       <label class="checklist__item">
-        <input type="checkbox" data-daily-exercise="${dayKey}-${index}" />
+        <input type="checkbox" data-week-day="${dayKey}" ${isChecked ? 'checked' : ''} />
         <span class="checklist__content">
           <span class="checklist__text">
-            ${escapeHTML(exercise.name)}
-            <span class="checklist__detail">${escapeHTML(exercise.detail)}</span>
+            ${escapeHTML(weekDayLabels[dayKey] || dayKey)}
+            <span class="checklist__detail">${escapeHTML(plan.focus || defaultPlanTemplate.focus)}</span>
           </span>
-          ${exercise.media
-            ? `<span class="checklist__media"><img src="${escapeHTML(exercise.media)}" alt="Demonstração de ${escapeHTML(
-                exercise.name
-              )}" loading="lazy" /></span>`
-            : ''}
+          <span class="checklist__detail">${escapeHTML(plan.summary || defaultPlanTemplate.summary)}</span>
         </span>
       </label>`;
-    const checkbox = item.querySelector('input');
-    if (checkbox) {
-      checkbox.addEventListener('change', updateDailyTrainingProgress);
-    }
-    dailyTrainingChecklist.append(item);
+    weeklyChecklistList.append(item);
   });
-  updateDailyTrainingProgress();
+  if (weeklyChecklistEmpty) {
+    weeklyChecklistEmpty.hidden = renderedCount > 0;
+  }
+  updateWeeklyChecklistProgress();
+}
+
+if (weeklyChecklistList) {
+  weeklyChecklistList.addEventListener('change', (event) => {
+    const target = event.target;
+    if (!target || !(target instanceof HTMLInputElement)) return;
+    if (!target.matches('input[type="checkbox"][data-week-day]')) return;
+    const dayKey = target.dataset.weekDay;
+    const userKey = getActiveUserKey();
+    if (!dayKey || !userKey) return;
+    setWeeklyCompletion(userKey, dayKey, target.checked);
+    updateWeeklyChecklistProgress();
+  });
 }
 
 if (displayNameInput) {
@@ -1508,9 +1457,7 @@ if (displayNameInput) {
 
 if (usernameInput) {
   usernameInput.addEventListener('input', () => {
-    const sanitized = usernameInput.value
-      .toLowerCase()
-      .replace(/[^a-z0-9._-]+/g, '');
+    const sanitized = sanitizeUsername(usernameInput.value);
     if (usernameInput.value !== sanitized) {
       usernameInput.value = sanitized;
     }
@@ -1518,12 +1465,13 @@ if (usernameInput) {
   });
 }
 
-if (bioInput) {
-  bioInput.addEventListener('input', () => {
-    const value = bioInput.value.trim();
-    profileBio.textContent = value || 'Compartilhe sua energia com a tribo.';
-  });
-}
+  if (bioInput) {
+    bioInput.addEventListener('input', () => {
+      const value = bioInput.value.trim();
+      profileBio.textContent =
+        value || 'Conte um pouco sobre você e seus objetivos para personalizar a experiência.';
+    });
+  }
 
 const tagButtons = document.querySelectorAll('.chip-toggle');
 tagButtons.forEach((button) => {
@@ -2113,7 +2061,8 @@ function resetPlanner() {
 }
 
 function savePlanner() {
-  const user = trainingPlans[getActiveUserKey()];
+  const userKey = getActiveUserKey();
+  const user = trainingPlans[userKey];
   if (!user || !user.routine) return;
   const hadChanges = plannerHasPendingChanges();
   plannerDayOrder.forEach((dayKey) => {
@@ -2126,6 +2075,7 @@ function savePlanner() {
     }
     user.routine[dayKey] = createPlan(templateKey);
   });
+  resetWeeklyCompletionForUser(userKey);
   persistTrainingPlans();
   const feedbackMessage = hadChanges
     ? 'Configurações salvas! Seu calendário de hipertrofia foi atualizado.'
@@ -2217,7 +2167,7 @@ if (squadChatForm && squadChatInput && squadChatLog) {
   }
 }
 
-renderDailyTrainingCard();
+renderWeeklyChecklist();
 toggleAdminSections();
 
 const isAdminView = Boolean(adminLoginSection || adminPanel);
@@ -2345,13 +2295,14 @@ if (adminUpdateForm) {
     plan.calories = caloriesValue;
     plan.video = videoValue;
     plan.exercises = exercisesValue;
+    resetWeeklyCompletionForUser(selectedAdminUser);
     persistTrainingPlans();
     if (adminUpdateFeedback) {
       adminUpdateFeedback.textContent = 'Plano atualizado com sucesso!';
     }
     renderAdminPreview();
-    if (selectedAdminUser === getActiveUserKey() && selectedAdminDay === getCurrentDayKey()) {
-      renderDailyTrainingCard();
+    if (selectedAdminUser === getActiveUserKey()) {
+      renderWeeklyChecklist();
     }
   });
 
