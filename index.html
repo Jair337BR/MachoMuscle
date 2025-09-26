@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MachoMuscle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="app" data-requires-auth="true">
+    <div class="app" role="application">
+      <header class="topbar">
+        <div class="branding">
+          <div class="branding__icon" aria-hidden="true">MM</div>
+          <div class="branding__text">
+            <span class="branding__label">MachoMuscle</span>
+            <span class="branding__tagline">Treinos inteligentes, vibe minimalista</span>
+          </div>
+        </div>
+        <div class="topbar__actions">
+          <button class="icon-button" type="button" aria-label="Pesquisar exercícios">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.71.71l.27.28v.79l5 5 1.5-1.5-5-5zm-6 0a4.5 4.5 0 110-9 4.5 4.5 0 010 9z"
+              />
+            </svg>
+          </button>
+          <button class="icon-button icon-button--primary" type="button" aria-label="Notificações">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 22a2 2 0 002-2h-4a2 2 0 002 2zm6-6V11a6 6 0 10-12 0v5l-2 2v1h16v-1l-2-2zm-2 .17V11a4 4 0 10-8 0v5.17l-.59.58h9.18l-.59-.58z"
+              />
+            </svg>
+          </button>
+          <a
+            class="icon-button"
+            href="admin.html"
+            aria-label="Abrir painel administrativo"
+          >
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 2a5 5 0 00-5 5v2H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm-3 7V7a3 3 0 016 0v2H9zm9 2v9H6v-9h12z"
+              />
+            </svg>
+          </a>
+        </div>
+      </header>
+
+      <main class="screens">
+        <div class="global-message" id="globalMessage" role="status" aria-live="polite" hidden></div>
+        <section class="screen screen--active" data-screen="home" aria-label="Início">
+          <article class="hero-card">
+            <div class="hero-card__content">
+              <span class="badge badge--soft">Desafio do dia</span>
+              <h1>Encontre sua melhor versão</h1>
+              <p>
+                Treinos curtos, metas claras e suporte da comunidade para manter seu foco
+                em alta.
+              </p>
+              <div class="hero-card__actions">
+                <a class="button button--primary" href="journey.html">Começar agora</a>
+                <a class="button button--ghost" href="journey.html">Ver rotina</a>
+              </div>
+            </div>
+            <div class="hero-card__visual" aria-hidden="true">
+              <div class="hero-illustration">
+                <div class="hero-illustration__shine"></div>
+                <div class="hero-illustration__silhouette"></div>
+              </div>
+              <span class="hero-card__caption">Missão foco total</span>
+            </div>
+          </article>
+
+          <div class="card weekly-checklist" id="weeklyChecklistCard">
+            <header class="card__header weekly-checklist__header">
+              <div>
+                <span class="badge badge--soft">Checklist semanal</span>
+                <h3>Mantenha o controle da sua rotina</h3>
+              </div>
+              <p class="weekly-checklist__progress" id="weeklyChecklistProgress">Nenhum treino marcado ainda.</p>
+            </header>
+            <p class="weekly-checklist__intro">
+              Marque os treinos concluídos para enxergar sua constância e identificar quais grupamentos ainda
+              precisam de atenção.
+            </p>
+            <ul class="checklist" id="weeklyChecklistList" aria-live="polite"></ul>
+            <p class="weekly-checklist__empty" id="weeklyChecklistEmpty" hidden>
+              Nenhum treino cadastrado ainda. Personalize sua semana para começar.
+            </p>
+          </div>
+
+          <div class="card guide-card">
+            <header class="card__header">
+              <div>
+                <h3>Guia rápido para iniciantes</h3>
+                <p class="card__subtitle">
+                  Siga estes passos simples para aproveitar cada sessão mesmo sem experiência prévia.
+                </p>
+              </div>
+            </header>
+            <ol class="guide-card__list">
+              <li>
+                <strong>1. Leia o objetivo do dia.</strong>
+                <p>Entenda onde focar atenção antes de começar e ajuste o tempo conforme sua agenda.</p>
+              </li>
+              <li>
+                <strong>2. Assista ao vídeo de exemplo.</strong>
+                <p>Observe a postura com calma, pause sempre que necessário e repita os movimentos com segurança.</p>
+              </li>
+              <li>
+                <strong>3. Execute e marque o checklist.</strong>
+                <p>Marque cada exercício concluído para visualizar seu progresso imediato e celebrar pequenas vitórias.</p>
+              </li>
+              <li>
+                <strong>4. Respire e registre sensações.</strong>
+                <p>
+                  Utilize o mural do perfil para anotar como se sentiu; isso ajuda a adaptar os próximos treinos com
+                  precisão.
+                </p>
+              </li>
+            </ol>
+          </div>
+
+          <section class="card video-library">
+            <header class="card__header">
+              <div>
+                <h3>Vídeos que explicam cada etapa</h3>
+                <p class="card__subtitle">
+                  Selecionamos exemplos populares na web para você visualizar movimentos sem complicação.
+                </p>
+              </div>
+            </header>
+            <div class="video-library__grid">
+              <article class="video-card">
+                <div class="video-card__frame">
+                  <iframe
+                    src="https://www.youtube.com/embed/5sGOlKn-IxI"
+                    title="Rotina completa de ombros para hipertrofia"
+                    loading="lazy"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+                <h4>Ombros definidos sem mistério</h4>
+                <p>Aprenda a sequência com desenvolvimento, elevações e face pull em português.</p>
+              </article>
+              <article class="video-card">
+                <div class="video-card__frame">
+                  <iframe
+                    src="https://www.youtube.com/embed/m8K3b0UpwOQ"
+                    title="Supino controlado e tríceps guiado"
+                    loading="lazy"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+                <h4>Peito e tríceps passo a passo</h4>
+                <p>Entenda cadência, amplitude e variações ideais para construir volume.</p>
+              </article>
+              <article class="video-card">
+                <div class="video-card__frame">
+                  <iframe
+                    src="https://www.youtube.com/embed/COd4IITZ1wk"
+                    title="Treino de pernas com foco em quadríceps"
+                    loading="lazy"
+                    allowfullscreen
+                  ></iframe>
+                </div>
+                <h4>Pernas fortes para iniciantes</h4>
+                <p>Veja como executar agachamento, leg press e avanços com segurança.</p>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section class="screen" data-screen="profile" aria-label="Perfil">
+          <div class="profile card">
+            <div class="profile__header">
+              <div class="profile__cover" aria-hidden="true">
+                <span class="profile__spark"></span>
+              </div>
+              <div class="profile__toolbar">
+                <div class="profile__identity">
+                  <div class="profile__avatar" id="profileAvatar" aria-hidden="true">JD</div>
+                  <div>
+                    <h2 class="profile__name" id="profileName">Seu nome</h2>
+                    <p class="profile__username" id="profileUsername">@seunome</p>
+                    <p class="profile__id" id="profileId" aria-live="polite">ID pessoal: defina no painel</p>
+                    <div class="profile__tags">
+                      <span class="chip chip--accent">Novo atleta</span>
+                      <span class="chip chip--soft">Streak em construção</span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  class="button button--ghost profile__edit-toggle"
+                  type="button"
+                  id="profileEditToggle"
+                  aria-pressed="false"
+                >
+                  Editar perfil
+                </button>
+              </div>
+              <p class="profile__bio" id="profileBio">
+                Conte um pouco sobre você e seus objetivos para personalizar a experiência.
+              </p>
+            </div>
+
+            <form class="profile-form profile-form--locked" id="profileForm">
+              <div class="profile-form__group">
+                <label for="displayName">Nome exibido</label>
+                <input
+                  id="displayName"
+                  name="displayName"
+                  type="text"
+                  value=""
+                  maxlength="30"
+                  autocomplete="name"
+                  disabled
+                />
+              </div>
+              <div class="profile-form__group">
+                <label for="username">Nome de usuário</label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  value=""
+                  maxlength="18"
+                  autocomplete="nickname"
+                  disabled
+                />
+              </div>
+              <div class="profile-form__group profile-form__group--full">
+                <label for="bio">Bio</label>
+                <textarea
+                  id="bio"
+                  name="bio"
+                  rows="3"
+                  maxlength="160"
+                  disabled
+                >Conte um pouco sobre você e seus objetivos para personalizar a experiência.</textarea>
+              </div>
+              <div class="profile-form__group profile-form__group--full">
+                <span>Escolha a vibe de cor</span>
+                <div class="accent-picker" role="radiogroup" aria-label="Escolher cor de destaque">
+                  <button
+                    type="button"
+                    class="accent-picker__option is-active"
+                    data-accent="roxo"
+                    style="--swatch: linear-gradient(135deg, #6c63ff, #4b5dff)"
+                    aria-pressed="true"
+                    disabled
+                  ></button>
+                  <button
+                    type="button"
+                    class="accent-picker__option"
+                    data-accent="amarelo"
+                    style="--swatch: linear-gradient(135deg, #f7c948, #ffdb6e)"
+                    aria-pressed="false"
+                    disabled
+                  ></button>
+                  <button
+                    type="button"
+                    class="accent-picker__option"
+                    data-accent="laranja"
+                    style="--swatch: linear-gradient(135deg, #ff8852, #ffb347)"
+                    aria-pressed="false"
+                    disabled
+                  ></button>
+                  <button
+                    type="button"
+                    class="accent-picker__option"
+                    data-accent="azul"
+                    style="--swatch: linear-gradient(135deg, #1fb6ff, #58b7ff)"
+                    aria-pressed="false"
+                    disabled
+                  ></button>
+                </div>
+              </div>
+            </form>
+
+            <div class="profile-stats">
+              <div>
+                <strong>248</strong>
+                <span>Treinos concluídos</span>
+              </div>
+              <div>
+                <strong>12.680</strong>
+                <span>Total de XP</span>
+              </div>
+              <div>
+                <strong>32</strong>
+                <span>Badges ativas</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+      </main>
+
+      <nav class="tabbar" aria-label="Navegação principal">
+        <button class="tabbar__item tabbar__item--active" type="button" data-target="home">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5a1 1 0 01-1-1v-4H9v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-9z"
+            />
+          </svg>
+          <span>Início</span>
+        </button>
+        <button class="tabbar__item" type="button" data-target="profile">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 12a5 5 0 110-10 5 5 0 010 10zm0 2c-4.418 0-8 2.239-8 5v3h16v-3c0-2.761-3.582-5-8-5z"
+            />
+          </svg>
+          <span>Perfil</span>
+        </button>
+      </nav>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

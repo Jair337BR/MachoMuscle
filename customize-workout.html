@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personalizar treino · MachoMuscle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="app" data-requires-auth="true">
+    <div class="app app--standalone" role="application">
+      <main class="subpage subpage--standalone" aria-labelledby="customize-title">
+        <div class="subpage__container">
+          <header class="subpage__header">
+            <a class="subpage__back" href="index.html">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+              </svg>
+              Voltar
+            </a>
+            <div>
+              <span class="subpage__eyebrow">Personalização</span>
+              <h1 id="customize-title">Ajuste o próximo treino</h1>
+            </div>
+          </header>
+          <p class="subpage__description">
+            Arraste os blocos de grupamento muscular para cada dia da semana e mantenha sua rotina 100%
+            focada em hipertrofia.
+          </p>
+          <div class="subpage__content planner-layout">
+            <section class="planner-panel planner-panel--palette" aria-labelledby="plannerPaletteTitle">
+              <header class="planner-panel__header">
+                <h2 id="plannerPaletteTitle">Biblioteca de blocos</h2>
+                <p>Escolha o grupamento desejado e arraste para o calendário ou clique para aplicar ao dia ativo.</p>
+              </header>
+              <div class="planner-palette" id="plannerPalette" role="group" aria-label="Blocos de grupamento">
+                <button
+                  type="button"
+                  class="planner-block planner-block--palette"
+                  data-template="ombros"
+                  draggable="true"
+                  aria-pressed="false"
+                >
+                  <span class="planner-block__title">Ombros completos</span>
+                  <span class="planner-block__subtitle">Deltoides 3D e estabilidade</span>
+                </button>
+                <button
+                  type="button"
+                  class="planner-block planner-block--palette"
+                  data-template="quadriceps"
+                  draggable="true"
+                  aria-pressed="false"
+                >
+                  <span class="planner-block__title">Pernas quadríceps</span>
+                  <span class="planner-block__subtitle">Ênfase em agachamentos</span>
+                </button>
+                <button
+                  type="button"
+                  class="planner-block planner-block--palette"
+                  data-template="peitoTriceps"
+                  draggable="true"
+                  aria-pressed="false"
+                >
+                  <span class="planner-block__title">Peito e tríceps</span>
+                  <span class="planner-block__subtitle">Supinos e isoladores</span>
+                </button>
+                <button
+                  type="button"
+                  class="planner-block planner-block--palette"
+                  data-template="posterior"
+                  draggable="true"
+                  aria-pressed="false"
+                >
+                  <span class="planner-block__title">Posterior e glúteos</span>
+                  <span class="planner-block__subtitle">Hinges controlados</span>
+                </button>
+                <button
+                  type="button"
+                  class="planner-block planner-block--palette"
+                  data-template="costasBiceps"
+                  draggable="true"
+                  aria-pressed="false"
+                >
+                  <span class="planner-block__title">Costas e bíceps</span>
+                  <span class="planner-block__subtitle">Remadas e puxadas</span>
+                </button>
+                <button
+                  type="button"
+                  class="planner-block planner-block--palette"
+                  data-template="descanso"
+                  draggable="true"
+                  aria-pressed="false"
+                >
+                  <span class="planner-block__title">Descanso ativo</span>
+                  <span class="planner-block__subtitle">Mobilidade e respiração</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="planner-panel planner-panel--calendar" aria-labelledby="plannerCalendarTitle">
+              <header class="planner-panel__header">
+                <h2 id="plannerCalendarTitle">Monte sua semana</h2>
+                <p>O grid segue o calendário de domingo a sábado. Arraste os blocos para reposicionar a divisão.</p>
+              </header>
+              <div class="planner-grid" id="plannerGrid" role="list"></div>
+            </section>
+
+            <aside class="planner-panel planner-panel--details" id="plannerDetails">
+              <header class="planner-panel__header">
+                <h2 id="plannerDetailsTitle">Dia selecionado</h2>
+                <p id="plannerDetailsMeta">--</p>
+              </header>
+              <p class="planner-details__focus" id="plannerDetailsFocus">Selecione um dia para visualizar o foco.</p>
+              <p class="planner-details__summary" id="plannerDetailsSummary"></p>
+              <ul class="planner-details__list" id="plannerDetailsExercises" aria-label="Exercícios do bloco"></ul>
+              <div class="planner-actions">
+                <button class="button button--ghost" id="plannerResetButton" type="button" disabled aria-disabled="true">
+                  Redefinir semana
+                </button>
+                <button class="button button--primary" id="plannerSaveButton" type="button" disabled aria-disabled="true" data-has-changes="false">
+                  Salvar e voltar
+                </button>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

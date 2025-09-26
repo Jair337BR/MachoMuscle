@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel administrativo · MachoMuscle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="app" data-requires-auth="true">
+    <div class="app app--standalone" role="application">
+      <main class="subpage subpage--standalone" aria-labelledby="admin-title">
+        <div class="subpage__container subpage__container--admin">
+          <header class="subpage__header">
+            <a class="subpage__back" href="index.html">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+              </svg>
+              Voltar
+            </a>
+            <div>
+              <span class="subpage__eyebrow">Somente para administradores</span>
+              <h1 id="admin-title">Painel de personalização</h1>
+            </div>
+          </header>
+          <p class="subpage__description">
+            Utilize este painel exclusivo para ajustar planos específicos de cada pessoa que acompanha a MachoMuscle.
+          </p>
+          <div class="admin admin--locked" id="adminLoginSection">
+            <form class="card admin-login" id="adminLoginForm" autocomplete="off">
+              <h2>Entrar no painel</h2>
+              <p class="admin-login__intro">
+                Informe as credenciais fornecidas para liberar as ferramentas de edição.
+              </p>
+              <label for="adminLogin">Usuário</label>
+              <input id="adminLogin" name="login" type="text" required placeholder="admin1" />
+              <label for="adminPassword">Senha</label>
+              <input id="adminPassword" name="password" type="password" required placeholder="••••••••" />
+              <button class="button button--primary" type="submit">Acessar painel</button>
+              <p class="admin-login__feedback" id="adminLoginFeedback" role="alert"></p>
+            </form>
+          </div>
+          <div class="admin admin--panel" id="adminPanel" hidden>
+            <p class="admin__intro">
+              Escolha a pessoa, ajuste o dia da semana e defina os detalhes do treino. Tudo é atualizado imediatamente na
+              visão do aluno.
+            </p>
+            <div class="admin-panel__grid">
+              <section class="card admin-card">
+                <h2>Editar rotina personalizada</h2>
+                <form class="admin-form" id="adminUpdateForm">
+                  <label for="adminUserIdInput">Buscar por ID do usuário</label>
+                  <div class="admin-form__lookup">
+                    <input
+                      id="adminUserIdInput"
+                      name="userId"
+                      type="text"
+                      inputmode="text"
+                      autocomplete="off"
+                      placeholder="Ex.: MM-001"
+                    />
+                    <button class="button button--ghost" type="button" id="adminUserIdButton">Carregar</button>
+                  </div>
+                  <p class="admin-form__hint" id="adminUserIdFeedback" role="status"></p>
+                  <label for="adminUserSelect">Pessoa</label>
+                  <select id="adminUserSelect" name="user"></select>
+                  <label for="adminDaySelect">Dia da semana</label>
+                  <select id="adminDaySelect" name="day"></select>
+                  <label for="adminFocusInput">Título do treino</label>
+                  <input id="adminFocusInput" name="focus" type="text" required />
+                  <label for="adminInstructionInput">Resumo motivacional</label>
+                  <textarea id="adminInstructionInput" name="instructions" rows="3" required></textarea>
+                  <label for="adminExercisesInput">Exercícios (um por linha com repetições)</label>
+                  <textarea id="adminExercisesInput" name="exercises" rows="5" required></textarea>
+                  <div class="admin-form__row">
+                    <div>
+                      <label for="adminDurationInput">Duração estimada</label>
+                      <input id="adminDurationInput" name="duration" type="text" required />
+                    </div>
+                    <div>
+                      <label for="adminCaloriesInput">Calorias estimadas</label>
+                      <input id="adminCaloriesInput" name="calories" type="text" required />
+                    </div>
+                  </div>
+                  <label for="adminVideoInput">Vídeo de referência (URL)</label>
+                  <input id="adminVideoInput" name="video" type="url" placeholder="https://www.youtube.com/watch?v=..." />
+                  <button class="button button--primary button--block" type="submit">Salvar atualização</button>
+                  <p class="admin-form__feedback" id="adminUpdateFeedback" role="status"></p>
+                </form>
+              </section>
+              <section class="card admin-card admin-card--preview">
+                <h2>Plano visualizado</h2>
+                <p class="admin-card__help">Revise se tudo está claro e adaptado ao nível da pessoa escolhida.</p>
+                <div class="admin-plan-preview" id="adminPlanPreview"></div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

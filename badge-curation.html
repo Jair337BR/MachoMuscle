@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vitrine de badges · MachoMuscle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="app" data-requires-auth="true">
+    <div class="app app--standalone" role="application">
+      <main class="subpage subpage--standalone" aria-labelledby="badge-curation-title">
+        <div class="subpage__container">
+          <header class="subpage__header">
+            <a class="subpage__back" href="index.html">
+              <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+              </svg>
+              Voltar
+            </a>
+            <div>
+              <span class="subpage__eyebrow">Vitrine pessoal</span>
+              <h1 id="badge-curation-title">Escolha os destaques</h1>
+            </div>
+          </header>
+          <p class="subpage__description">
+            Fixe até três badges para aparecerem na galeria principal da sua jornada.
+          </p>
+          <div class="subpage__content">
+            <p class="subpage__note" id="badgeSelectionMessage">Selecione até 3 badges para destacar.</p>
+            <div class="subpage__grid subpage__grid--badges">
+              <button class="badge-selector" type="button" data-badge-select="fogo" data-badge-label="Fogo infinito">
+                <span class="badge-selector__icon">🔥</span>
+                <strong>Fogo infinito</strong>
+                <small>Streak 15 dias</small>
+              </button>
+              <button class="badge-selector" type="button" data-badge-select="flow" data-badge-label="Alongamento premium">
+                <span class="badge-selector__icon">🌀</span>
+                <strong>Alongamento premium</strong>
+                <small>Mobilidade consistente</small>
+              </button>
+              <button class="badge-selector" type="button" data-badge-select="ritmo" data-badge-label="Volume supremo">
+                <span class="badge-selector__icon">💪</span>
+                <strong>Volume supremo</strong>
+                <small>Semana 100% hipertrofia</small>
+              </button>
+              <button
+                class="badge-selector is-locked"
+                type="button"
+                data-badge-select="prisma"
+                data-badge-label="Troféu Prisma"
+                data-badge-locked="true"
+                aria-disabled="true"
+              >
+                <span class="badge-selector__icon">🌈</span>
+                <strong>Troféu Prisma</strong>
+                <small>Complete 5 desafios lendários</small>
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
